@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lese-Blitz Training</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --success: #95E1A3;
+            --bg-light: #FFF9F0;
+            --bg-card: #FFFFFF;
+            --text-dark: #2D3436;
+            --text-muted: #636E72;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --shadow-hover: 0 12px 48px rgba(0,0,0,0.15);
+            
+            --star-color: #FFD700;
+            --diamond-color: #00CED1;
+            --obsidian-color: #4A0E4E;
+            
+            /* Lese-Blitz spezifisch */
+            --konsonant-color: #2D3436;
+            --vokal-color: #FF6B6B;
+            --silbe-bg: #f8f9fa;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .bg-shapes {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape-1 {
+            width: 300px; height: 300px;
+            background: linear-gradient(135deg, #8b5cf6, var(--accent));
+            top: -100px; right: -100px;
+        }
+
+        .shape-2 {
+            width: 200px; height: 200px;
+            background: linear-gradient(135deg, var(--secondary), #81ECEC);
+            bottom: 10%; left: -50px;
+            animation-delay: -5s;
+        }
+
+        .shape-3 {
+            width: 150px; height: 150px;
+            background: linear-gradient(135deg, var(--primary), #FFEAA7);
+            top: 40%; right: 5%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -20px) rotate(5deg); }
+            50% { transform: translate(-10px, 20px) rotate(-5deg); }
+            75% { transform: translate(-20px, -10px) rotate(3deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(2rem, 6vw, 2.5rem);
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .header h1 span {
+            background: linear-gradient(135deg, #8b5cf6, var(--primary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .rewards-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .reward-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            background: var(--bg-card);
+            padding: 10px 18px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+        }
+
+        .reward-icon {
+            width: 24px; height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .reward-icon.star { color: var(--star-color); }
+        .reward-icon.diamond { color: var(--diamond-color); }
+        .reward-icon.obsidian { color: var(--obsidian-color); }
+        .reward-icon svg { width: 100%; height: 100%; }
+
+        @keyframes twinkle {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.15); opacity: 0.85; }
+        }
+
+        .reward-icon.animate { animation: twinkle 0.6s ease; }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .mode-grid { display: grid; gap: 12px; }
+        .mode-section { margin-bottom: 25px; }
+        .mode-section:last-child { margin-bottom: 0; }
+
+        .mode-section-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .mode-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            padding: 16px 24px;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .mode-btn .mode-name { font-weight: 600; }
+        .mode-btn .mode-desc { font-size: 0.85rem; opacity: 0.9; }
+
+        .mode-btn.silben { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .mode-btn.silben-erkennung { background: linear-gradient(135deg, #ec4899, #be185d); }
+        .mode-btn.wortbau { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .mode-btn.blitzwoerter { background: linear-gradient(135deg, #10b981, #059669); }
+
+        .training-card { display: none; }
+        .training-card.active { display: block; animation: fadeIn 0.4s ease; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .progress-container { margin-bottom: 25px; }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, var(--success));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .instruction {
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 1rem;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            padding: 14px 32px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn:hover { transform: translateY(-2px); }
+
+        .btn-reveal {
+            background: linear-gradient(135deg, var(--accent), #f9ca24);
+            color: var(--text-dark);
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        .btn-next {
+            background: linear-gradient(135deg, var(--secondary), #45b7aa);
+            color: white;
+            width: 100%;
+        }
+
+        .btn-correct {
+            background: linear-gradient(135deg, var(--success), #7BED9F);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-wrong {
+            background: linear-gradient(135deg, var(--primary), #ee5a5a);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-back {
+            background: transparent;
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            padding: 10px;
+        }
+
+        .btn-back:hover { color: var(--text-dark); }
+
+        .button-row {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .hidden { display: none !important; }
+
+        /* ==========================================
+           SILBENSCHIEBER STYLES
+           ========================================== */
+        .silbenschieber-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 20px 0;
+        }
+
+        .level-indicator {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            color: var(--text-muted);
+            background: #f0f0f0;
+            padding: 8px 20px;
+            border-radius: 20px;
+        }
+
+        .level-indicator strong {
+            color: #8b5cf6;
+        }
+
+        .silben-rahmen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            border: 4px solid #ddd;
+            border-radius: 20px;
+            padding: 20px 40px;
+            box-shadow: inset 0 4px 8px rgba(0,0,0,0.05), var(--shadow);
+            min-width: 200px;
+            min-height: 120px;
+        }
+
+        .silbe-display {
+            display: flex;
+            align-items: baseline;
+            justify-content: center;
+            gap: 0; /* Eng zusammen! */
+            font-family: 'Fredoka', sans-serif;
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1;
+            letter-spacing: -0.05em; /* Noch enger */
+        }
+
+        .konsonant {
+            color: var(--konsonant-color);
+        }
+
+        .vokal-container {
+            position: relative;
+            overflow: hidden;
+            height: 1.2em;
+            width: 0.7em;
+        }
+
+        .vokal-strip {
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .vokal {
+            color: var(--vokal-color);
+            height: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Audio Button */
+        .audio-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: none;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .audio-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .audio-btn:active {
+            transform: scale(0.95);
+        }
+
+        .audio-btn svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Silben-Erkennung */
+        .silben-card {
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border: 3px solid #e9ecef;
+            border-radius: 20px;
+            padding: 30px 50px;
+            min-height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .silbe-gross {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+        }
+
+        .silbe-gross .kon { color: var(--konsonant-color); }
+        .silbe-gross .vok { color: var(--vokal-color); }
+
+        .answer-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            max-width: 350px;
+        }
+
+        .answer-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.3rem;
+            min-width: 80px;
+            padding: 12px 20px;
+            border: 2px solid #ddd;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .answer-btn:hover:not(:disabled) {
+            border-color: #8b5cf6;
+            transform: scale(1.05);
+        }
+
+        .answer-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .answer-btn.correct { background: var(--success); color: white; border-color: var(--success); }
+        .answer-btn.wrong { background: var(--primary); color: white; border-color: var(--primary); animation: shake 0.4s ease; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* Wort-Bau */
+        .wort-display {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .wort-display .silbe1 {
+            color: var(--konsonant-color);
+        }
+
+        .wort-display .silbe2 {
+            color: #8b5cf6;
+        }
+
+        .wort-display .trenner {
+            color: #ccc;
+            margin: 0 2px;
+        }
+
+        /* Blitz-Wörter */
+        .blitz-wort {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 4rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            text-align: center;
+            min-height: 80px;
+        }
+
+        .blitz-wort.hidden-word {
+            color: transparent;
+            background: linear-gradient(90deg, #e9ecef 25%, #f8f9fa 50%, #e9ecef 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 10px;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Completion */
+        .completion-card {
+            text-align: center;
+            padding: 40px 30px;
+        }
+
+        .completion-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.8rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .completion-stats {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .completion-message {
+            background: linear-gradient(135deg, #f3e8ff, #e9d5ff);
+            padding: 15px 20px;
+            border-radius: 12px;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            margin-bottom: 25px;
+        }
+
+        .btn-restart {
+            background: linear-gradient(135deg, var(--secondary), #45b7aa);
+            color: white;
+        }
+
+        /* Reward Overlay */
+        .reward-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .reward-overlay.show { display: flex; }
+
+        .reward-popup {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            max-width: 320px;
+        }
+
+        .reward-popup-icon {
+            width: 80px; height: 80px;
+            margin: 0 auto 20px;
+        }
+
+        .reward-popup-icon svg { width: 100%; height: 100%; }
+
+        .reward-popup-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.6rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .reward-popup-text {
+            color: var(--text-muted);
+            margin-bottom: 25px;
+        }
+
+        .btn-continue {
+            background: linear-gradient(135deg, var(--secondary), #45b7aa);
+            color: white;
+        }
+
+        @media (max-width: 400px) {
+            .container { padding: 12px; }
+            .card { padding: 20px; }
+            .silbe-display { font-size: 4rem; }
+            .silbe-gross { font-size: 3rem; }
+            .wort-display { font-size: 2.5rem; }
+            .blitz-wort { font-size: 3rem; }
+            .answer-btn { min-width: 70px; padding: 10px 16px; font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1><span>Lese-Blitz</span></h1>
+            <p>Silben lesen nach Born/Oehler</p>
+            
+            <div class="rewards-display">
+                <div class="reward-item">
+                    <div class="reward-icon star" id="starIcon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
+                    <span id="starCount">0</span>
+                </div>
+                <div class="reward-item">
+                    <div class="reward-icon diamond" id="diamondIcon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 12l10 10 10-10L12 2z"/>
+                        </svg>
+                    </div>
+                    <span id="diamondCount">0</span>
+                </div>
+                <div class="reward-item">
+                    <div class="reward-icon obsidian" id="obsidianIcon">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M12 2L2 12l10 10 10-10L12 2zm0 3l7 7-7 7-7-7 7-7z"/>
+                        </svg>
+                    </div>
+                    <span id="obsidianCount">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Start Screen -->
+        <div class="card" id="startScreen">
+            <h3 class="card-title">Wähle dein Training</h3>
+            
+            <div class="mode-section">
+                <div class="mode-section-title">Stufe 1: Silben bilden</div>
+                <div class="mode-grid">
+                    <button class="mode-btn silben" onclick="startSilbenschieber()">
+                        <span class="mode-name">Der Silbenschieber</span>
+                        <span class="mode-desc">Ma, Me, Mi, Mo, Mu</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mode-section">
+                <div class="mode-section-title">Stufe 2: Silben erkennen</div>
+                <div class="mode-grid">
+                    <button class="mode-btn silben-erkennung" onclick="startSilbenErkennung()">
+                        <span class="mode-name">Silben-Blitz</span>
+                        <span class="mode-desc">Schnell erkennen</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mode-section">
+                <div class="mode-section-title">Stufe 3: Wörter bauen</div>
+                <div class="mode-grid">
+                    <button class="mode-btn wortbau" onclick="startWortBau()">
+                        <span class="mode-name">Wort-Bau</span>
+                        <span class="mode-desc">Silben zusammensetzen</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="mode-section">
+                <div class="mode-section-title">Stufe 4: Ganzwörter</div>
+                <div class="mode-grid">
+                    <button class="mode-btn blitzwoerter" onclick="startBlitzWoerter()">
+                        <span class="mode-name">Blitz-Wörter</span>
+                        <span class="mode-desc">Wörter fotografieren</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Silbenschieber Screen -->
+        <div class="card training-card" id="silbenschieberScreen">
+            <div class="progress-container">
+                <div class="progress-text" id="ssProgressText">Silbe 1 von 5</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="ssProgressFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="silbenschieber-container">
+                <div class="level-indicator" id="ssLevelIndicator">Level 1: <strong>M</strong></div>
+                
+                <div class="silben-rahmen">
+                    <div class="silbe-display">
+                        <span class="konsonant" id="ssKonsonant">M</span>
+                        <div class="vokal-container">
+                            <div class="vokal-strip" id="ssVokalStrip">
+                                <span class="vokal">a</span>
+                                <span class="vokal">e</span>
+                                <span class="vokal">i</span>
+                                <span class="vokal">o</span>
+                                <span class="vokal">u</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <button class="audio-btn" onclick="speakSilbe()" title="Vorlesen">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+                    </svg>
+                </button>
+                
+                <div class="instruction">Wie heißt diese Silbe?</div>
+            </div>
+            
+            <div id="ssPreReveal">
+                <button class="btn btn-reveal" onclick="revealSilbe()">Lösung zeigen</button>
+            </div>
+            <div id="ssPostReveal" class="hidden">
+                <div style="text-align: center; margin-bottom: 15px; font-family: 'Fredoka', sans-serif; font-size: 1.2rem; color: var(--success);" id="ssFeedback"></div>
+                <div class="button-row">
+                    <button class="btn btn-correct" onclick="rateSilbe(true)">Gewusst</button>
+                    <button class="btn btn-wrong" onclick="rateSilbe(false)">Nicht gewusst</button>
+                </div>
+            </div>
+            
+            <button class="btn btn-back" onclick="backToStart()">Zurück</button>
+        </div>
+
+        <!-- Silben-Erkennung Screen -->
+        <div class="card training-card" id="silbenErkennungScreen">
+            <div class="progress-container">
+                <div class="progress-text" id="seProgressText">Silbe 1 von 10</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="seProgressFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="instruction">Welche Silbe ist das?</div>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 25px; margin: 20px 0;">
+                <div class="silben-card">
+                    <div class="silbe-gross" id="seSilbe"><span class="kon">M</span><span class="vok">a</span></div>
+                </div>
+                
+                <div class="answer-buttons" id="seButtons"></div>
+            </div>
+            
+            <button class="btn btn-back" onclick="backToStart()">Zurück</button>
+        </div>
+
+        <!-- Wort-Bau Screen -->
+        <div class="card training-card" id="wortBauScreen">
+            <div class="progress-container">
+                <div class="progress-text" id="wbProgressText">Wort 1 von 8</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="wbProgressFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="instruction">Lies das Wort!</div>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 25px; margin: 20px 0;">
+                <div class="silben-card" style="padding: 25px 40px;">
+                    <div class="wort-display" id="wbWort">
+                        <span class="silbe1">Ma</span><span class="trenner">·</span><span class="silbe2">ma</span>
+                    </div>
+                </div>
+                
+                <button class="audio-btn" onclick="speakWort()" title="Vorlesen">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                    </svg>
+                </button>
+            </div>
+            
+            <div id="wbPreReveal">
+                <button class="btn btn-reveal" onclick="revealWort()">Lösung zeigen</button>
+            </div>
+            <div id="wbPostReveal" class="hidden">
+                <div style="text-align: center; margin-bottom: 15px; font-family: 'Fredoka', sans-serif; font-size: 1.5rem; color: var(--success);" id="wbFeedback"></div>
+                <div class="button-row">
+                    <button class="btn btn-correct" onclick="rateWort(true)">Gewusst</button>
+                    <button class="btn btn-wrong" onclick="rateWort(false)">Nicht gewusst</button>
+                </div>
+            </div>
+            
+            <button class="btn btn-back" onclick="backToStart()">Zurück</button>
+        </div>
+
+        <!-- Blitz-Wörter Screen -->
+        <div class="card training-card" id="blitzWoerterScreen">
+            <div class="progress-container">
+                <div class="progress-text" id="bwProgressText">Wort 1 von 10</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="bwProgressFill" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="instruction" id="bwInstruction">Schau genau hin!</div>
+            
+            <div style="display: flex; flex-direction: column; align-items: center; gap: 25px; margin: 20px 0;">
+                <div class="silben-card" style="min-width: 200px;">
+                    <div class="blitz-wort" id="bwWort">und</div>
+                </div>
+            </div>
+            
+            <div id="bwControls">
+                <button class="btn btn-next" onclick="hideBlitzWort()">Weiter</button>
+            </div>
+            <div id="bwAnswer" class="hidden">
+                <div class="instruction">Wie hieß das Wort?</div>
+                <div class="answer-buttons" id="bwButtons"></div>
+            </div>
+            
+            <button class="btn btn-back" onclick="backToStart()">Zurück</button>
+        </div>
+
+        <!-- Completion Screen -->
+        <div class="card training-card" id="completionScreen">
+            <div class="completion-card">
+                <h2 class="completion-title" id="completionTitle">Geschafft!</h2>
+                <div class="completion-stats" id="completionStats"></div>
+                <div class="completion-message" id="completionMessage"></div>
+                <button class="btn btn-restart" onclick="backToStart()">Weiter trainieren</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reward Overlay -->
+    <div class="reward-overlay" id="rewardOverlay">
+        <div class="reward-popup">
+            <div class="reward-popup-icon" id="rewardPopupIcon"></div>
+            <h2 class="reward-popup-title" id="rewardPopupTitle">Neuer Diamant!</h2>
+            <p class="reward-popup-text" id="rewardPopupText"></p>
+            <button class="btn btn-continue" onclick="closeRewardPopup()">Weiter</button>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // DATA
+        // ==========================================
+        const konsonanten = ['M', 'L', 'S', 'R', 'N']; // Dehnbare Mitlaute
+        const vokale = ['a', 'e', 'i', 'o', 'u'];
+        
+        // Stufe 2: Silben zum Erkennen (einfach → komplex)
+        const silbenPool = [
+            // Einfache CV-Silben
+            'Ma', 'Me', 'Mi', 'Mo', 'Mu',
+            'La', 'Le', 'Li', 'Lo', 'Lu',
+            'Sa', 'Se', 'Si', 'So', 'Su',
+            'Ra', 'Re', 'Ri', 'Ro', 'Ru',
+            'Na', 'Ne', 'Ni', 'No', 'Nu',
+            // Endsilben
+            'en', 'er', 'el', 'an', 'al',
+            // Komplexere Anfänge
+            'Sch', 'Sp', 'St', 'Schr', 'Spr'
+        ];
+        
+        // Stufe 3: Einfache zweisilbige Wörter
+        const woerterPool = [
+            { silben: ['Ma', 'ma'], wort: 'Mama' },
+            { silben: ['Pa', 'pa'], wort: 'Papa' },
+            { silben: ['Na', 'se'], wort: 'Nase' },
+            { silben: ['Ho', 'se'], wort: 'Hose' },
+            { silben: ['So', 'fa'], wort: 'Sofa' },
+            { silben: ['La', 'ma'], wort: 'Lama' },
+            { silben: ['To', 'ma', 'te'], wort: 'Tomate' },
+            { silben: ['Ba', 'na', 'ne'], wort: 'Banane' },
+            { silben: ['Nu', 'del'], wort: 'Nudel' },
+            { silben: ['Ro', 'se'], wort: 'Rose' },
+            { silben: ['Li', 'la'], wort: 'Lila' },
+            { silben: ['Mo', 'fa'], wort: 'Mofa' }
+        ];
+        
+        // Stufe 4: Häufige Ganzwörter (nicht lautgetreu)
+        const blitzWoerter = [
+            'und', 'der', 'die', 'das', 'ist', 'ich', 'du', 'wir',
+            'sie', 'ein', 'eine', 'nicht', 'mit', 'von', 'auf',
+            'viel', 'hier', 'auch', 'nur', 'noch'
+        ];
+
+        // ==========================================
+        // STATE
+        // ==========================================
+        let state = {
+            stars: 0, diamonds: 0, obsidian: 0,
+            gameType: null,
+            currentIndex: 0,
+            correctCount: 0,
+            totalCount: 0,
+            // Silbenschieber
+            ssLevel: 0,
+            ssVokalIndex: 0,
+            // Silben-Erkennung
+            seSilben: [],
+            // Wort-Bau
+            wbWoerter: [],
+            // Blitz-Wörter
+            bwWoerter: [],
+            bwCurrentWort: ''
+        };
+
+        // ==========================================
+        // UTILITY
+        // ==========================================
+        function loadState() {
+            const saved = localStorage.getItem('leseBlitzState');
+            if (saved) {
+                const p = JSON.parse(saved);
+                state.stars = p.stars || 0;
+                state.diamonds = p.diamonds || 0;
+                state.obsidian = p.obsidian || 0;
+            }
+            updateRewardsDisplay();
+        }
+
+        function saveState() {
+            localStorage.setItem('leseBlitzState', JSON.stringify({
+                stars: state.stars, diamonds: state.diamonds, obsidian: state.obsidian
+            }));
+        }
+
+        function shuffle(arr) {
+            const a = [...arr];
+            for (let i = a.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+            return a;
+        }
+
+        function updateRewardsDisplay() {
+            document.getElementById('starCount').textContent = state.stars % 1000;
+            document.getElementById('diamondCount').textContent = state.diamonds % 1000;
+            document.getElementById('obsidianCount').textContent = state.obsidian;
+        }
+
+        function addStar() {
+            state.stars++;
+            if (state.stars >= 1000) {
+                state.stars -= 1000;
+                state.diamonds++;
+                if (state.diamonds >= 1000) {
+                    state.diamonds -= 1000;
+                    state.obsidian++;
+                    showRewardPopup('obsidian');
+                } else {
+                    showRewardPopup('diamond');
+                }
+            }
+            updateRewardsDisplay();
+            saveState();
+            const icon = document.getElementById('starIcon');
+            icon.classList.remove('animate');
+            void icon.offsetWidth;
+            icon.classList.add('animate');
+        }
+
+        function showRewardPopup(type) {
+            const icon = document.getElementById('rewardPopupIcon');
+            const title = document.getElementById('rewardPopupTitle');
+            const text = document.getElementById('rewardPopupText');
+            if (type === 'diamond') {
+                icon.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2z"/></svg>';
+                icon.style.color = 'var(--diamond-color)';
+                title.textContent = 'Neuer Diamant!';
+                text.textContent = '1000 Sterne = 1 Diamant';
+            } else {
+                icon.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 12l10 10 10-10L12 2zm0 3l7 7-7 7-7-7 7-7z"/></svg>';
+                icon.style.color = 'var(--obsidian-color)';
+                title.textContent = 'Neuer Obsidian!';
+                text.textContent = '1000 Diamanten = 1 Obsidian';
+            }
+            document.getElementById('rewardOverlay').classList.add('show');
+        }
+
+        function closeRewardPopup() {
+            document.getElementById('rewardOverlay').classList.remove('show');
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.training-card').forEach(el => el.classList.remove('active'));
+            document.getElementById('startScreen').classList.add('hidden');
+            if (id === 'start') {
+                document.getElementById('startScreen').classList.remove('hidden');
+            } else {
+                document.getElementById(id).classList.add('active');
+            }
+        }
+
+        function backToStart() { showScreen('start'); }
+
+        function updateProgress(prefix, current, total) {
+            document.getElementById(`${prefix}ProgressFill`).style.width = (current / total * 100) + '%';
+            document.getElementById(`${prefix}ProgressText`).textContent = `${current + 1} von ${total}`;
+        }
+
+        function showCompletion() {
+            const pct = state.totalCount > 0 ? Math.round((state.correctCount / state.totalCount) * 100) : 0;
+            let title = 'Geschafft!', msg = '';
+            
+            switch(state.gameType) {
+                case 'silbenschieber':
+                    title = 'Level geschafft!';
+                    msg = pct >= 80 ? 'Die Silben sitzen!' : 'Weiter üben - bald sitzt es!';
+                    break;
+                case 'silbenErkennung':
+                    title = 'Silben-Blitz fertig!';
+                    msg = pct >= 80 ? 'Du erkennst Silben blitzschnell!' : 'Weiter üben!';
+                    break;
+                case 'wortBau':
+                    title = 'Wörter gebaut!';
+                    msg = pct >= 80 ? 'Du liest Wörter flüssig!' : 'Weiter üben!';
+                    break;
+                case 'blitzWoerter':
+                    title = 'Blitz-Wörter gemeistert!';
+                    msg = pct >= 80 ? 'Du fotografierst Wörter!' : 'Weiter üben!';
+                    break;
+            }
+            
+            document.getElementById('completionTitle').textContent = title;
+            document.getElementById('completionStats').textContent = `${state.correctCount} von ${state.totalCount} richtig (${pct}%)`;
+            document.getElementById('completionMessage').textContent = msg;
+            showScreen('completionScreen');
+        }
+
+        // ==========================================
+        // SPEECH SYNTHESIS
+        // ==========================================
+        function speak(text) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'de-DE';
+                utterance.rate = 0.8;
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+
+        function speakSilbe() {
+            const kon = konsonanten[state.ssLevel];
+            const vok = vokale[state.ssVokalIndex];
+            speak(kon.toLowerCase() + vok);
+        }
+
+        function speakWort() {
+            const wort = state.wbWoerter[state.currentIndex];
+            speak(wort.wort);
+        }
+
+        // ==========================================
+        // SILBENSCHIEBER (Stufe 1)
+        // ==========================================
+        function startSilbenschieber() {
+            state.gameType = 'silbenschieber';
+            state.ssLevel = 0;
+            state.ssVokalIndex = 0;
+            state.currentIndex = 0;
+            state.correctCount = 0;
+            state.totalCount = 0;
+            showScreen('silbenschieberScreen');
+            showSilbenschieberTask();
+        }
+
+        function showSilbenschieberTask() {
+            const kon = konsonanten[state.ssLevel];
+            document.getElementById('ssKonsonant').textContent = kon;
+            document.getElementById('ssLevelIndicator').innerHTML = `Level ${state.ssLevel + 1}: <strong>${kon}</strong>`;
+            
+            // Vokal-Strip Position
+            const strip = document.getElementById('ssVokalStrip');
+            strip.style.transform = `translateY(-${state.ssVokalIndex * 1.2}em)`;
+            
+            document.getElementById('ssPreReveal').classList.remove('hidden');
+            document.getElementById('ssPostReveal').classList.add('hidden');
+            document.getElementById('ssFeedback').textContent = '';
+            
+            updateProgress('ss', state.currentIndex, vokale.length);
+        }
+
+        function revealSilbe() {
+            const kon = konsonanten[state.ssLevel];
+            const vok = vokale[state.ssVokalIndex];
+            document.getElementById('ssFeedback').textContent = `${kon}${vok}`;
+            document.getElementById('ssPreReveal').classList.add('hidden');
+            document.getElementById('ssPostReveal').classList.remove('hidden');
+            speak(kon.toLowerCase() + vok);
+        }
+
+        function rateSilbe(correct) {
+            state.totalCount++;
+            if (correct) {
+                state.correctCount++;
+                addStar();
+            }
+            
+            state.ssVokalIndex++;
+            state.currentIndex++;
+            
+            if (state.ssVokalIndex >= vokale.length) {
+                // Level fertig - nächster Konsonant oder Ende
+                state.ssLevel++;
+                state.ssVokalIndex = 0;
+                
+                if (state.ssLevel >= konsonanten.length) {
+                    showCompletion();
+                    return;
+                }
+            }
+            
+            showSilbenschieberTask();
+        }
+
+        // ==========================================
+        // SILBEN-ERKENNUNG (Stufe 2)
+        // ==========================================
+        function startSilbenErkennung() {
+            state.gameType = 'silbenErkennung';
+            // Nur einfache CV-Silben für den Anfang
+            const einfacheSilben = silbenPool.slice(0, 25);
+            state.seSilben = shuffle(einfacheSilben).slice(0, 10);
+            state.currentIndex = 0;
+            state.correctCount = 0;
+            state.totalCount = 0;
+            showScreen('silbenErkennungScreen');
+            showSilbenErkennungTask();
+        }
+
+        function showSilbenErkennungTask() {
+            const silbe = state.seSilben[state.currentIndex];
+            
+            // Silbe anzeigen (Konsonant schwarz, Vokal rot)
+            const display = document.getElementById('seSilbe');
+            if (silbe.length === 2) {
+                display.innerHTML = `<span class="kon">${silbe[0]}</span><span class="vok">${silbe[1]}</span>`;
+            } else {
+                display.innerHTML = `<span class="kon">${silbe}</span>`;
+            }
+            
+            // Antwort-Buttons erstellen
+            const container = document.getElementById('seButtons');
+            container.innerHTML = '';
+            
+            // Richtige Antwort + Distraktoren
+            const options = [silbe];
+            const allSilben = silbenPool.slice(0, 25);
+            while (options.length < 4) {
+                const rnd = allSilben[Math.floor(Math.random() * allSilben.length)];
+                if (!options.includes(rnd)) options.push(rnd);
+            }
+            
+            shuffle(options).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = opt;
+                btn.onclick = () => checkSilbenAnswer(opt, silbe, btn);
+                container.appendChild(btn);
+            });
+            
+            updateProgress('se', state.currentIndex, state.seSilben.length);
+        }
+
+        function checkSilbenAnswer(selected, correct, btn) {
+            document.querySelectorAll('#seButtons .answer-btn').forEach(b => b.disabled = true);
+            state.totalCount++;
+            
+            if (selected === correct) {
+                btn.classList.add('correct');
+                state.correctCount++;
+                addStar();
+                speak(correct.toLowerCase());
+                setTimeout(nextSilbenErkennung, 800);
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('#seButtons .answer-btn').forEach(b => {
+                    if (b.textContent === correct) b.classList.add('correct');
+                });
+                setTimeout(nextSilbenErkennung, 1200);
+            }
+        }
+
+        function nextSilbenErkennung() {
+            state.currentIndex++;
+            if (state.currentIndex < state.seSilben.length) {
+                showSilbenErkennungTask();
+            } else {
+                showCompletion();
+            }
+        }
+
+        // ==========================================
+        // WORT-BAU (Stufe 3)
+        // ==========================================
+        function startWortBau() {
+            state.gameType = 'wortBau';
+            state.wbWoerter = shuffle([...woerterPool]).slice(0, 8);
+            state.currentIndex = 0;
+            state.correctCount = 0;
+            state.totalCount = 0;
+            showScreen('wortBauScreen');
+            showWortBauTask();
+        }
+
+        function showWortBauTask() {
+            const item = state.wbWoerter[state.currentIndex];
+            const display = document.getElementById('wbWort');
+            
+            // Silben farbig darstellen
+            if (item.silben.length === 2) {
+                display.innerHTML = `<span class="silbe1">${item.silben[0]}</span><span class="trenner">·</span><span class="silbe2">${item.silben[1]}</span>`;
+            } else if (item.silben.length === 3) {
+                display.innerHTML = `<span class="silbe1">${item.silben[0]}</span><span class="trenner">·</span><span class="silbe2">${item.silben[1]}</span><span class="trenner">·</span><span class="silbe1">${item.silben[2]}</span>`;
+            }
+            
+            document.getElementById('wbPreReveal').classList.remove('hidden');
+            document.getElementById('wbPostReveal').classList.add('hidden');
+            document.getElementById('wbFeedback').textContent = '';
+            
+            updateProgress('wb', state.currentIndex, state.wbWoerter.length);
+        }
+
+        function revealWort() {
+            const item = state.wbWoerter[state.currentIndex];
+            document.getElementById('wbFeedback').textContent = item.wort;
+            document.getElementById('wbPreReveal').classList.add('hidden');
+            document.getElementById('wbPostReveal').classList.remove('hidden');
+            speak(item.wort);
+        }
+
+        function rateWort(correct) {
+            state.totalCount++;
+            if (correct) {
+                state.correctCount++;
+                addStar();
+            }
+            
+            state.currentIndex++;
+            if (state.currentIndex < state.wbWoerter.length) {
+                showWortBauTask();
+            } else {
+                showCompletion();
+            }
+        }
+
+        // ==========================================
+        // BLITZ-WÖRTER (Stufe 4)
+        // ==========================================
+        function startBlitzWoerter() {
+            state.gameType = 'blitzWoerter';
+            state.bwWoerter = shuffle([...blitzWoerter]).slice(0, 10);
+            state.currentIndex = 0;
+            state.correctCount = 0;
+            state.totalCount = 0;
+            showScreen('blitzWoerterScreen');
+            showBlitzWort();
+        }
+
+        function showBlitzWort() {
+            state.bwCurrentWort = state.bwWoerter[state.currentIndex];
+            const display = document.getElementById('bwWort');
+            display.textContent = state.bwCurrentWort;
+            display.classList.remove('hidden-word');
+            
+            document.getElementById('bwInstruction').textContent = 'Schau genau hin!';
+            document.getElementById('bwControls').classList.remove('hidden');
+            document.getElementById('bwAnswer').classList.add('hidden');
+            
+            updateProgress('bw', state.currentIndex, state.bwWoerter.length);
+        }
+
+        function hideBlitzWort() {
+            const display = document.getElementById('bwWort');
+            display.classList.add('hidden-word');
+            
+            document.getElementById('bwInstruction').textContent = 'Wie hieß das Wort?';
+            document.getElementById('bwControls').classList.add('hidden');
+            document.getElementById('bwAnswer').classList.remove('hidden');
+            
+            // Antwort-Buttons
+            const container = document.getElementById('bwButtons');
+            container.innerHTML = '';
+            
+            const options = [state.bwCurrentWort];
+            while (options.length < 4) {
+                const rnd = blitzWoerter[Math.floor(Math.random() * blitzWoerter.length)];
+                if (!options.includes(rnd)) options.push(rnd);
+            }
+            
+            shuffle(options).forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'answer-btn';
+                btn.textContent = opt;
+                btn.onclick = () => checkBlitzAnswer(opt, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkBlitzAnswer(selected, btn) {
+            document.querySelectorAll('#bwButtons .answer-btn').forEach(b => b.disabled = true);
+            state.totalCount++;
+            
+            if (selected === state.bwCurrentWort) {
+                btn.classList.add('correct');
+                state.correctCount++;
+                addStar();
+                setTimeout(nextBlitzWort, 800);
+            } else {
+                btn.classList.add('wrong');
+                document.querySelectorAll('#bwButtons .answer-btn').forEach(b => {
+                    if (b.textContent === state.bwCurrentWort) b.classList.add('correct');
+                });
+                // Wort nochmal zeigen
+                document.getElementById('bwWort').classList.remove('hidden-word');
+                setTimeout(nextBlitzWort, 1500);
+            }
+        }
+
+        function nextBlitzWort() {
+            state.currentIndex++;
+            if (state.currentIndex < state.bwWoerter.length) {
+                showBlitzWort();
+            } else {
+                showCompletion();
+            }
+        }
+
+        // ==========================================
+        // INIT
+        // ==========================================
+        loadState();
+    </script>
+</body>
+</html>

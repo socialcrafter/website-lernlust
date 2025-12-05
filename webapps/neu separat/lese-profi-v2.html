@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lese-Profi</title>
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --success: #95E1A3;
+            --bg-light: #FFF9F0;
+            --bg-card: #FFFFFF;
+            --text-dark: #2D3436;
+            --text-muted: #636E72;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --star-color: #FFD700;
+            --diamond-color: #00CED1;
+            --obsidian-color: #4A0E4E;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text-dark);
+        }
+
+        .bg-shapes {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 0; overflow: hidden;
+        }
+        .shape { position: absolute; border-radius: 50%; opacity: 0.3; animation: float 20s infinite ease-in-out; }
+        .shape-1 { width: 300px; height: 300px; background: linear-gradient(135deg, #8b5cf6, var(--accent)); top: -100px; right: -100px; }
+        .shape-2 { width: 200px; height: 200px; background: linear-gradient(135deg, var(--secondary), #81ECEC); bottom: 10%; left: -50px; animation-delay: -5s; }
+        .shape-3 { width: 150px; height: 150px; background: linear-gradient(135deg, var(--primary), #FFEAA7); top: 40%; right: 5%; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-10px, 20px) rotate(-5deg); } }
+
+        .container { max-width: 600px; margin: 0 auto; padding: 20px; position: relative; z-index: 1; }
+
+        /* Header */
+        .header { text-align: center; padding: 20px; margin-bottom: 20px; }
+        .header h1 { font-size: 2.2rem; font-weight: 700; }
+        .header h1 span { background: linear-gradient(135deg, var(--secondary), var(--primary)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        
+        /* Rewards */
+        .rewards-display { display: flex; justify-content: center; gap: 12px; margin-top: 15px; flex-wrap: wrap; }
+        .reward-item { display: flex; align-items: center; gap: 6px; background: var(--bg-card); padding: 8px 14px; border-radius: 50px; box-shadow: var(--shadow); font-weight: 600; }
+        .star { color: var(--star-color); font-size: 1.2rem; }
+        .diamond { color: var(--diamond-color); font-size: 1.2rem; }
+        .obsidian { color: var(--obsidian-color); font-size: 1.2rem; }
+
+        /* Navigation Tabs */
+        .nav-grid { display: flex; gap: 8px; margin-bottom: 20px; overflow-x: auto; padding-bottom: 5px; }
+        .nav-btn {
+            flex: 1; min-width: 80px; padding: 12px 8px; background: var(--bg-card); border: none; border-radius: 16px;
+            font-size: 0.9rem; font-weight: 600; cursor: pointer; transition: all 0.3s;
+            box-shadow: var(--shadow); color: var(--text-muted); display: flex; flex-direction: column; align-items: center; gap: 4px;
+        }
+        .nav-btn.active { background: linear-gradient(135deg, var(--primary), #ff8787); color: white; transform: translateY(-2px); }
+        .nav-btn:active { transform: scale(0.98); }
+        .nav-icon { font-size: 1.3rem; }
+
+        /* Panels */
+        .panel { display: none; }
+        .panel.active { display: block; }
+
+        /* Cards */
+        .card { background: var(--bg-card); border-radius: 20px; padding: 20px; box-shadow: var(--shadow); margin-bottom: 15px; }
+        .card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 12px; color: var(--text-dark); }
+
+        /* Timer */
+        .timer-box {
+            text-align: center; background: linear-gradient(135deg, var(--accent), #f9ca24);
+            padding: 20px; border-radius: 20px; color: var(--text-dark); margin-bottom: 15px;
+        }
+        .timer-val { font-size: 2.8rem; font-weight: 700; line-height: 1; }
+        .timer-label { font-size: 0.9rem; opacity: 0.8; margin-top: 5px; }
+
+        /* Reading Text */
+        .text-container {
+            font-size: 1.5rem; line-height: 2.2;
+            position: relative; min-height: 200px;
+        }
+        .line {
+            display: block; padding: 8px 12px; border-radius: 8px; transition: all 0.3s; cursor: pointer; margin: 4px 0;
+        }
+        .line:hover { background: rgba(78, 205, 196, 0.1); }
+        .line.active { background: rgba(255, 107, 107, 0.15); border-left: 4px solid var(--primary); }
+        .focus-mode .line:not(.active) { opacity: 0.15; filter: blur(2px); }
+        
+        /* Syllables */
+        .syl-a { color: #4f46e5; }
+        .syl-b { color: #9ca3af; }
+        
+        /* Buttons */
+        .btn {
+            border: none; border-radius: 50px; padding: 12px 24px;
+            font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s; color: white; 
+            display: inline-flex; align-items: center; gap: 8px;
+        }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), #ff8787); }
+        .btn-secondary { background: linear-gradient(135deg, var(--secondary), #45b7aa); }
+        .btn-small { padding: 8px 16px; font-size: 0.9rem; }
+        
+        .btn-record { 
+            width: 90px; height: 90px; border-radius: 50%; background: white; 
+            border: 4px solid var(--primary); color: var(--primary); font-size: 2.5rem; 
+            display: flex; justify-content: center; align-items: center; margin: 15px auto; 
+            transition: all 0.3s; cursor: pointer;
+        }
+        .btn-record:active { transform: scale(0.95); }
+        .btn-record.recording { background: var(--primary); color: white; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(255, 107, 107, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); } }
+
+        .controls { display: flex; gap: 10px; margin-top: 15px; justify-content: space-between; }
+        .controls-center { justify-content: center; }
+
+        /* Toggles */
+        .setting-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #f0f0f0; }
+        .setting-row:last-child { border-bottom: none; }
+        .setting-label { font-weight: 600; }
+        .setting-desc { font-size: 0.85rem; color: var(--text-muted); }
+        .toggle-switch { position: relative; width: 50px; height: 26px; flex-shrink: 0; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .3s; border-radius: 26px; }
+        .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 3px; bottom: 3px; background-color: white; transition: .3s; border-radius: 50%; }
+        input:checked + .slider { background-color: var(--secondary); }
+        input:checked + .slider:before { transform: translateX(24px); }
+
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .stat-box { background: var(--bg-light); padding: 15px 10px; border-radius: 15px; text-align: center; }
+        .stat-val { font-size: 1.6rem; font-weight: 700; color: var(--primary); }
+        .stat-lbl { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* Week Calendar */
+        .week-row { display: flex; justify-content: space-between; margin-top: 15px; }
+        .day-box { text-align: center; }
+        .day-name { font-size: 0.75rem; color: var(--text-muted); }
+        .day-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 4px auto 0; font-size: 0.85rem; background: var(--bg-light); }
+        .day-circle.done { background: var(--success); color: white; }
+        .day-circle.today { border: 2px solid var(--primary); }
+
+        /* Progress Bar */
+        .progress-bar { background: #e9ecef; height: 12px; border-radius: 10px; overflow: hidden; margin: 10px 0; }
+        .progress-fill { background: linear-gradient(90deg, var(--secondary), var(--success)); height: 100%; border-radius: 10px; transition: width 0.5s; }
+
+        /* Recordings */
+        .recording-item {
+            background: var(--bg-light); padding: 12px; border-radius: 12px; margin-bottom: 10px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .recording-info { flex: 1; }
+        .recording-date { font-weight: 600; }
+        .recording-time { font-size: 0.85rem; color: var(--text-muted); }
+
+        /* Tip Box */
+        .tip-box { background: linear-gradient(135deg, #fff3cd, #ffe69c); padding: 15px; border-radius: 15px; }
+        .tip-box strong { color: #856404; }
+
+        /* Text Selection */
+        .text-selector { margin-bottom: 15px; }
+        .text-option { padding: 12px; border: 2px solid #e9ecef; border-radius: 12px; margin-bottom: 8px; cursor: pointer; transition: all 0.2s; }
+        .text-option:hover { border-color: var(--secondary); }
+        .text-option.selected { border-color: var(--primary); background: rgba(255,107,107,0.1); }
+        .text-title { font-weight: 600; }
+        .text-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1><span>Lese-Profi</span></h1>
+            <div class="rewards-display">
+                <div class="reward-item">
+                    <span class="star">★</span>
+                    <span id="starCount">0</span>
+                </div>
+                <div class="reward-item">
+                    <span class="diamond">◆</span>
+                    <span id="diamondCount">0</span>
+                </div>
+                <div class="reward-item">
+                    <span class="obsidian">⬟</span>
+                    <span id="obsidianCount">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="nav-grid">
+            <button class="nav-btn active" id="navRead">
+                <span class="nav-icon">📖</span> Lesen
+            </button>
+            <button class="nav-btn" id="navRecord">
+                <span class="nav-icon">🎙️</span> Aufnahme
+            </button>
+            <button class="nav-btn" id="navStats">
+                <span class="nav-icon">📊</span> Erfolge
+            </button>
+            <button class="nav-btn" id="navSettings">
+                <span class="nav-icon">⚙️</span> Optionen
+            </button>
+        </div>
+
+        <!-- LESEN PANEL -->
+        <div id="panelRead" class="panel active">
+            <!-- Text Selection -->
+            <div class="card" id="textSelection">
+                <h3>📚 Wähle einen Text</h3>
+                <div id="textList"></div>
+            </div>
+            
+            <!-- Reading View -->
+            <div id="readingView" class="hidden">
+                <div class="timer-box">
+                    <div class="timer-val" id="timerDisplay">5:00</div>
+                    <div class="timer-label">Lesezeit übrig</div>
+                </div>
+
+                <div class="card">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                        <h3 id="currentTextTitle">Dein Text</h3>
+                        <button class="btn btn-secondary btn-small" id="btnFocus">👁️ Fokus</button>
+                    </div>
+                    <div class="text-container" id="textContainer"></div>
+                    <div class="controls">
+                        <button class="btn btn-secondary" id="btnUp">⬆️ Rauf</button>
+                        <button class="btn btn-primary" id="btnDown">Runter ⬇️</button>
+                    </div>
+                </div>
+
+                <div class="controls">
+                    <button class="btn btn-secondary" id="btnBackToTexts">← Texte</button>
+                    <button class="btn btn-primary" id="btnFinish">✓ Fertig</button>
+                </div>
+            </div>
+
+            <div class="tip-box">
+                <strong>💡 Tipp:</strong> <span id="tipText">Nutze den Fokus-Modus, damit deine Augen nicht in der Zeile verrutschen.</span>
+            </div>
+        </div>
+
+        <!-- AUFNAHME PANEL -->
+        <div id="panelRecord" class="panel">
+            <div class="card" style="text-align:center;">
+                <h3>🎙️ Hör dir selbst zu!</h3>
+                <p style="margin-bottom:10px; color:var(--text-muted);">Lies laut vor. Nach ein paar Wochen wirst du hören, wie viel besser du bist!</p>
+                
+                <button class="btn-record" id="recordBtn">🎙️</button>
+                <p id="recordStatus" style="margin-top:5px; font-weight:600;">Zum Starten drücken</p>
+            </div>
+            
+            <div class="card">
+                <h3>📁 Deine Aufnahmen</h3>
+                <div id="recordingsList">
+                    <p style="color:var(--text-muted); font-style:italic;">Noch keine Aufnahmen.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATS PANEL -->
+        <div id="panelStats" class="panel">
+            <div class="card">
+                <h3>📊 Dein Fortschritt</h3>
+                <div class="stats-grid">
+                    <div class="stat-box">
+                        <div class="stat-val" id="statSessions">0</div>
+                        <div class="stat-lbl">Übungen</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="statStreak">0</div>
+                        <div class="stat-lbl">Tage Serie</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-val" id="statMinutes">0</div>
+                        <div class="stat-lbl">Minuten</div>
+                    </div>
+                </div>
+                
+                <div class="week-row" id="weekCalendar"></div>
+            </div>
+            
+            <div class="card">
+                <h3>🎯 Wochen-Ziel</h3>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="weekProgress" style="width:0%"></div>
+                </div>
+                <p style="font-size:0.9rem; color:var(--text-muted);" id="weekGoalText">0 von 5 Tagen geschafft</p>
+            </div>
+        </div>
+
+        <!-- SETTINGS PANEL -->
+        <div id="panelSettings" class="panel">
+            <div class="card">
+                <h3>⚙️ Lese-Hilfen</h3>
+                
+                <div class="setting-row">
+                    <div>
+                        <div class="setting-label">👁️ Zeilen-Fokus</div>
+                        <div class="setting-desc">Andere Zeilen ausblenden</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="settingFocus" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                
+                <div class="setting-row">
+                    <div>
+                        <div class="setting-label">🔤 Silbenfarben</div>
+                        <div class="setting-desc">Silben farbig markieren</div>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="settingSyllables">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-row">
+                    <div>
+                        <div class="setting-label">⏱️ Lesezeit</div>
+                        <div class="setting-desc"><span id="timeVal">5</span> Minuten</div>
+                    </div>
+                    <input type="range" id="timeSlider" min="1" max="15" value="5" style="width:100px;">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === DATA ===
+        var texts = [
+            {
+                id: 'tom',
+                title: 'Der Brief',
+                desc: 'Eine magische Überraschung',
+                lines: [
+                    "Tom saß in seinem kleinen Zimmer.",
+                    "Das Zimmer war unter der Treppe.",
+                    "Plötzlich flog ein Brief durch das Fenster.",
+                    "Der Brief war aus dickem Papier.",
+                    "Er hatte ein rotes Siegel.",
+                    "Tom öffnete den Umschlag.",
+                    "Seine Hände zitterten vor Aufregung."
+                ]
+            },
+            {
+                id: 'hund',
+                title: 'Der treue Hund',
+                desc: 'Ein Abenteuer im Wald',
+                lines: [
+                    "Max ist ein großer Hund.",
+                    "Er hat braunes Fell.",
+                    "Heute geht er in den Wald.",
+                    "Der Wald ist dunkel und still.",
+                    "Max hört ein Geräusch.",
+                    "Es ist ein kleiner Vogel.",
+                    "Der Vogel hat Angst.",
+                    "Max hilft dem Vogel."
+                ]
+            },
+            {
+                id: 'stern',
+                title: 'Der kleine Stern',
+                desc: 'Eine Reise durch die Nacht',
+                lines: [
+                    "Hoch am Himmel lebt ein Stern.",
+                    "Er heißt Stella.",
+                    "Stella funkelt hell in der Nacht.",
+                    "Sie möchte die Erde besuchen.",
+                    "Also fliegt sie hinab.",
+                    "Die Wolken sind weich wie Watte.",
+                    "Stella sieht Häuser und Bäume.",
+                    "Die Welt ist wunderschön."
+                ]
+            }
+        ];
+        
+        var tips = [
+            "Nutze den Fokus-Modus, damit deine Augen nicht in der Zeile verrutschen.",
+            "Lies jeden Tag ein bisschen – das ist besser als einmal viel.",
+            "Nimm dich auf und hör dir selbst zu!",
+            "Markiere Silben farbig, wenn du neue Wörter lernst.",
+            "Mach eine Pause wenn du müde wirst."
+        ];
+
+        // === STATE ===
+        var state = {
+            stars: 0,
+            diamonds: 0,
+            obsidian: 0,
+            stats: {
+                sessions: 0,
+                streak: 0,
+                minutes: 0,
+                weekDays: {},
+                lastDate: null
+            },
+            settings: {
+                focusMode: true,
+                syllables: false,
+                duration: 5
+            },
+            currentText: null,
+            currentLine: 0,
+            timerValue: 300,
+            timerInterval: null,
+            sessionStart: 0,
+            recordings: []
+        };
+        
+        var mediaRecorder = null;
+        var audioChunks = [];
+
+        // === LOAD/SAVE ===
+        function load() {
+            try {
+                var s = localStorage.getItem('leseprofi');
+                if (s) {
+                    var d = JSON.parse(s);
+                    state.stars = d.stars || 0;
+                    state.diamonds = d.diamonds || 0;
+                    state.obsidian = d.obsidian || 0;
+                    state.stats = d.stats || state.stats;
+                    state.settings = d.settings || state.settings;
+                }
+            } catch(e) {}
+            
+            // Check for new day
+            var today = new Date().toDateString();
+            if (state.stats.lastDate !== today) {
+                // Don't reset streak here, only when they complete a session
+            }
+            
+            applySettings();
+            updateUI();
+        }
+
+        function save() {
+            try {
+                localStorage.setItem('leseprofi', JSON.stringify({
+                    stars: state.stars,
+                    diamonds: state.diamonds,
+                    obsidian: state.obsidian,
+                    stats: state.stats,
+                    settings: state.settings
+                }));
+            } catch(e) {}
+        }
+
+        function updateUI() {
+            document.getElementById('starCount').textContent = state.stars;
+            document.getElementById('diamondCount').textContent = state.diamonds;
+            document.getElementById('obsidianCount').textContent = state.obsidian;
+            
+            document.getElementById('statSessions').textContent = state.stats.sessions;
+            document.getElementById('statStreak').textContent = state.stats.streak;
+            document.getElementById('statMinutes').textContent = state.stats.minutes;
+            
+            renderWeekCalendar();
+            updateWeekGoal();
+        }
+
+        function addStar(amount) {
+            state.stars += amount;
+            
+            // Stars → Diamonds (1000:1)
+            while (state.stars >= 1000) {
+                state.stars -= 1000;
+                state.diamonds++;
+            }
+            
+            // Diamonds → Obsidian (1000:1)
+            while (state.diamonds >= 1000) {
+                state.diamonds -= 1000;
+                state.obsidian++;
+            }
+            
+            updateUI();
+            save();
+        }
+
+        function applySettings() {
+            document.getElementById('settingFocus').checked = state.settings.focusMode;
+            document.getElementById('settingSyllables').checked = state.settings.syllables;
+            document.getElementById('timeSlider').value = state.settings.duration;
+            document.getElementById('timeVal').textContent = state.settings.duration;
+            
+            state.timerValue = state.settings.duration * 60;
+            updateTimerDisplay();
+        }
+
+        // === NAVIGATION ===
+        function switchPanel(panelId) {
+            var panels = document.querySelectorAll('.panel');
+            var navs = document.querySelectorAll('.nav-btn');
+            
+            for (var i = 0; i < panels.length; i++) panels[i].classList.remove('active');
+            for (var i = 0; i < navs.length; i++) navs[i].classList.remove('active');
+            
+            document.getElementById('panel' + panelId).classList.add('active');
+            document.getElementById('nav' + panelId).classList.add('active');
+        }
+
+        // === TEXT LIST ===
+        function renderTextList() {
+            var list = document.getElementById('textList');
+            list.innerHTML = '';
+            
+            for (var i = 0; i < texts.length; i++) {
+                (function(text) {
+                    var div = document.createElement('div');
+                    div.className = 'text-option';
+                    div.innerHTML = '<div class="text-title">' + text.title + '</div><div class="text-desc">' + text.desc + '</div>';
+                    div.onclick = function() { selectText(text); };
+                    list.appendChild(div);
+                })(texts[i]);
+            }
+        }
+
+        function selectText(text) {
+            state.currentText = text;
+            state.currentLine = 0;
+            state.timerValue = state.settings.duration * 60;
+            state.sessionStart = Date.now();
+            
+            document.getElementById('textSelection').classList.add('hidden');
+            document.getElementById('readingView').classList.remove('hidden');
+            document.getElementById('currentTextTitle').textContent = text.title;
+            
+            renderText();
+            startTimer();
+        }
+
+        function backToTexts() {
+            stopTimer();
+            document.getElementById('readingView').classList.add('hidden');
+            document.getElementById('textSelection').classList.remove('hidden');
+        }
+
+        // === READING ===
+        function renderText() {
+            var container = document.getElementById('textContainer');
+            var lines = state.currentText.lines;
+            var html = '';
+            
+            for (var i = 0; i < lines.length; i++) {
+                var lineText = lines[i];
+                
+                // Apply syllable colors if enabled
+                if (state.settings.syllables) {
+                    lineText = addSyllableColors(lineText);
+                }
+                
+                var activeClass = i === state.currentLine ? ' active' : '';
+                html += '<span class="line' + activeClass + '" data-idx="' + i + '">' + lineText + '</span>';
+            }
+            
+            container.innerHTML = html;
+            container.className = 'text-container' + (state.settings.focusMode ? ' focus-mode' : '');
+            
+            // Add click handlers
+            var lineEls = container.querySelectorAll('.line');
+            for (var j = 0; j < lineEls.length; j++) {
+                (function(el, idx) {
+                    el.onclick = function() { jumpToLine(idx); };
+                })(lineEls[j], j);
+            }
+            
+            // Scroll to active line
+            var activeLine = container.querySelector('.line.active');
+            if (activeLine) {
+                activeLine.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }
+
+        function addSyllableColors(text) {
+            var words = text.split(' ');
+            var result = [];
+            
+            for (var i = 0; i < words.length; i++) {
+                var word = words[i];
+                // Simple syllable split (every 2-3 chars)
+                if (word.length > 3) {
+                    var mid = Math.ceil(word.length / 2);
+                    word = '<span class="syl-a">' + word.slice(0, mid) + '</span><span class="syl-b">' + word.slice(mid) + '</span>';
+                }
+                result.push(word);
+            }
+            
+            return result.join(' ');
+        }
+
+        function jumpToLine(idx) {
+            // Award stars for lines passed
+            if (idx > state.currentLine) {
+                var linesRead = idx - state.currentLine;
+                addStar(linesRead);
+            }
+            
+            state.currentLine = idx;
+            renderText();
+        }
+
+        function moveLine(dir) {
+            var newLine = state.currentLine + dir;
+            var maxLine = state.currentText.lines.length - 1;
+            
+            if (newLine >= 0 && newLine <= maxLine) {
+                if (dir > 0) addStar(1); // Reward for progress
+                state.currentLine = newLine;
+                renderText();
+            } else if (newLine > maxLine) {
+                finishReading();
+            }
+        }
+
+        function toggleFocus() {
+            state.settings.focusMode = !state.settings.focusMode;
+            document.getElementById('settingFocus').checked = state.settings.focusMode;
+            renderText();
+            save();
+        }
+
+        function finishReading() {
+            stopTimer();
+            
+            var elapsed = Math.round((Date.now() - state.sessionStart) / 60000);
+            if (elapsed < 1) elapsed = 1;
+            
+            state.stats.sessions++;
+            state.stats.minutes += elapsed;
+            
+            // Update streak
+            var today = new Date().toDateString();
+            var todayKey = new Date().toISOString().split('T')[0];
+            
+            if (state.stats.lastDate !== today) {
+                state.stats.streak++;
+                state.stats.lastDate = today;
+            }
+            state.stats.weekDays[todayKey] = true;
+            
+            // Bonus stars
+            addStar(10);
+            
+            save();
+            updateUI();
+            
+            alert('Super! Du hast ' + elapsed + ' Minute(n) gelesen! +10 Sterne ⭐');
+            backToTexts();
+        }
+
+        // === TIMER ===
+        function startTimer() {
+            stopTimer();
+            state.timerInterval = setInterval(function() {
+                state.timerValue--;
+                updateTimerDisplay();
+                
+                if (state.timerValue <= 0) {
+                    finishReading();
+                }
+            }, 1000);
+        }
+
+        function stopTimer() {
+            if (state.timerInterval) {
+                clearInterval(state.timerInterval);
+                state.timerInterval = null;
+            }
+        }
+
+        function updateTimerDisplay() {
+            var m = Math.floor(state.timerValue / 60);
+            var s = state.timerValue % 60;
+            document.getElementById('timerDisplay').textContent = m + ':' + (s < 10 ? '0' : '') + s;
+        }
+
+        // === RECORDING ===
+        function toggleRecording() {
+            var btn = document.getElementById('recordBtn');
+            var status = document.getElementById('recordStatus');
+            
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                // Stop
+                mediaRecorder.stop();
+                btn.classList.remove('recording');
+                btn.textContent = '🎙️';
+                status.textContent = 'Gespeichert!';
+            } else {
+                // Start
+                navigator.mediaDevices.getUserMedia({ audio: true })
+                    .then(function(stream) {
+                        mediaRecorder = new MediaRecorder(stream);
+                        audioChunks = [];
+                        state.sessionStart = Date.now();
+                        
+                        mediaRecorder.ondataavailable = function(e) {
+                            audioChunks.push(e.data);
+                        };
+                        
+                        mediaRecorder.onstop = function() {
+                            var blob = new Blob(audioChunks, { type: 'audio/webm' });
+                            var url = URL.createObjectURL(blob);
+                            var duration = Math.round((Date.now() - state.sessionStart) / 1000);
+                            
+                            state.recordings.push({
+                                date: new Date().toLocaleDateString('de-DE'),
+                                time: new Date().toLocaleTimeString('de-DE', { hour: '2-digit', minute: '2-digit' }),
+                                duration: duration,
+                                url: url
+                            });
+                            
+                            addStar(5); // Reward for recording
+                            renderRecordings();
+                            stream.getTracks().forEach(function(t) { t.stop(); });
+                        };
+                        
+                        mediaRecorder.start();
+                        btn.classList.add('recording');
+                        btn.textContent = '⏹️';
+                        status.textContent = 'Aufnahme läuft...';
+                    })
+                    .catch(function(err) {
+                        alert('Mikrofon nicht verfügbar');
+                    });
+            }
+        }
+
+        function renderRecordings() {
+            var list = document.getElementById('recordingsList');
+            
+            if (state.recordings.length === 0) {
+                list.innerHTML = '<p style="color:var(--text-muted); font-style:italic;">Noch keine Aufnahmen.</p>';
+                return;
+            }
+            
+            list.innerHTML = '';
+            for (var i = state.recordings.length - 1; i >= 0; i--) {
+                (function(rec, idx) {
+                    var mins = Math.floor(rec.duration / 60);
+                    var secs = rec.duration % 60;
+                    
+                    var div = document.createElement('div');
+                    div.className = 'recording-item';
+                    div.innerHTML = '<div class="recording-info"><div class="recording-date">' + rec.date + ' ' + rec.time + '</div><div class="recording-time">' + mins + ':' + (secs < 10 ? '0' : '') + secs + ' Min</div></div><button class="btn btn-secondary btn-small">▶️</button>';
+                    
+                    div.querySelector('button').onclick = function() {
+                        var audio = new Audio(rec.url);
+                        audio.play();
+                    };
+                    
+                    list.appendChild(div);
+                })(state.recordings[i], i);
+            }
+        }
+
+        // === STATS ===
+        function renderWeekCalendar() {
+            var calendar = document.getElementById('weekCalendar');
+            var days = ['So', 'Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa'];
+            var today = new Date();
+            var html = '';
+            
+            for (var i = 6; i >= 0; i--) {
+                var date = new Date(today);
+                date.setDate(date.getDate() - i);
+                var dayKey = date.toISOString().split('T')[0];
+                var done = state.stats.weekDays[dayKey];
+                var isToday = i === 0;
+                
+                html += '<div class="day-box"><div class="day-name">' + days[date.getDay()] + '</div><div class="day-circle' + (done ? ' done' : '') + (isToday ? ' today' : '') + '">' + (done ? '✓' : date.getDate()) + '</div></div>';
+            }
+            
+            calendar.innerHTML = html;
+        }
+
+        function updateWeekGoal() {
+            var today = new Date();
+            var count = 0;
+            
+            for (var i = 0; i < 7; i++) {
+                var date = new Date(today);
+                date.setDate(date.getDate() - i);
+                var dayKey = date.toISOString().split('T')[0];
+                if (state.stats.weekDays[dayKey]) count++;
+            }
+            
+            var pct = Math.round(count / 5 * 100);
+            document.getElementById('weekProgress').style.width = Math.min(100, pct) + '%';
+            document.getElementById('weekGoalText').textContent = count + ' von 5 Tagen geschafft';
+        }
+
+        function showRandomTip() {
+            var tip = tips[Math.floor(Math.random() * tips.length)];
+            document.getElementById('tipText').textContent = tip;
+        }
+
+        // === EVENT LISTENERS ===
+        document.getElementById('navRead').onclick = function() { switchPanel('Read'); };
+        document.getElementById('navRecord').onclick = function() { switchPanel('Record'); };
+        document.getElementById('navStats').onclick = function() { switchPanel('Stats'); };
+        document.getElementById('navSettings').onclick = function() { switchPanel('Settings'); };
+        
+        document.getElementById('btnUp').onclick = function() { moveLine(-1); };
+        document.getElementById('btnDown').onclick = function() { moveLine(1); };
+        document.getElementById('btnFocus').onclick = toggleFocus;
+        document.getElementById('btnBackToTexts').onclick = backToTexts;
+        document.getElementById('btnFinish').onclick = finishReading;
+        
+        document.getElementById('recordBtn').onclick = toggleRecording;
+        
+        document.getElementById('settingFocus').onchange = function() {
+            state.settings.focusMode = this.checked;
+            if (state.currentText) renderText();
+            save();
+        };
+        
+        document.getElementById('settingSyllables').onchange = function() {
+            state.settings.syllables = this.checked;
+            if (state.currentText) renderText();
+            save();
+        };
+        
+        document.getElementById('timeSlider').oninput = function() {
+            state.settings.duration = parseInt(this.value);
+            document.getElementById('timeVal').textContent = this.value;
+            state.timerValue = state.settings.duration * 60;
+            updateTimerDisplay();
+            save();
+        };
+
+        // === INIT ===
+        load();
+        renderTextList();
+        renderRecordings();
+        showRandomTip();
+    </script>
+</body>
+</html>

@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silbenleser</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 15px; 
+            max-width: 500px; 
+            margin: 0 auto; 
+            background: linear-gradient(135deg, #FFF9F0 0%, #faf5ff 100%);
+            min-height: 100vh;
+        }
+        
+        h1 { 
+            text-align: center; 
+            font-size: 2rem;
+            margin: 20px 0;
+            background: linear-gradient(135deg, #8b5cf6, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .rewards {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .reward {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            font-weight: 600;
+        }
+        
+        .star { color: #FFD700; }
+        .diamond { color: #00CED1; }
+        
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: white;
+            border-radius: 16px;
+            padding: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .stat { text-align: center; }
+        .stat-value { font-size: 1.4rem; font-weight: 700; color: #8b5cf6; }
+        .stat-label { font-size: 0.75rem; color: #636E72; text-transform: uppercase; }
+        
+        .level-badge {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .card { 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            margin-bottom: 20px; 
+        }
+        
+        .card h2 {
+            text-align: center;
+            margin-bottom: 15px;
+            color: #2D3436;
+        }
+        
+        .card h3 {
+            margin-bottom: 15px;
+            color: #2D3436;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        .story-list { display: grid; gap: 10px; }
+        
+        .story-option {
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+        
+        .story-option:hover { border-color: #8b5cf6; background: #faf5ff; }
+        .story-option.active { border-color: #8b5cf6; background: #f3e8ff; }
+        .story-title { font-weight: 600; margin-bottom: 4px; }
+        .story-desc { font-size: 0.85rem; color: #636E72; }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: linear-gradient(135deg, #8b5cf6, #6d28d9); color: white; }
+        .btn-secondary { background: #e9ecef; color: #2D3436; }
+        .btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; }
+        .btn-warning { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+        .btn-block { display: block; width: 100%; }
+        
+        .back-btn { 
+            display: block;
+            width: 100%;
+            padding: 12px; 
+            margin-top: 15px;
+            background: transparent; 
+            border: none;
+            color: #636E72; 
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        /* Reading Area */
+        .reading-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        
+        .chapter-info {
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        .chapter-title { font-size: 1rem; color: #8b5cf6; font-weight: 600; }
+        .chapter-sub { font-size: 0.85rem; color: #636E72; }
+        
+        .reading-area {
+            font-size: 1.4rem;
+            line-height: 2.2;
+            min-height: 200px;
+            padding: 15px;
+            background: #fffbeb;
+            border-radius: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .word {
+            display: inline;
+            padding: 2px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .word:hover { background: #f3e8ff; }
+        .word.current { background: #fef3c7; box-shadow: 0 0 0 3px #fbbf24; }
+        .word.completed { opacity: 0.5; }
+        .word.difficult { border-bottom: 2px dashed #ef4444; }
+        
+        .syllable-1 { color: #4f46e5; font-weight: 500; }
+        .syllable-2 { color: #9ca3af; font-weight: 500; }
+        
+        .focus-mode .word:not(.current):not(.completed) {
+            color: transparent;
+            background: #e5e7eb;
+            border-radius: 4px;
+        }
+        
+        .focus-mode .word:not(.current):not(.completed) .syllable-1,
+        .focus-mode .word:not(.current):not(.completed) .syllable-2 {
+            color: transparent;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .timer-bar {
+            background: #e9ecef;
+            height: 8px;
+            border-radius: 8px;
+            margin: 15px 0;
+            overflow: hidden;
+        }
+        
+        .timer-progress {
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            height: 100%;
+            transition: width 1s linear;
+        }
+        
+        .timer-text {
+            text-align: center;
+            color: #636E72;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+        
+        /* Settings Toggles */
+        .settings {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 15px 0;
+        }
+        
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+        }
+        
+        .toggle input { opacity: 0; width: 0; height: 0; }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            inset: 0;
+            background: #e5e7eb;
+            border-radius: 13px;
+            transition: 0.3s;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: white;
+            border-radius: 50%;
+            transition: 0.3s;
+        }
+        
+        .toggle input:checked + .toggle-slider { background: #8b5cf6; }
+        .toggle input:checked + .toggle-slider:before { transform: translateX(22px); }
+        .toggle-label { font-size: 0.9rem; color: #2D3436; }
+        
+        /* Difficult Words */
+        .difficult-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            display: none;
+        }
+        
+        .difficult-panel.show { display: block; }
+        
+        .word-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .word-chip {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .word-chip:hover { background: #fee2e2; transform: scale(1.05); }
+        .word-chip.mastered { background: #d1fae5; border-color: #a7f3d0; text-decoration: line-through; }
+        
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+        }
+        
+        .modal-overlay.active { display: flex; }
+        
+        .modal {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            max-width: 350px;
+            margin: 15px;
+            animation: popIn 0.3s ease;
+        }
+        
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        
+        .modal-icon { font-size: 4rem; margin-bottom: 15px; }
+        .modal h2 { color: #8b5cf6; margin-bottom: 10px; }
+        .modal p { color: #636E72; margin-bottom: 20px; }
+        .modal-stars { font-size: 2rem; margin-bottom: 15px; }
+        
+        /* Progress Section */
+        .progress-section {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        
+        .progress-bars { display: grid; gap: 12px; }
+        
+        .progress-item {
+            display: grid;
+            grid-template-columns: 80px 1fr 50px;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .progress-item-label { font-size: 0.85rem; color: #636E72; }
+        
+        .progress-item-bar {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        
+        .progress-item-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #ec4899);
+            border-radius: 6px;
+            transition: width 0.5s;
+        }
+        
+        .progress-item-value { font-size: 0.85rem; font-weight: 600; text-align: right; }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <h1>📚 Silbenleser</h1>
+    
+    <div class="rewards">
+        <div class="reward"><span class="star">★</span> <span id="stars">0</span></div>
+        <div class="reward"><span class="diamond">◆</span> <span id="diamonds">0</span></div>
+    </div>
+    
+    <div class="stats-bar">
+        <div class="stat">
+            <div class="stat-value" id="statWords">0</div>
+            <div class="stat-label">Wörter</div>
+        </div>
+        <div class="stat">
+            <div class="stat-value" id="statStreak">0</div>
+            <div class="stat-label">Tage</div>
+        </div>
+        <div class="stat">
+            <span class="level-badge" id="levelBadge">Level 1</span>
+            <div class="stat-label" style="margin-top:4px">Stufe</div>
+        </div>
+    </div>
+    
+    <!-- START SCREEN -->
+    <div class="screen active" id="screenStart">
+        <div class="card">
+            <h3>📖 Wähle eine Geschichte</h3>
+            <div class="story-list" id="storyList"></div>
+        </div>
+        
+        <div class="progress-section">
+            <h3>📊 Dein Fortschritt</h3>
+            <div class="progress-bars">
+                <div class="progress-item">
+                    <div class="progress-item-label">Heute</div>
+                    <div class="progress-item-bar"><div class="progress-item-fill" id="progToday" style="width:0%"></div></div>
+                    <div class="progress-item-value"><span id="progTodayVal">0</span>/50</div>
+                </div>
+                <div class="progress-item">
+                    <div class="progress-item-label">Diese Woche</div>
+                    <div class="progress-item-bar"><div class="progress-item-fill" id="progWeek" style="width:0%"></div></div>
+                    <div class="progress-item-value"><span id="progWeekVal">0</span>/200</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- READING SCREEN -->
+    <div class="screen" id="screenReading">
+        <div class="reading-card">
+            <div class="chapter-info">
+                <div class="chapter-title" id="chapterTitle">Kapitel 1</div>
+                <div class="chapter-sub" id="chapterSub">Die kleine Maus</div>
+            </div>
+            
+            <div class="settings">
+                <div class="toggle-group">
+                    <label class="toggle">
+                        <input type="checkbox" id="toggleFocus">
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Fokus</span>
+                </div>
+                <div class="toggle-group">
+                    <label class="toggle">
+                        <input type="checkbox" id="toggleSyllables" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                    <span class="toggle-label">Silben</span>
+                </div>
+            </div>
+            
+            <div class="timer-bar"><div class="timer-progress" id="timerProgress" style="width:100%"></div></div>
+            <div class="timer-text" id="timerText">5:00 Minuten übrig</div>
+            
+            <div class="reading-area" id="readingArea"></div>
+            
+            <div class="controls">
+                <button class="btn btn-secondary" id="btnPrev">◀ Zurück</button>
+                <button class="btn btn-primary" id="btnNext">Weiter ▶</button>
+                <button class="btn btn-warning" id="btnDifficult">❓ Schwer</button>
+            </div>
+        </div>
+        
+        <div class="difficult-panel" id="difficultPanel">
+            <h3>🔴 Schwierige Wörter</h3>
+            <div class="word-chips" id="wordChips"></div>
+            <p style="font-size:0.85rem;color:#636E72;margin-top:10px">Tippe auf ein Wort, um es als gelernt zu markieren</p>
+        </div>
+        
+        <div class="controls" style="justify-content:space-between">
+            <button class="btn btn-success" id="btnFinish">✓ Fertig</button>
+            <button class="back-btn" id="btnBack">← Zurück zur Auswahl</button>
+        </div>
+    </div>
+    
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal">
+            <div class="modal-icon" id="modalIcon">🎉</div>
+            <h2 id="modalTitle">Super!</h2>
+            <p id="modalText">Du hast 50 Wörter gelesen!</p>
+            <div class="modal-stars" id="modalStars">⭐⭐⭐</div>
+            <button class="btn btn-primary btn-block" id="modalClose">Weiter</button>
+        </div>
+    </div>
+    
+    <script>
+        // === DATA ===
+        var stories = [
+            {
+                id: 'maus',
+                title: 'Die kleine Maus',
+                desc: 'Eine Geschichte über Mut und Freundschaft',
+                chapters: [
+                    { title: 'Kapitel 1', text: 'Die kleine Maus lebt in einem Loch. Das Loch ist warm und gemütlich. Die Maus hat ein weiches Bett aus Stroh.' },
+                    { title: 'Kapitel 2', text: 'Eines Tages geht die Maus nach draußen. Sie sieht die Sonne am Himmel. Die Welt ist groß und bunt.' },
+                    { title: 'Kapitel 3', text: 'Die Maus trifft einen Frosch am Teich. Der Frosch ist grün und nass. Sie werden gute Freunde.' }
+                ]
+            },
+            {
+                id: 'hund',
+                title: 'Der treue Hund',
+                desc: 'Ein Abenteuer mit dem besten Freund',
+                chapters: [
+                    { title: 'Kapitel 1', text: 'Max ist ein großer Hund mit braunem Fell. Er lebt bei einer Familie auf dem Land. Max liebt es zu rennen.' },
+                    { title: 'Kapitel 2', text: 'Heute geht Max mit Tim in den Wald. Tim ist ein kleiner Junge. Sie suchen nach Pilzen und Beeren.' },
+                    { title: 'Kapitel 3', text: 'Im Wald finden sie einen kleinen Vogel. Der Vogel hat einen kaputten Flügel. Max und Tim helfen dem Vogel.' }
+                ]
+            },
+            {
+                id: 'stern',
+                title: 'Der kleine Stern',
+                desc: 'Eine magische Reise durch die Nacht',
+                chapters: [
+                    { title: 'Kapitel 1', text: 'Hoch oben am Himmel lebt ein kleiner Stern. Er funkelt hell in der dunklen Nacht. Der Stern heißt Stella.' },
+                    { title: 'Kapitel 2', text: 'Stella möchte die Erde besuchen. Sie fliegt durch die Wolken hinab. Alles ist neu und aufregend.' }
+                ]
+            }
+        ];
+        
+        // Syllable dictionary (simplified)
+        var syllables = {
+            'kleine': ['klei', 'ne'], 'maus': ['Maus'], 'lebt': ['lebt'], 'einem': ['ei', 'nem'],
+            'loch': ['Loch'], 'warm': ['warm'], 'gemütlich': ['ge', 'müt', 'lich'],
+            'weiches': ['wei', 'ches'], 'bett': ['Bett'], 'stroh': ['Stroh'],
+            'eines': ['ei', 'nes'], 'tages': ['Ta', 'ges'], 'geht': ['geht'],
+            'nach': ['nach'], 'draußen': ['drau', 'ßen'], 'sieht': ['sieht'],
+            'sonne': ['Son', 'ne'], 'himmel': ['Him', 'mel'], 'welt': ['Welt'],
+            'groß': ['groß'], 'bunt': ['bunt'], 'trifft': ['trifft'],
+            'einen': ['ei', 'nen'], 'frosch': ['Frosch'], 'teich': ['Teich'],
+            'grün': ['grün'], 'nass': ['nass'], 'werden': ['wer', 'den'],
+            'gute': ['gu', 'te'], 'freunde': ['Freun', 'de'],
+            'großer': ['gro', 'ßer'], 'hund': ['Hund'], 'braunem': ['brau', 'nem'],
+            'fell': ['Fell'], 'familie': ['Fa', 'mi', 'lie'], 'land': ['Land'],
+            'liebt': ['liebt'], 'rennen': ['ren', 'nen'], 'heute': ['heu', 'te'],
+            'wald': ['Wald'], 'kleiner': ['klei', 'ner'], 'junge': ['Jun', 'ge'],
+            'suchen': ['su', 'chen'], 'pilzen': ['Pil', 'zen'], 'beeren': ['Bee', 'ren'],
+            'finden': ['fin', 'den'], 'vogel': ['Vo', 'gel'], 'kaputten': ['ka', 'put', 'ten'],
+            'flügel': ['Flü', 'gel'], 'helfen': ['hel', 'fen'],
+            'hoch': ['hoch'], 'oben': ['o', 'ben'], 'stern': ['Stern'],
+            'funkelt': ['fun', 'kelt'], 'hell': ['hell'], 'dunklen': ['dunk', 'len'],
+            'nacht': ['Nacht'], 'heißt': ['heißt'], 'stella': ['Stel', 'la'],
+            'möchte': ['möch', 'te'], 'erde': ['Er', 'de'], 'besuchen': ['be', 'su', 'chen'],
+            'fliegt': ['fliegt'], 'durch': ['durch'], 'wolken': ['Wol', 'ken'],
+            'hinab': ['hin', 'ab'], 'alles': ['al', 'les'], 'aufregend': ['auf', 're', 'gend']
+        };
+        
+        // === STATE ===
+        var state = {
+            stars: 0,
+            diamonds: 0,
+            totalWords: 0,
+            todayWords: 0,
+            weekWords: 0,
+            streak: 0,
+            level: 1,
+            lastReadDate: null,
+            difficultWords: [],
+            currentStory: null,
+            currentChapter: 0,
+            currentWordIndex: -1,
+            words: [],
+            sessionActive: false,
+            sessionStart: 0,
+            sessionDuration: 5 * 60 * 1000
+        };
+        
+        // === LOAD/SAVE ===
+        function load() {
+            try {
+                var s = localStorage.getItem('silbenleser');
+                if (s) {
+                    var d = JSON.parse(s);
+                    state.stars = d.stars || 0;
+                    state.diamonds = d.diamonds || 0;
+                    state.totalWords = d.totalWords || 0;
+                    state.todayWords = d.todayWords || 0;
+                    state.weekWords = d.weekWords || 0;
+                    state.streak = d.streak || 0;
+                    state.level = d.level || 1;
+                    state.lastReadDate = d.lastReadDate;
+                    state.difficultWords = d.difficultWords || [];
+                }
+            } catch(e) {}
+            
+            // Reset daily if new day
+            var today = new Date().toDateString();
+            if (state.lastReadDate !== today) {
+                state.todayWords = 0;
+            }
+            
+            updateUI();
+        }
+        
+        function save() {
+            try {
+                localStorage.setItem('silbenleser', JSON.stringify({
+                    stars: state.stars,
+                    diamonds: state.diamonds,
+                    totalWords: state.totalWords,
+                    todayWords: state.todayWords,
+                    weekWords: state.weekWords,
+                    streak: state.streak,
+                    level: state.level,
+                    lastReadDate: state.lastReadDate,
+                    difficultWords: state.difficultWords
+                }));
+            } catch(e) {}
+        }
+        
+        function updateUI() {
+            document.getElementById('stars').textContent = state.stars;
+            document.getElementById('diamonds').textContent = state.diamonds;
+            document.getElementById('statWords').textContent = state.totalWords;
+            document.getElementById('statStreak').textContent = state.streak;
+            document.getElementById('levelBadge').textContent = 'Level ' + state.level;
+            
+            var todayPct = Math.min(100, state.todayWords / 50 * 100);
+            var weekPct = Math.min(100, state.weekWords / 200 * 100);
+            document.getElementById('progToday').style.width = todayPct + '%';
+            document.getElementById('progTodayVal').textContent = state.todayWords;
+            document.getElementById('progWeek').style.width = weekPct + '%';
+            document.getElementById('progWeekVal').textContent = state.weekWords;
+        }
+        
+        function addStar() {
+            state.stars++;
+            if (state.stars >= 1000) { state.stars -= 1000; state.diamonds++; }
+            updateUI();
+            save();
+        }
+        
+        function updateLevel() {
+            var newLevel = Math.floor(state.totalWords / 100) + 1;
+            if (newLevel > state.level) {
+                state.level = newLevel;
+                showModal('🎊', 'Level Up!', 'Du bist jetzt Level ' + state.level + '!', 3);
+            }
+        }
+        
+        // === SCREENS ===
+        function showScreen(id) {
+            var screens = document.querySelectorAll('.screen');
+            for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+            document.getElementById(id).classList.add('active');
+        }
+        
+        // === STORY LIST ===
+        function renderStoryList() {
+            var list = document.getElementById('storyList');
+            list.innerHTML = '';
+            
+            for (var i = 0; i < stories.length; i++) {
+                (function(story) {
+                    var div = document.createElement('div');
+                    div.className = 'story-option';
+                    div.innerHTML = '<div class="story-title">' + story.title + '</div><div class="story-desc">' + story.desc + '</div>';
+                    div.onclick = function() { selectStory(story); };
+                    list.appendChild(div);
+                })(stories[i]);
+            }
+        }
+        
+        function selectStory(story) {
+            state.currentStory = story;
+            state.currentChapter = 0;
+            state.currentWordIndex = -1;
+            state.sessionActive = true;
+            state.sessionStart = Date.now();
+            
+            document.getElementById('chapterTitle').textContent = story.title;
+            document.getElementById('chapterSub').textContent = story.chapters[0].title;
+            
+            renderText();
+            startTimer();
+            showScreen('screenReading');
+            nextWord();
+        }
+        
+        // === TEXT RENDERING ===
+        function renderText() {
+            var chapter = state.currentStory.chapters[state.currentChapter];
+            var area = document.getElementById('readingArea');
+            var useSyllables = document.getElementById('toggleSyllables').checked;
+            
+            state.words = chapter.text.split(/\s+/);
+            var html = '';
+            
+            for (var i = 0; i < state.words.length; i++) {
+                var word = state.words[i];
+                var wordLower = word.toLowerCase().replace(/[.,!?;:'"„"]/g, '');
+                var display = word;
+                
+                if (useSyllables && syllables[wordLower]) {
+                    var syls = syllables[wordLower];
+                    display = '';
+                    for (var j = 0; j < syls.length; j++) {
+                        var cls = j % 2 === 0 ? 'syllable-1' : 'syllable-2';
+                        display += '<span class="' + cls + '">' + syls[j] + '</span>';
+                    }
+                    // Add punctuation back
+                    var punct = word.match(/[.,!?;:'"„"]+$/);
+                    if (punct) display += punct[0];
+                }
+                
+                html += '<span class="word" data-index="' + i + '">' + display + '</span> ';
+            }
+            
+            area.innerHTML = html;
+            
+            // Add click handlers
+            var wordEls = area.querySelectorAll('.word');
+            for (var k = 0; k < wordEls.length; k++) {
+                (function(el) {
+                    el.onclick = function() {
+                        var idx = parseInt(el.getAttribute('data-index'));
+                        jumpToWord(idx);
+                    };
+                })(wordEls[k]);
+            }
+        }
+        
+        function jumpToWord(idx) {
+            // Mark all previous as completed
+            for (var i = state.currentWordIndex; i < idx; i++) {
+                var el = document.querySelector('.word[data-index="' + i + '"]');
+                if (el) { el.classList.remove('current'); el.classList.add('completed'); }
+                countWord();
+            }
+            state.currentWordIndex = idx - 1;
+            nextWord();
+        }
+        
+        function nextWord() {
+            if (state.currentWordIndex >= 0) {
+                var prev = document.querySelector('.word[data-index="' + state.currentWordIndex + '"]');
+                if (prev) { prev.classList.remove('current'); prev.classList.add('completed'); }
+                countWord();
+            }
+            
+            state.currentWordIndex++;
+            
+            if (state.currentWordIndex >= state.words.length) {
+                finishChapter();
+                return;
+            }
+            
+            highlightCurrent();
+        }
+        
+        function prevWord() {
+            if (state.currentWordIndex > 0) {
+                var curr = document.querySelector('.word[data-index="' + state.currentWordIndex + '"]');
+                if (curr) curr.classList.remove('current');
+                
+                state.currentWordIndex--;
+                
+                var prev = document.querySelector('.word[data-index="' + state.currentWordIndex + '"]');
+                if (prev) prev.classList.remove('completed');
+                
+                highlightCurrent();
+            }
+            
+            document.getElementById('btnPrev').disabled = state.currentWordIndex <= 0;
+        }
+        
+        function highlightCurrent() {
+            var curr = document.querySelector('.word[data-index="' + state.currentWordIndex + '"]');
+            if (curr) {
+                curr.classList.add('current');
+                curr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            document.getElementById('btnPrev').disabled = state.currentWordIndex <= 0;
+        }
+        
+        function countWord() {
+            state.totalWords++;
+            state.todayWords++;
+            state.weekWords++;
+            
+            // Award star every 10 words
+            if (state.totalWords % 10 === 0) {
+                addStar();
+            }
+            
+            updateLevel();
+            updateUI();
+            save();
+        }
+        
+        function markDifficult() {
+            if (state.currentWordIndex >= 0 && state.currentWordIndex < state.words.length) {
+                var word = state.words[state.currentWordIndex].toLowerCase().replace(/[.,!?;:'"„"]/g, '');
+                
+                if (state.difficultWords.indexOf(word) === -1) {
+                    state.difficultWords.push(word);
+                    
+                    var el = document.querySelector('.word[data-index="' + state.currentWordIndex + '"]');
+                    if (el) el.classList.add('difficult');
+                    
+                    updateDifficultPanel();
+                    save();
+                }
+            }
+        }
+        
+        function updateDifficultPanel() {
+            var panel = document.getElementById('difficultPanel');
+            var chips = document.getElementById('wordChips');
+            
+            if (state.difficultWords.length > 0) {
+                panel.classList.add('show');
+                chips.innerHTML = '';
+                
+                for (var i = 0; i < state.difficultWords.length; i++) {
+                    (function(word) {
+                        var chip = document.createElement('span');
+                        chip.className = 'word-chip';
+                        chip.textContent = word;
+                        chip.onclick = function() {
+                            chip.classList.toggle('mastered');
+                            if (chip.classList.contains('mastered')) {
+                                setTimeout(function() {
+                                    state.difficultWords = state.difficultWords.filter(function(w) { return w !== word; });
+                                    updateDifficultPanel();
+                                    save();
+                                }, 1000);
+                            }
+                        };
+                        chips.appendChild(chip);
+                    })(state.difficultWords[i]);
+                }
+            } else {
+                panel.classList.remove('show');
+            }
+        }
+        
+        // === TIMER ===
+        function startTimer() {
+            function update() {
+                if (!state.sessionActive) return;
+                
+                var elapsed = Date.now() - state.sessionStart;
+                var remaining = Math.max(0, state.sessionDuration - elapsed);
+                var minutes = Math.floor(remaining / 60000);
+                var seconds = Math.floor((remaining % 60000) / 1000);
+                
+                document.getElementById('timerText').textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds + ' Minuten übrig';
+                document.getElementById('timerProgress').style.width = (remaining / state.sessionDuration * 100) + '%';
+                
+                if (remaining > 0) {
+                    requestAnimationFrame(update);
+                } else {
+                    finishSession();
+                }
+            }
+            update();
+        }
+        
+        function finishChapter() {
+            if (state.currentChapter < state.currentStory.chapters.length - 1) {
+                state.currentChapter++;
+                state.currentWordIndex = -1;
+                
+                var chapter = state.currentStory.chapters[state.currentChapter];
+                document.getElementById('chapterSub').textContent = chapter.title;
+                
+                renderText();
+                nextWord();
+                
+                showModal('📚', 'Kapitel geschafft!', 'Weiter zum nächsten Kapitel!', 2);
+            } else {
+                showModal('🏆', 'Geschichte beendet!', 'Du hast die ganze Geschichte gelesen!', 3);
+                state.stars += 5;
+                save();
+                updateUI();
+            }
+        }
+        
+        function finishSession() {
+            state.sessionActive = false;
+            
+            var today = new Date().toDateString();
+            if (state.lastReadDate !== today) {
+                state.streak++;
+                state.lastReadDate = today;
+            }
+            
+            save();
+            updateUI();
+            
+            var wordsRead = state.todayWords;
+            var starCount = 1;
+            if (wordsRead >= 50) starCount = 3;
+            else if (wordsRead >= 25) starCount = 2;
+            
+            showModal('🎉', 'Super gemacht!', 'Du hast heute ' + wordsRead + ' Wörter gelesen!', starCount);
+        }
+        
+        function backToStart() {
+            state.sessionActive = false;
+            showScreen('screenStart');
+        }
+        
+        // === MODAL ===
+        function showModal(icon, title, text, starCount) {
+            document.getElementById('modalIcon').textContent = icon;
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalText').textContent = text;
+            document.getElementById('modalStars').textContent = '⭐'.repeat(starCount);
+            document.getElementById('modal').classList.add('active');
+        }
+        
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+        
+        // === EVENT LISTENERS ===
+        document.getElementById('btnNext').onclick = nextWord;
+        document.getElementById('btnPrev').onclick = prevWord;
+        document.getElementById('btnDifficult').onclick = markDifficult;
+        document.getElementById('btnFinish').onclick = finishSession;
+        document.getElementById('btnBack').onclick = backToStart;
+        document.getElementById('modalClose').onclick = closeModal;
+        
+        document.getElementById('toggleFocus').onchange = function() {
+            var area = document.getElementById('readingArea');
+            if (this.checked) area.classList.add('focus-mode');
+            else area.classList.remove('focus-mode');
+        };
+        
+        document.getElementById('toggleSyllables').onchange = function() {
+            if (state.currentStory) {
+                var oldIdx = state.currentWordIndex;
+                renderText();
+                state.currentWordIndex = oldIdx;
+                
+                // Re-mark completed and current
+                for (var i = 0; i < oldIdx; i++) {
+                    var el = document.querySelector('.word[data-index="' + i + '"]');
+                    if (el) el.classList.add('completed');
+                }
+                highlightCurrent();
+            }
+        };
+        
+        // Keyboard shortcuts
+        document.onkeydown = function(e) {
+            if (!state.sessionActive) return;
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); nextWord(); }
+            else if (e.key === 'ArrowLeft') { e.preventDefault(); prevWord(); }
+            else if (e.key === 'd' || e.key === 'D') { markDifficult(); }
+        };
+        
+        // === INIT ===
+        load();
+        renderStoryList();
+        updateDifficultPanel();
+    </script>
+</body>
+</html>

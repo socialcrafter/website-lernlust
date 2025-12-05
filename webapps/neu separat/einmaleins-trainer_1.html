@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌟 Einmaleins-Abenteuer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --success: #95E1A3;
+            --bg-light: #FFF9F0;
+            --bg-card: #FFFFFF;
+            --text-dark: #2D3436;
+            --text-muted: #636E72;
+            --shadow: 0 8px 32px rgba(0,0,0,0.1);
+            --shadow-hover: 0 12px 48px rgba(0,0,0,0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape-1 {
+            width: 300px;
+            height: 300px;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape-2 {
+            width: 200px;
+            height: 200px;
+            background: linear-gradient(135deg, var(--secondary), #81ECEC);
+            bottom: 10%;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        .shape-3 {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(135deg, var(--accent), #FFEAA7);
+            top: 40%;
+            right: 5%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(20px, -20px) rotate(5deg); }
+            50% { transform: translate(-10px, 20px) rotate(-5deg); }
+            75% { transform: translate(-20px, -10px) rotate(3deg); }
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(2rem, 6vw, 3rem);
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .header h1 span {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Stars Display */
+        .stars-display {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            background: var(--bg-card);
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: var(--shadow);
+            display: inline-flex;
+            margin-top: 15px;
+        }
+
+        .stars-display .star-icon {
+            font-size: 1.5rem;
+            animation: twinkle 2s infinite;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .nav-tab {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--bg-card);
+            color: var(--text-muted);
+            box-shadow: var(--shadow);
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        /* Sections */
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Card Styles */
+        .card {
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Reihen-Auswahl */
+        .reihen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 12px;
+        }
+
+        .reihen-btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.3rem;
+            padding: 15px;
+            border: 3px solid transparent;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            color: var(--text-dark);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .reihen-btn:hover {
+            transform: scale(1.05);
+            box-shadow: var(--shadow);
+        }
+
+        .reihen-btn.selected {
+            border-color: var(--secondary);
+            background: linear-gradient(135deg, var(--secondary), #81ECEC);
+            color: white;
+        }
+
+        .reihen-btn.mastered {
+            background: linear-gradient(135deg, var(--success), #7BED9F);
+            color: white;
+        }
+
+        .reihen-btn.mastered::after {
+            content: '⭐';
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            font-size: 1rem;
+        }
+
+        /* Übungs-Bereich */
+        .exercise-area {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .question-display {
+            font-family: 'Fredoka', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            color: var(--text-dark);
+            margin-bottom: 30px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .question-display .operator {
+            color: var(--primary);
+        }
+
+        .question-display .equals {
+            color: var(--secondary);
+        }
+
+        /* Visualisierung */
+        .visualization {
+            background: linear-gradient(135deg, #f8f9fa, #fff);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #dfe6e9;
+        }
+
+        .vis-title {
+            font-size: 1rem;
+            color: var(--text-muted);
+            margin-bottom: 15px;
+        }
+
+        .dot-groups {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .dot-group {
+            display: grid;
+            gap: 6px;
+            padding: 12px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .dot-group:hover {
+            transform: scale(1.05);
+        }
+
+        .dot {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--accent));
+            animation: popIn 0.3s ease backwards;
+        }
+
+        @keyframes popIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .group-label {
+            text-align: center;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 8px;
+        }
+
+        /* Antwort-Eingabe */
+        .answer-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .answer-input {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2.5rem;
+            width: 150px;
+            text-align: center;
+            padding: 15px;
+            border: 4px solid #dfe6e9;
+            border-radius: 20px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.2);
+        }
+
+        .answer-input.correct {
+            border-color: var(--success);
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .answer-input.wrong {
+            border-color: var(--primary);
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-10px); }
+            40%, 80% { transform: translateX(10px); }
+        }
+
+        /* Buttons */
+        .btn {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), #ee5a5a);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary), #45b7aa);
+            color: white;
+            box-shadow: 0 4px 15px rgba(78, 205, 196, 0.4);
+        }
+
+        .btn-hint {
+            background: linear-gradient(135deg, var(--accent), #f9ca24);
+            color: var(--text-dark);
+            font-size: 1rem;
+            padding: 10px 25px;
+        }
+
+        /* Feedback */
+        .feedback {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.5rem;
+            padding: 15px 30px;
+            border-radius: 16px;
+            margin-top: 20px;
+            display: none;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .feedback.show {
+            display: inline-block;
+        }
+
+        .feedback.success {
+            background: linear-gradient(135deg, var(--success), #7BED9F);
+            color: white;
+        }
+
+        .feedback.error {
+            background: linear-gradient(135deg, #ffcccc, #ffaaaa);
+            color: var(--text-dark);
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Hilfe-Bereich */
+        .help-section {
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            border-radius: 16px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .help-section.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .help-section h4 {
+            font-family: 'Fredoka', sans-serif;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .help-text {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .counting-help {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+            justify-content: center;
+        }
+
+        .count-step {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 10px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .count-step.highlight {
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Zehner-Trick Styles */
+        .trick-step {
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .trick-label {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.2rem;
+            color: var(--text-muted);
+        }
+
+        .trick-value {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.5rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .trick-value.highlight {
+            background: linear-gradient(135deg, var(--secondary), #45b7aa);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 10px;
+        }
+
+        /* Fortschritt */
+        .progress-bar {
+            width: 100%;
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--success));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        /* Tabelle */
+        .times-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px;
+        }
+
+        .times-table td {
+            text-align: center;
+            padding: 12px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .times-table td.header {
+            background: linear-gradient(135deg, var(--secondary), #45b7aa);
+            color: white;
+            font-weight: 600;
+        }
+
+        .times-table td.result {
+            background: #f8f9fa;
+            color: var(--text-dark);
+            cursor: pointer;
+        }
+
+        .times-table td.result:hover {
+            background: var(--accent);
+            transform: scale(1.1);
+        }
+
+        /* Belohnungs-Animation */
+        .reward-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .reward-overlay.show {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .reward-content {
+            background: white;
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            animation: bounceIn 0.5s ease;
+        }
+
+        .reward-emoji {
+            font-size: 5rem;
+            margin-bottom: 20px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .reward-title {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 2rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .reward-text {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* Settings */
+        .settings-group {
+            margin-bottom: 25px;
+        }
+
+        .settings-label {
+            font-family: 'Fredoka', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .toggle-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-btn {
+            font-family: 'Nunito', sans-serif;
+            padding: 10px 20px;
+            border: 2px solid #dfe6e9;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-btn.active {
+            border-color: var(--secondary);
+            background: var(--secondary);
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 10px;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .reihen-grid {
+                grid-template-columns: repeat(5, 1fr);
+                gap: 8px;
+            }
+
+            .reihen-btn {
+                padding: 12px 8px;
+                font-size: 1.1rem;
+            }
+
+            .dot {
+                width: 16px;
+                height: 16px;
+            }
+
+            .dot-group {
+                padding: 8px;
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1>🌟 <span>Einmaleins</span>-Abenteuer</h1>
+            <div class="stars-display">
+                <span class="star-icon">⭐</span>
+                <span id="totalStars">0</span> Sterne gesammelt
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="ueben">🎯 Üben</button>
+            <button class="nav-tab" data-section="tabelle">📊 Tabelle</button>
+            <button class="nav-tab" data-section="einstellungen">⚙️ Einstellungen</button>
+        </nav>
+
+        <!-- Übungs-Bereich -->
+        <section id="ueben" class="section active">
+            <div class="card">
+                <h3 class="card-title">📚 Wähle deine Reihe</h3>
+                <div class="reihen-grid" id="reihenGrid"></div>
+            </div>
+
+            <div class="card" id="exerciseCard" style="display: none;">
+                <div class="progress-text" id="progressText">Aufgabe 1 von 10</div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill" style="width: 0%"></div>
+                </div>
+
+                <div class="exercise-area">
+                    <div class="question-display" id="questionDisplay">
+                        <span id="num1">3</span>
+                        <span class="operator">×</span>
+                        <span id="num2">4</span>
+                        <span class="equals">=</span>
+                        <span>?</span>
+                    </div>
+
+                    <div class="visualization" id="visualization">
+                        <div class="vis-title">💡 So sieht die Aufgabe aus:</div>
+                        <div class="dot-groups" id="dotGroups"></div>
+                    </div>
+
+                    <div class="answer-section">
+                        <input type="number" class="answer-input" id="answerInput" placeholder="?" autocomplete="off">
+                        <div>
+                            <button class="btn btn-primary" id="checkBtn">✓ Prüfen</button>
+                        </div>
+                        <button class="btn btn-hint" id="hintBtn">💡 Hilfe zeigen</button>
+                    </div>
+
+                    <div class="feedback" id="feedback"></div>
+
+                    <div class="help-section" id="helpSection">
+                        <h4>💡 Tipp: Zähle in Schritten!</h4>
+                        <p class="help-text" id="helpText"></p>
+                        <div class="counting-help" id="countingHelp"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabellen-Bereich -->
+        <section id="tabelle" class="section">
+            <div class="card">
+                <h3 class="card-title">📊 Die Einmaleins-Tabelle</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;">Tippe auf eine Zahl, um sie dir anzuschauen!</p>
+                <div style="overflow-x: auto;">
+                    <table class="times-table" id="timesTable"></table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Einstellungen -->
+        <section id="einstellungen" class="section">
+            <div class="card">
+                <h3 class="card-title">⚙️ Einstellungen</h3>
+
+                <div class="settings-group">
+                    <label class="settings-label">🎨 Visualisierung anzeigen?</label>
+                    <div class="toggle-group">
+                        <button class="toggle-btn active" data-setting="showVis" data-value="true">Ja, zeigen</button>
+                        <button class="toggle-btn" data-setting="showVis" data-value="false">Nein, verstecken</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label class="settings-label">📝 Anzahl Aufgaben pro Runde</label>
+                    <div class="toggle-group">
+                        <button class="toggle-btn" data-setting="questionsPerRound" data-value="5">5</button>
+                        <button class="toggle-btn active" data-setting="questionsPerRound" data-value="10">10</button>
+                        <button class="toggle-btn" data-setting="questionsPerRound" data-value="15">15</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label class="settings-label">🔀 Aufgaben-Modus</label>
+                    <div class="toggle-group">
+                        <button class="toggle-btn active" data-setting="mode" data-value="ordered">Der Reihe nach</button>
+                        <button class="toggle-btn" data-setting="mode" data-value="random">Zufällig gemischt</button>
+                    </div>
+                </div>
+
+                <div class="settings-group">
+                    <label class="settings-label">🔄 Fortschritt zurücksetzen</label>
+                    <button class="btn btn-primary" id="resetBtn" style="margin-top: 10px;">🗑️ Alles löschen</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Belohnungs-Overlay -->
+    <div class="reward-overlay" id="rewardOverlay">
+        <div class="reward-content">
+            <div class="reward-emoji" id="rewardEmoji">🎉</div>
+            <h2 class="reward-title" id="rewardTitle">Super gemacht!</h2>
+            <p class="reward-text" id="rewardText">Du hast 5 Sterne verdient!</p>
+            <button class="btn btn-secondary" id="closeReward">Weiter üben</button>
+        </div>
+    </div>
+
+    <script>
+        // State
+        let state = {
+            currentReihe: null,
+            currentQuestion: 0,
+            totalQuestions: 10,
+            correctInRound: 0,
+            totalStars: 0,
+            masteredReihen: [],
+            num1: 0,
+            num2: 0,
+            settings: {
+                showVis: true,
+                questionsPerRound: 10,
+                mode: 'ordered'
+            },
+            questions: []
+        };
+
+        // Load from localStorage
+        function loadState() {
+            const saved = localStorage.getItem('einmaleinsState');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                state.totalStars = parsed.totalStars || 0;
+                state.masteredReihen = parsed.masteredReihen || [];
+                state.settings = { ...state.settings, ...parsed.settings };
+            }
+            updateStarsDisplay();
+            updateSettingsUI();
+        }
+
+        function saveState() {
+            localStorage.setItem('einmaleinsState', JSON.stringify({
+                totalStars: state.totalStars,
+                masteredReihen: state.masteredReihen,
+                settings: state.settings
+            }));
+        }
+
+        // Initialize
+        function init() {
+            loadState();
+            createReihenGrid();
+            createTimesTable();
+            setupEventListeners();
+        }
+
+        // Create Reihen Grid
+        function createReihenGrid() {
+            const grid = document.getElementById('reihenGrid');
+            grid.innerHTML = '';
+            
+            for (let i = 1; i <= 10; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'reihen-btn';
+                btn.textContent = i;
+                btn.dataset.reihe = i;
+                
+                if (state.masteredReihen.includes(i)) {
+                    btn.classList.add('mastered');
+                }
+                
+                btn.addEventListener('click', () => selectReihe(i));
+                grid.appendChild(btn);
+            }
+        }
+
+        // Select Reihe
+        function selectReihe(reihe) {
+            // Update UI
+            document.querySelectorAll('.reihen-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (parseInt(btn.dataset.reihe) === reihe) {
+                    btn.classList.add('selected');
+                }
+            });
+
+            state.currentReihe = reihe;
+            state.currentQuestion = 0;
+            state.correctInRound = 0;
+            state.totalQuestions = state.settings.questionsPerRound;
+            
+            // Generate questions
+            generateQuestions();
+            
+            // Show exercise card
+            document.getElementById('exerciseCard').style.display = 'block';
+            
+            // Start first question
+            nextQuestion();
+        }
+
+        // Generate Questions
+        function generateQuestions() {
+            state.questions = [];
+            
+            for (let i = 1; i <= 10; i++) {
+                state.questions.push({
+                    num1: state.currentReihe,
+                    num2: i
+                });
+            }
+            
+            if (state.settings.mode === 'random') {
+                shuffleArray(state.questions);
+            }
+            
+            // Limit to questionsPerRound
+            state.questions = state.questions.slice(0, state.settings.questionsPerRound);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        // Next Question
+        function nextQuestion() {
+            if (state.currentQuestion >= state.questions.length) {
+                endRound();
+                return;
+            }
+
+            const q = state.questions[state.currentQuestion];
+            state.num1 = q.num1;
+            state.num2 = q.num2;
+
+            // Update display
+            document.getElementById('num1').textContent = state.num1;
+            document.getElementById('num2').textContent = state.num2;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').className = 'answer-input';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('helpSection').classList.remove('show');
+
+            // Update progress
+            updateProgress();
+
+            // Create visualization
+            if (state.settings.showVis) {
+                createVisualization();
+                document.getElementById('visualization').style.display = 'flex';
+            } else {
+                document.getElementById('visualization').style.display = 'none';
+            }
+
+            // Focus input
+            setTimeout(() => {
+                document.getElementById('answerInput').focus();
+            }, 100);
+        }
+
+        // Create Visualization
+        function createVisualization() {
+            const container = document.getElementById('dotGroups');
+            container.innerHTML = '';
+
+            const groups = state.num1;
+            const dotsPerGroup = state.num2;
+
+            for (let g = 0; g < groups; g++) {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'dot-group';
+                groupDiv.style.gridTemplateColumns = `repeat(${Math.min(dotsPerGroup, 5)}, 1fr)`;
+
+                for (let d = 0; d < dotsPerGroup; d++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'dot';
+                    dot.style.animationDelay = `${(g * dotsPerGroup + d) * 0.05}s`;
+                    groupDiv.appendChild(dot);
+                }
+
+                const label = document.createElement('div');
+                label.className = 'group-label';
+                label.textContent = dotsPerGroup;
+
+                const wrapper = document.createElement('div');
+                wrapper.appendChild(groupDiv);
+                wrapper.appendChild(label);
+                container.appendChild(wrapper);
+            }
+        }
+
+        // Check Answer
+        function checkAnswer() {
+            const input = document.getElementById('answerInput');
+            const userAnswer = parseInt(input.value);
+            const correctAnswer = state.num1 * state.num2;
+            const feedback = document.getElementById('feedback');
+
+            if (isNaN(userAnswer)) {
+                input.classList.add('wrong');
+                setTimeout(() => input.classList.remove('wrong'), 500);
+                return;
+            }
+
+            if (userAnswer === correctAnswer) {
+                // Correct!
+                input.classList.add('correct');
+                feedback.textContent = getRandomPraise();
+                feedback.className = 'feedback success show';
+                state.correctInRound++;
+                state.totalStars++;
+                updateStarsDisplay();
+                saveState();
+
+                state.currentQuestion++;
+                setTimeout(nextQuestion, 1200);
+            } else {
+                // Wrong
+                input.classList.add('wrong');
+                feedback.textContent = `Nicht ganz... Probier's nochmal! 💪`;
+                feedback.className = 'feedback error show';
+                
+                setTimeout(() => {
+                    input.classList.remove('wrong');
+                    input.value = '';
+                    input.focus();
+                }, 1000);
+            }
+        }
+
+        // Get Random Praise
+        function getRandomPraise() {
+            const praises = [
+                '🎉 Super!',
+                '⭐ Toll gemacht!',
+                '🌟 Richtig!',
+                '👏 Bravo!',
+                '🚀 Fantastisch!',
+                '💪 Stark!',
+                '🎯 Treffer!',
+                '✨ Perfekt!'
+            ];
+            return praises[Math.floor(Math.random() * praises.length)];
+        }
+
+        // Show Hint
+        function showHint() {
+            const helpSection = document.getElementById('helpSection');
+            const helpText = document.getElementById('helpText');
+            const countingHelp = document.getElementById('countingHelp');
+
+            countingHelp.innerHTML = '';
+
+            // Spezial-Trick für die 9er-Reihe: Zehner-Trick
+            if (state.num1 === 9 || state.num2 === 9) {
+                const other = state.num1 === 9 ? state.num2 : state.num1;
+                const zehner = 10 * other;
+                const result = 9 * other;
+                
+                helpText.innerHTML = `<strong>🎯 Zehner-Trick!</strong><br>9 × ${other} = 10 × ${other} − ${other}`;
+                
+                // Step 1: 10 × other
+                const step1 = document.createElement('div');
+                step1.className = 'trick-step';
+                step1.innerHTML = `<span class="trick-label">10 × ${other} =</span> <span class="trick-value">${zehner}</span>`;
+                countingHelp.appendChild(step1);
+
+                // Step 2: minus other
+                const step2 = document.createElement('div');
+                step2.className = 'trick-step';
+                step2.innerHTML = `<span class="trick-label">${zehner} − ${other} =</span> <span class="trick-value highlight">${result}</span>`;
+                countingHelp.appendChild(step2);
+
+            } else {
+                // Standard: Zählen in Schritten
+                helpText.textContent = `Zähle ${state.num1} mal in ${state.num2}er-Schritten:`;
+                
+                let sum = 0;
+                for (let i = 1; i <= state.num1; i++) {
+                    sum += state.num2;
+                    const step = document.createElement('span');
+                    step.className = 'count-step';
+                    if (i === state.num1) step.classList.add('highlight');
+                    step.textContent = sum;
+                    countingHelp.appendChild(step);
+                }
+            }
+
+            helpSection.classList.add('show');
+        }
+
+        // Update Progress
+        function updateProgress() {
+            const progress = (state.currentQuestion / state.questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = 
+                `Aufgabe ${state.currentQuestion + 1} von ${state.questions.length}`;
+        }
+
+        // Update Stars Display
+        function updateStarsDisplay() {
+            document.getElementById('totalStars').textContent = state.totalStars;
+        }
+
+        // End Round
+        function endRound() {
+            const percentage = (state.correctInRound / state.totalQuestions) * 100;
+            let emoji, title, text;
+
+            if (percentage === 100) {
+                emoji = '🏆';
+                title = 'Perfekt!';
+                text = `Alle ${state.totalQuestions} richtig! Du hast die ${state.currentReihe}er-Reihe gemeistert!`;
+                
+                if (!state.masteredReihen.includes(state.currentReihe)) {
+                    state.masteredReihen.push(state.currentReihe);
+                    state.totalStars += 10; // Bonus stars
+                    saveState();
+                    createReihenGrid();
+                }
+            } else if (percentage >= 80) {
+                emoji = '🎉';
+                title = 'Super gemacht!';
+                text = `${state.correctInRound} von ${state.totalQuestions} richtig! Fast perfekt!`;
+            } else if (percentage >= 50) {
+                emoji = '💪';
+                title = 'Gut gemacht!';
+                text = `${state.correctInRound} von ${state.totalQuestions} richtig! Weiter üben!`;
+            } else {
+                emoji = '🌱';
+                title = 'Weiter so!';
+                text = `${state.correctInRound} von ${state.totalQuestions} richtig. Übung macht den Meister!`;
+            }
+
+            document.getElementById('rewardEmoji').textContent = emoji;
+            document.getElementById('rewardTitle').textContent = title;
+            document.getElementById('rewardText').textContent = text;
+            document.getElementById('rewardOverlay').classList.add('show');
+        }
+
+        // Create Times Table
+        function createTimesTable() {
+            const table = document.getElementById('timesTable');
+            table.innerHTML = '';
+
+            // Header row
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<td class="header">×</td>';
+            for (let i = 1; i <= 10; i++) {
+                headerRow.innerHTML += `<td class="header">${i}</td>`;
+            }
+            table.appendChild(headerRow);
+
+            // Data rows
+            for (let i = 1; i <= 10; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td class="header">${i}</td>`;
+                for (let j = 1; j <= 10; j++) {
+                    const td = document.createElement('td');
+                    td.className = 'result';
+                    td.textContent = i * j;
+                    td.dataset.calc = `${i} × ${j} = ${i * j}`;
+                    td.addEventListener('click', () => {
+                        alert(`${i} × ${j} = ${i * j}`);
+                    });
+                    row.appendChild(td);
+                }
+                table.appendChild(row);
+            }
+        }
+
+        // Update Settings UI
+        function updateSettingsUI() {
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                const setting = btn.dataset.setting;
+                const value = btn.dataset.value;
+                
+                if (setting && value) {
+                    const currentValue = String(state.settings[setting]);
+                    btn.classList.toggle('active', value === currentValue);
+                }
+            });
+        }
+
+        // Setup Event Listeners
+        function setupEventListeners() {
+            // Navigation
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.section).classList.add('active');
+                });
+            });
+
+            // Check button
+            document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+
+            // Enter key
+            document.getElementById('answerInput').addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') checkAnswer();
+            });
+
+            // Hint button
+            document.getElementById('hintBtn').addEventListener('click', showHint);
+
+            // Close reward
+            document.getElementById('closeReward').addEventListener('click', () => {
+                document.getElementById('rewardOverlay').classList.remove('show');
+                document.getElementById('exerciseCard').style.display = 'none';
+                document.querySelectorAll('.reihen-btn').forEach(btn => btn.classList.remove('selected'));
+            });
+
+            // Settings toggles
+            document.querySelectorAll('.toggle-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const setting = btn.dataset.setting;
+                    let value = btn.dataset.value;
+                    
+                    // Convert to proper type
+                    if (value === 'true') value = true;
+                    else if (value === 'false') value = false;
+                    else if (!isNaN(value)) value = parseInt(value);
+                    
+                    state.settings[setting] = value;
+                    saveState();
+                    updateSettingsUI();
+                });
+            });
+
+            // Reset button
+            document.getElementById('resetBtn').addEventListener('click', () => {
+                if (confirm('Wirklich alles löschen? Alle Sterne und Fortschritte gehen verloren!')) {
+                    localStorage.removeItem('einmaleinsState');
+                    state.totalStars = 0;
+                    state.masteredReihen = [];
+                    updateStarsDisplay();
+                    createReihenGrid();
+                    alert('Alles zurückgesetzt!');
+                }
+            });
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>

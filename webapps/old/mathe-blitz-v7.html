@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathe-Blitz</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            padding: 15px; 
+            max-width: 450px; 
+            margin: 0 auto; 
+            background: #FFF9F0;
+            min-height: 100vh;
+        }
+        
+        h1 { 
+            text-align: center; 
+            color: #FF6B6B; 
+            font-size: 2rem;
+            margin: 20px 0;
+        }
+        
+        .rewards {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .reward {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .star { color: #FFD700; }
+        .diamond { color: #00CED1; }
+        
+        .card { 
+            background: #fff; 
+            padding: 25px; 
+            border-radius: 16px; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); 
+            margin-bottom: 20px; 
+        }
+        
+        .card h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2D3436;
+        }
+        
+        .section-title {
+            text-align: center;
+            color: #636E72;
+            font-size: 0.9rem;
+            margin: 15px 0 8px;
+        }
+        
+        .mode-btn { 
+            display: block; 
+            width: 100%; 
+            padding: 16px 20px; 
+            margin: 8px 0; 
+            font-size: 1rem; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 12px; 
+            color: white;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .mode-btn small {
+            display: block;
+            font-weight: normal;
+            opacity: 0.9;
+            font-size: 0.85rem;
+            margin-top: 2px;
+        }
+        
+        .mode-btn:active { transform: scale(0.98); }
+        
+        .green { background: linear-gradient(135deg, #10b981, #059669); }
+        .pink { background: linear-gradient(135deg, #ec4899, #be185d); }
+        .purple { background: linear-gradient(135deg, #8b5cf6, #6d28d9); }
+        .orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+        .blue { background: linear-gradient(135deg, #3b82f6, #2563eb); }
+        
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        .progress-bar {
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 8px;
+            margin-bottom: 5px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ECDC4, #95E1A3);
+            border-radius: 8px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            color: #636E72;
+            font-size: 0.85rem;
+            margin-bottom: 15px;
+        }
+        
+        .instruction {
+            text-align: center;
+            color: #636E72;
+            margin-bottom: 15px;
+        }
+        
+        .frame { 
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px; 
+            padding: 15px; 
+            background: #f8f9fa; 
+            border: 3px solid #e9ecef;
+            border-radius: 12px; 
+            margin: 15px auto;
+            max-width: 280px;
+        }
+        
+        .dot { 
+            width: 40px; 
+            height: 40px; 
+            border-radius: 50%; 
+            background: #e9ecef;
+            border: 2px solid #ddd;
+        }
+        
+        .dot.blue { background: linear-gradient(135deg, #3b82f6, #2563eb); border-color: #3b82f6; }
+        .dot.purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); border-color: #8b5cf6; }
+        .dot.red { background: linear-gradient(135deg, #FF6B6B, #dc2626); border-color: #FF6B6B; }
+        
+        .answers { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+            justify-content: center; 
+            margin: 20px 0; 
+        }
+        
+        .ans { 
+            width: 55px; 
+            height: 55px; 
+            border-radius: 12px; 
+            background: white; 
+            border: 2px solid #ddd; 
+            font-size: 1.4rem; 
+            cursor: pointer;
+            font-weight: 600;
+        }
+        
+        .ans:active { transform: scale(0.95); }
+        .ans.correct { background: #95E1A3; border-color: #95E1A3; color: white; }
+        .ans.wrong { background: #FF6B6B; border-color: #FF6B6B; color: white; }
+        .ans:disabled { opacity: 0.5; }
+        
+        .question {
+            text-align: center;
+            font-size: 1.2rem;
+            padding: 15px;
+            background: linear-gradient(135deg, #e0f2fe, #bae6fd);
+            border-radius: 12px;
+            margin: 15px 0;
+        }
+        
+        .question .num { color: #3b82f6; font-weight: 700; }
+        
+        .back-btn { 
+            display: block;
+            width: 100%;
+            padding: 12px; 
+            margin-top: 15px;
+            background: transparent; 
+            border: none;
+            color: #636E72; 
+            font-size: 1rem;
+            cursor: pointer;
+        }
+        
+        .task-big {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .task-big .first { color: #3b82f6; }
+        .task-big .second { color: #FF6B6B; }
+        
+        .visual-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        
+        .visual-box {
+            text-align: center;
+        }
+        
+        .visual-label {
+            font-size: 0.8rem;
+            color: #636E72;
+            margin-bottom: 5px;
+        }
+        
+        .vorrat {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-width: 100px;
+            justify-content: center;
+            padding: 12px;
+            background: #fff5f5;
+            border: 2px dashed #FF6B6B;
+            border-radius: 12px;
+            min-height: 50px;
+        }
+        
+        .vorrat-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FF6B6B, #dc2626);
+            transition: all 0.3s;
+        }
+        
+        .vorrat-dot.used { opacity: 0; transform: scale(0); }
+        
+        .einzelne {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            max-width: 100px;
+            justify-content: center;
+            padding: 12px;
+            background: #f0fdf4;
+            border: 2px solid #95E1A3;
+            border-radius: 12px;
+            min-height: 50px;
+        }
+        
+        .einzelne-dot {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #95E1A3, #7BED9F);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .einzelne-dot.selected { background: linear-gradient(135deg, #fca5a5, #f87171); }
+        .einzelne-dot.gone { opacity: 0; transform: scale(0); }
+        
+        .result {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-radius: 12px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .result.show { display: block; }
+        
+        .done {
+            text-align: center;
+            padding: 30px 20px;
+        }
+        
+        .done h2 {
+            font-size: 1.8rem;
+            color: #2D3436;
+            margin-bottom: 10px;
+        }
+        
+        .done p {
+            color: #636E72;
+            margin-bottom: 20px;
+        }
+        
+        .done .msg {
+            background: linear-gradient(135deg, #fff9e6, #fff3cd);
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .restart-btn {
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #4ECDC4, #45b7aa);
+            border: none;
+            border-radius: 25px;
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .flashcard {
+            background: white;
+            border: 3px solid #e9ecef;
+            border-radius: 16px;
+            min-height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+        
+        .flashcard.revealed {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border-color: #95E1A3;
+        }
+        
+        .reveal-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #FFE66D, #f9ca24);
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .rate-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .rate-row button {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            color: white;
+        }
+        
+        .rate-yes { background: linear-gradient(135deg, #95E1A3, #7BED9F); }
+        .rate-no { background: linear-gradient(135deg, #FF6B6B, #ee5a5a); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <h1>Mathe-Blitz</h1>
+    
+    <div class="rewards">
+        <div class="reward"><span class="star">★</span> <span id="stars">0</span></div>
+        <div class="reward"><span class="diamond">◆</span> <span id="diamonds">0</span></div>
+    </div>
+    
+    <!-- START -->
+    <div class="card screen active" id="screenStart">
+        <h2>Wähle dein Training</h2>
+        
+        <div class="section-title">Grundlagen</div>
+        <button class="mode-btn green" id="btnMengen">Mengen-Bilder<small>Zahlen 1-10 sehen</small></button>
+        
+        <div class="section-title">Aufbau & Strategie</div>
+        <button class="mode-btn pink" id="btnVerliebt">Verliebte Zahlen<small>Ergänzen auf 10</small></button>
+        <button class="mode-btn purple" id="btnZehnertrick">Zehner-Trick<small>Analogien nutzen</small></button>
+        
+        <div class="section-title">Der Zehner-Stopp</div>
+        <button class="mode-btn orange" id="btnZsPlus">Die 10 voll machen<small>Plus über die 10</small></button>
+        <button class="mode-btn red" id="btnZsMinus">Rückwärts zur 10<small>Minus über die 10</small></button>
+        
+        <div class="section-title">Karteikarten</div>
+        <button class="mode-btn blue" id="btnCardsPlus">Addition bis 10<small>Automatisieren</small></button>
+        <button class="mode-btn pink" id="btnCardsMult">Kleines 1x1<small>Automatisieren</small></button>
+    </div>
+    
+    <!-- MENGEN -->
+    <div class="card screen" id="screenMengen">
+        <div class="progress-bar"><div class="progress-fill" id="mengenBar"></div></div>
+        <div class="progress-text" id="mengenProg">Aufgabe 1 von 10</div>
+        <div class="instruction">Wie viele? (Nicht zählen!)</div>
+        <div class="frame" id="mengenFrame"></div>
+        <div class="answers" id="mengenAns"></div>
+        <button class="back-btn" id="mengenBack">Zurück</button>
+    </div>
+    
+    <!-- VERLIEBT -->
+    <div class="card screen" id="screenVerliebt">
+        <div class="progress-bar"><div class="progress-fill" id="verliebtBar"></div></div>
+        <div class="progress-text" id="verliebtProg">Aufgabe 1 von 9</div>
+        <div class="instruction">Fülle auf 10!</div>
+        <div class="frame" id="verliebtFrame"></div>
+        <div class="question" id="verliebtQ"><span class="num">?</span> + ? = 10</div>
+        <div class="answers" id="verliebtAns"></div>
+        <button class="back-btn" id="verliebtBack">Zurück</button>
+    </div>
+    
+    <!-- ZEHNERTRICK -->
+    <div class="card screen" id="screenZt">
+        <div class="progress-bar"><div class="progress-fill" id="ztBar"></div></div>
+        <div class="progress-text" id="ztProg">Aufgabe 1 von 6</div>
+        <div class="instruction" id="ztInstr">Kleine Aufgabe zuerst!</div>
+        <div class="question" id="ztSmall">3 + 4 = ?</div>
+        <div class="question" id="ztBig" style="opacity:0.4">53 + 4 = ?</div>
+        <div class="answers" id="ztAns"></div>
+        <button class="back-btn" id="ztBack">Zurück</button>
+    </div>
+    
+    <!-- ZS PLUS -->
+    <div class="card screen" id="screenZsPlus">
+        <div class="progress-bar"><div class="progress-fill" id="zspBar"></div></div>
+        <div class="progress-text" id="zspProg">Aufgabe 1 von 6</div>
+        <div class="task-big"><span class="first" id="zspFirst">8</span> + <span class="second" id="zspSecond">5</span></div>
+        <div class="visual-row">
+            <div class="visual-box">
+                <div class="visual-label">10er-Feld</div>
+                <div class="frame" id="zspFrame" style="max-width:220px"></div>
+            </div>
+            <div class="visual-box">
+                <div class="visual-label">Vorrat</div>
+                <div class="vorrat" id="zspVorrat"></div>
+            </div>
+        </div>
+        <div class="question" id="zspQ">Wie viele fehlen bis zur 10?</div>
+        <div class="answers" id="zspAns"></div>
+        <div class="result" id="zspResult">10 + 3 = 13</div>
+        <button class="back-btn" id="zspBack">Zurück</button>
+    </div>
+    
+    <!-- ZS MINUS -->
+    <div class="card screen" id="screenZsMinus">
+        <div class="progress-bar"><div class="progress-fill" id="zsmBar"></div></div>
+        <div class="progress-text" id="zsmProg">Aufgabe 1 von 6</div>
+        <div class="task-big"><span class="first" id="zsmFirst">15</span> - <span class="second" id="zsmSecond">7</span></div>
+        <div class="visual-row">
+            <div class="visual-box">
+                <div class="visual-label">10er-Stange</div>
+                <div class="frame" id="zsmFrame" style="max-width:220px"></div>
+            </div>
+            <div class="visual-box">
+                <div class="visual-label">Einzelne</div>
+                <div class="einzelne" id="zsmEinzelne"></div>
+            </div>
+        </div>
+        <div class="question" id="zsmQ">Klicke alle Einzelnen!</div>
+        <div class="answers" id="zsmAns"></div>
+        <div class="result" id="zsmResult">8</div>
+        <button class="back-btn" id="zsmBack">Zurück</button>
+    </div>
+    
+    <!-- CARDS -->
+    <div class="card screen" id="screenCards">
+        <div class="progress-bar"><div class="progress-fill" id="cardBar"></div></div>
+        <div class="progress-text" id="cardProg">Karte 1 von 6</div>
+        <div class="instruction">Nicht rechnen - einprägen!</div>
+        <div class="flashcard" id="flashcard">3 + 4</div>
+        <div id="cardPre">
+            <button class="reveal-btn" id="revealBtn">Lösung zeigen</button>
+        </div>
+        <div id="cardPost" class="hidden">
+            <div class="rate-row">
+                <button class="rate-yes" id="rateYes">Gewusst</button>
+                <button class="rate-no" id="rateNo">Nicht gewusst</button>
+            </div>
+        </div>
+        <button class="back-btn" id="cardBack">Zurück</button>
+    </div>
+    
+    <!-- DONE -->
+    <div class="card screen" id="screenDone">
+        <div class="done">
+            <h2>Geschafft!</h2>
+            <p id="doneStats">8 von 10 richtig (80%)</p>
+            <div class="msg" id="doneMsg">Super gemacht!</div>
+            <button class="restart-btn" id="restartBtn">Weiter trainieren</button>
+        </div>
+    </div>
+    
+    <script>
+        // === STATE ===
+        var stars = 0, diamonds = 0;
+        var correct = 0, total = 0, idx = 0;
+        var tasks = [];
+        var currentAnswer = 0;
+        
+        // ZS Plus state
+        var zspToTen = 0, zspRest = 0, zspStep = 1;
+        // ZS Minus state  
+        var zsmEinzelne = 0, zsmStill = 0, zsmClicked = 0, zsmStep = 1;
+        // Cards state
+        var cardDeck = [], cardIdx = 0;
+        
+        // === LOAD/SAVE ===
+        function load() {
+            try {
+                var s = localStorage.getItem('matheblitz2');
+                if (s) { var d = JSON.parse(s); stars = d.s || 0; diamonds = d.d || 0; }
+            } catch(e) {}
+            updateRewards();
+        }
+        
+        function save() {
+            try { localStorage.setItem('matheblitz2', JSON.stringify({s: stars, d: diamonds})); } catch(e) {}
+        }
+        
+        function updateRewards() {
+            document.getElementById('stars').textContent = stars;
+            document.getElementById('diamonds').textContent = diamonds;
+        }
+        
+        function addStar() {
+            stars++;
+            if (stars >= 1000) { stars -= 1000; diamonds++; }
+            updateRewards();
+            save();
+        }
+        
+        // === UTILS ===
+        function shuffle(a) {
+            var arr = a.slice();
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+            }
+            return arr;
+        }
+        
+        function showScreen(id) {
+            var screens = document.querySelectorAll('.screen');
+            for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+            document.getElementById(id).classList.add('active');
+        }
+        
+        function goStart() { showScreen('screenStart'); }
+        
+        function initFrame(id) {
+            var f = document.getElementById(id);
+            f.innerHTML = '';
+            for (var i = 0; i < 10; i++) {
+                var d = document.createElement('div');
+                d.className = 'dot';
+                f.appendChild(d);
+            }
+        }
+        
+        function fillFrame(id, n, color) {
+            var dots = document.getElementById(id).children;
+            for (var i = 0; i < 10; i++) {
+                dots[i].className = i < n ? 'dot ' + (color || 'blue') : 'dot';
+            }
+        }
+        
+        function updateBar(barId, textId, cur, tot, label) {
+            document.getElementById(barId).style.width = (cur / tot * 100) + '%';
+            document.getElementById(textId).textContent = label + ' ' + (cur + 1) + ' von ' + tot;
+        }
+        
+        function genOpts(correct, min, max) {
+            var opts = [correct];
+            while (opts.length < 5) {
+                var o = correct + Math.floor(Math.random() * 5) - 2;
+                if (o >= min && o <= max && opts.indexOf(o) === -1) opts.push(o);
+            }
+            return opts;
+        }
+        
+        function makeButtons(containerId, options, correctVal, onCorrect, onWrong) {
+            var c = document.getElementById(containerId);
+            c.innerHTML = '';
+            var shuffled = shuffle(options);
+            for (var i = 0; i < shuffled.length; i++) {
+                (function(val) {
+                    var btn = document.createElement('button');
+                    btn.className = 'ans';
+                    btn.textContent = val;
+                    btn.onclick = function() {
+                        var btns = c.querySelectorAll('.ans');
+                        for (var j = 0; j < btns.length; j++) btns[j].disabled = true;
+                        if (val === correctVal) {
+                            btn.classList.add('correct');
+                            setTimeout(onCorrect, 400);
+                        } else {
+                            btn.classList.add('wrong');
+                            setTimeout(function() {
+                                btn.classList.remove('wrong');
+                                for (var j = 0; j < btns.length; j++) btns[j].disabled = false;
+                                if (onWrong) onWrong();
+                            }, 500);
+                        }
+                    };
+                    c.appendChild(btn);
+                })(shuffled[i]);
+            }
+        }
+        
+        function showDone() {
+            var pct = total > 0 ? Math.round(correct / total * 100) : 0;
+            document.getElementById('doneStats').textContent = correct + ' von ' + total + ' richtig (' + pct + '%)';
+            document.getElementById('doneMsg').textContent = pct >= 80 ? 'Super gemacht!' : 'Weiter üben!';
+            showScreen('screenDone');
+        }
+        
+        // === MENGEN ===
+        function startMengen() {
+            tasks = shuffle([1,2,3,4,5,6,7,8,9,10]);
+            idx = 0; correct = 0; total = 0;
+            initFrame('mengenFrame');
+            showScreen('screenMengen');
+            showMengen();
+        }
+        
+        function showMengen() {
+            currentAnswer = tasks[idx];
+            fillFrame('mengenFrame', currentAnswer, 'blue');
+            updateBar('mengenBar', 'mengenProg', idx, tasks.length, 'Aufgabe');
+            makeButtons('mengenAns', genOpts(currentAnswer, 1, 10), currentAnswer,
+                function() { correct++; total++; addStar(); nextMengen(); },
+                function() { total++; }
+            );
+        }
+        
+        function nextMengen() {
+            idx++;
+            if (idx < tasks.length) showMengen(); else showDone();
+        }
+        
+        // === VERLIEBT ===
+        function startVerliebt() {
+            tasks = shuffle([1,2,3,4,5,6,7,8,9]);
+            idx = 0; correct = 0; total = 0;
+            initFrame('verliebtFrame');
+            showScreen('screenVerliebt');
+            showVerliebt();
+        }
+        
+        function showVerliebt() {
+            var given = tasks[idx];
+            currentAnswer = 10 - given;
+            fillFrame('verliebtFrame', given, 'blue');
+            document.getElementById('verliebtQ').innerHTML = '<span class="num">' + given + '</span> + ? = 10';
+            updateBar('verliebtBar', 'verliebtProg', idx, tasks.length, 'Aufgabe');
+            makeButtons('verliebtAns', genOpts(currentAnswer, 1, 9), currentAnswer,
+                function() {
+                    var dots = document.getElementById('verliebtFrame').children;
+                    for (var i = given; i < 10; i++) {
+                        (function(x) { setTimeout(function() { dots[x].classList.add('purple'); }, (x-given)*80); })(i);
+                    }
+                    correct++; total++; addStar();
+                    setTimeout(nextVerliebt, 500);
+                },
+                function() { total++; }
+            );
+        }
+        
+        function nextVerliebt() {
+            idx++;
+            if (idx < tasks.length) showVerliebt(); else showDone();
+        }
+        
+        // === ZEHNERTRICK ===
+        function startZt() {
+            tasks = shuffle([
+                {a:3,b:4,d:50},{a:2,b:5,d:30},{a:4,b:3,d:40},
+                {a:5,b:4,d:20},{a:2,b:6,d:50},{a:3,b:5,d:60}
+            ]);
+            idx = 0; correct = 0; total = 0;
+            showScreen('screenZt');
+            showZt();
+        }
+        
+        function showZt() {
+            var t = tasks[idx];
+            var small = t.a + t.b;
+            var bigFirst = t.d + t.a; // z.B. 50+3 = 53
+            var big = t.d + small;    // z.B. 50+7 = 57
+            document.getElementById('ztSmall').innerHTML = '<span class="num">' + t.a + '</span> + <span class="num">' + t.b + '</span> = ?';
+            document.getElementById('ztSmall').style.opacity = '1';
+            document.getElementById('ztBig').innerHTML = '<span class="num">' + bigFirst + '</span> + <span class="num">' + t.b + '</span> = ?';
+            document.getElementById('ztBig').style.opacity = '0.4';
+            document.getElementById('ztInstr').textContent = 'Kleine Aufgabe zuerst!';
+            updateBar('ztBar', 'ztProg', idx, tasks.length, 'Aufgabe');
+            makeButtons('ztAns', genOpts(small, 1, 18), small,
+                function() {
+                    document.getElementById('ztSmall').innerHTML = '<span class="num">' + t.a + '</span> + <span class="num">' + t.b + '</span> = <strong>' + small + '</strong>';
+                    document.getElementById('ztBig').style.opacity = '1';
+                    document.getElementById('ztInstr').textContent = 'Jetzt die große!';
+                    makeButtons('ztAns', genOptsBig(big), big,
+                        function() {
+                            document.getElementById('ztBig').innerHTML = '<span class="num">' + bigFirst + '</span> + <span class="num">' + t.b + '</span> = <strong style="color:#95E1A3">' + big + '</strong>';
+                            correct++; total++; addStar();
+                            setTimeout(nextZt, 500);
+                        },
+                        function() { total++; }
+                    );
+                }, null
+            );
+        }
+        
+        function genOptsBig(correct) {
+            var opts = [correct];
+            while (opts.length < 5) {
+                var o = correct + Math.floor(Math.random() * 11) - 5;
+                if (o >= 10 && o !== correct && opts.indexOf(o) === -1) opts.push(o);
+            }
+            return opts;
+        }
+        
+        function nextZt() {
+            idx++;
+            if (idx < tasks.length) showZt(); else showDone();
+        }
+        
+        // === ZS PLUS ===
+        function startZsPlus() {
+            tasks = shuffle([{f:8,s:5},{f:7,s:6},{f:9,s:4},{f:6,s:7},{f:8,s:4},{f:7,s:5}]);
+            idx = 0; correct = 0; total = 0;
+            initFrame('zspFrame');
+            showScreen('screenZsPlus');
+            showZsPlus();
+        }
+        
+        function showZsPlus() {
+            var t = tasks[idx];
+            zspToTen = 10 - t.f;
+            zspRest = t.s - zspToTen;
+            zspStep = 1;
+            document.getElementById('zspFirst').textContent = t.f;
+            document.getElementById('zspSecond').textContent = t.s;
+            fillFrame('zspFrame', t.f, 'blue');
+            var v = document.getElementById('zspVorrat');
+            v.innerHTML = '';
+            for (var i = 0; i < t.s; i++) {
+                var d = document.createElement('div');
+                d.className = 'vorrat-dot';
+                v.appendChild(d);
+            }
+            document.getElementById('zspResult').classList.remove('show');
+            document.getElementById('zspQ').textContent = 'Wie viele fehlen bis zur 10?';
+            updateBar('zspBar', 'zspProg', idx, tasks.length, 'Aufgabe');
+            makeButtons('zspAns', genOpts(zspToTen, 1, 9), zspToTen,
+                function() {
+                    var dots = document.querySelectorAll('#zspVorrat .vorrat-dot');
+                    var cells = document.getElementById('zspFrame').children;
+                    for (var i = 0; i < zspToTen; i++) {
+                        (function(x) {
+                            setTimeout(function() {
+                                if (dots[x]) dots[x].classList.add('used');
+                                cells[tasks[idx].f + x].className = 'dot red';
+                            }, x * 100);
+                        })(i);
+                    }
+                    setTimeout(zspStep2, zspToTen * 100 + 300);
+                }, null
+            );
+        }
+        
+        function zspStep2() {
+            zspStep = 2;
+            document.getElementById('zspQ').textContent = 'Wie viele rote sind noch übrig?';
+            makeButtons('zspAns', genOpts(zspRest, 0, 9), zspRest,
+                function() {
+                    var final = 10 + zspRest;
+                    document.getElementById('zspResult').textContent = '10 + ' + zspRest + ' = ' + final;
+                    document.getElementById('zspResult').classList.add('show');
+                    document.getElementById('zspAns').innerHTML = '';
+                    correct++; total++; addStar();
+                    setTimeout(nextZsPlus, 1000);
+                }, null
+            );
+        }
+        
+        function nextZsPlus() {
+            idx++;
+            if (idx < tasks.length) showZsPlus(); else showDone();
+        }
+        
+        // === ZS MINUS ===
+        function startZsMinus() {
+            tasks = shuffle([{f:15,s:7},{f:13,s:5},{f:14,s:6},{f:12,s:4},{f:16,s:8},{f:11,s:3}]);
+            idx = 0; correct = 0; total = 0;
+            initFrame('zsmFrame');
+            showScreen('screenZsMinus');
+            showZsMinus();
+        }
+        
+        function showZsMinus() {
+            var t = tasks[idx];
+            zsmEinzelne = t.f - 10;
+            zsmStill = t.s - zsmEinzelne;
+            zsmStep = 1;
+            zsmClicked = 0;
+            document.getElementById('zsmFirst').textContent = t.f;
+            document.getElementById('zsmSecond').textContent = t.s;
+            fillFrame('zsmFrame', 10, 'blue');
+            var e = document.getElementById('zsmEinzelne');
+            e.innerHTML = '';
+            for (var i = 0; i < zsmEinzelne; i++) {
+                var d = document.createElement('div');
+                d.className = 'einzelne-dot';
+                d.onclick = function() { clickEinzelne(this); };
+                e.appendChild(d);
+            }
+            document.getElementById('zsmResult').classList.remove('show');
+            document.getElementById('zsmQ').innerHTML = 'Klicke alle <strong>' + zsmEinzelne + '</strong> Einzelnen!';
+            document.getElementById('zsmAns').innerHTML = '';
+            updateBar('zsmBar', 'zsmProg', idx, tasks.length, 'Aufgabe');
+        }
+        
+        function clickEinzelne(el) {
+            if (el.classList.contains('selected')) return;
+            el.classList.add('selected');
+            zsmClicked++;
+            if (zsmClicked === zsmEinzelne) {
+                setTimeout(function() {
+                    var dots = document.querySelectorAll('#zsmEinzelne .einzelne-dot');
+                    for (var i = 0; i < dots.length; i++) dots[i].classList.add('gone');
+                    setTimeout(zsmStep2, 300);
+                }, 200);
+            }
+        }
+        
+        function zsmStep2() {
+            zsmStep = 2;
+            document.getElementById('zsmQ').innerHTML = zsmEinzelne + ' weg! Wie viele fehlen noch?';
+            makeButtons('zsmAns', genOpts(zsmStill, 1, 9), zsmStill, zsmStep3, null);
+        }
+        
+        function zsmStep3() {
+            zsmStep = 3;
+            var cells = document.getElementById('zsmFrame').children;
+            for (var i = 9; i >= 10 - zsmStill; i--) {
+                (function(x) { setTimeout(function() { cells[x].className = 'dot'; }, (9-x)*80); })(i);
+            }
+            setTimeout(function() {
+                var final = 10 - zsmStill;
+                document.getElementById('zsmQ').textContent = '10 - ' + zsmStill + ' = ?';
+                makeButtons('zsmAns', genOpts(final, 1, 10), final,
+                    function() {
+                        document.getElementById('zsmResult').textContent = tasks[idx].f + ' - ' + tasks[idx].s + ' = ' + final;
+                        document.getElementById('zsmResult').classList.add('show');
+                        document.getElementById('zsmAns').innerHTML = '';
+                        correct++; total++; addStar();
+                        setTimeout(nextZsMinus, 1000);
+                    }, null
+                );
+            }, zsmStill * 80 + 200);
+        }
+        
+        function nextZsMinus() {
+            idx++;
+            if (idx < tasks.length) showZsMinus(); else showDone();
+        }
+        
+        // === CARDS ===
+        function startCards(type) {
+            if (type === 'plus') {
+                cardDeck = shuffle([{q:'4+3',a:7},{q:'2+6',a:8},{q:'5+4',a:9},{q:'7+2',a:9},{q:'3+3',a:6},{q:'6+2',a:8}]);
+            } else {
+                cardDeck = shuffle([{q:'3×4',a:12},{q:'7×8',a:56},{q:'6×6',a:36},{q:'9×3',a:27},{q:'4×8',a:32},{q:'5×7',a:35}]);
+            }
+            cardIdx = 0; correct = 0; total = 0;
+            showScreen('screenCards');
+            showCard();
+        }
+        
+        function showCard() {
+            var c = cardDeck[cardIdx];
+            document.getElementById('flashcard').textContent = c.q;
+            document.getElementById('flashcard').classList.remove('revealed');
+            document.getElementById('cardPre').classList.remove('hidden');
+            document.getElementById('cardPost').classList.add('hidden');
+            updateBar('cardBar', 'cardProg', cardIdx, cardDeck.length, 'Karte');
+        }
+        
+        function revealCard() {
+            var c = cardDeck[cardIdx];
+            document.getElementById('flashcard').textContent = c.a;
+            document.getElementById('flashcard').classList.add('revealed');
+            document.getElementById('cardPre').classList.add('hidden');
+            document.getElementById('cardPost').classList.remove('hidden');
+        }
+        
+        function rateCard(knew) {
+            total++;
+            if (knew) { correct++; addStar(); }
+            else { cardDeck.push(cardDeck[cardIdx]); }
+            cardIdx++;
+            if (cardIdx < cardDeck.length) showCard(); else showDone();
+        }
+        
+        // === EVENT LISTENERS ===
+        document.getElementById('btnMengen').onclick = startMengen;
+        document.getElementById('btnVerliebt').onclick = startVerliebt;
+        document.getElementById('btnZehnertrick').onclick = startZt;
+        document.getElementById('btnZsPlus').onclick = startZsPlus;
+        document.getElementById('btnZsMinus').onclick = startZsMinus;
+        document.getElementById('btnCardsPlus').onclick = function() { startCards('plus'); };
+        document.getElementById('btnCardsMult').onclick = function() { startCards('mult'); };
+        
+        document.getElementById('mengenBack').onclick = goStart;
+        document.getElementById('verliebtBack').onclick = goStart;
+        document.getElementById('ztBack').onclick = goStart;
+        document.getElementById('zspBack').onclick = goStart;
+        document.getElementById('zsmBack').onclick = goStart;
+        document.getElementById('cardBack').onclick = goStart;
+        document.getElementById('restartBtn').onclick = goStart;
+        
+        document.getElementById('revealBtn').onclick = revealCard;
+        document.getElementById('rateYes').onclick = function() { rateCard(true); };
+        document.getElementById('rateNo').onclick = function() { rateCard(false); };
+        
+        // INIT
+        load();
+    </script>
+</body>
+</html>

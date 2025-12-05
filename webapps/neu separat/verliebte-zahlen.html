@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verliebte Zahlen</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #FFF9F0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            color: #FF6B6B;
+        }
+        
+        .rewards {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 12px;
+        }
+        
+        .reward {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .star { color: #FFD700; }
+        .diamond { color: #00CED1; }
+        
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        /* Progress */
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #636E72;
+            margin-bottom: 20px;
+        }
+        
+        /* Heart Visual */
+        .heart-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .heart {
+            position: relative;
+            width: 200px;
+            height: 180px;
+        }
+        
+        .heart-shape {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            clip-path: path('M100,30 C60,-10 0,20 0,80 C0,130 50,170 100,180 C150,170 200,130 200,80 C200,20 140,-10 100,30 Z');
+        }
+        
+        .heart-left, .heart-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .heart-left { left: 30px; }
+        .heart-right { right: 30px; }
+        
+        .heart-plus {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.5rem;
+            color: white;
+            opacity: 0.8;
+        }
+        
+        /* Ten Frame */
+        .frame-container {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        
+        .frame {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+            padding: 12px;
+            background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+            border: 3px solid #FF6B6B;
+            border-radius: 16px;
+        }
+        
+        .dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #fecaca;
+            transition: all 0.3s;
+        }
+        
+        .dot.left {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            box-shadow: 0 3px 10px rgba(255, 107, 107, 0.4);
+        }
+        
+        .dot.right {
+            background: linear-gradient(135deg, #4ECDC4, #45b7aa);
+            box-shadow: 0 3px 10px rgba(78, 205, 196, 0.4);
+        }
+        
+        /* Question */
+        .question {
+            text-align: center;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2D3436;
+            margin: 20px 0;
+        }
+        
+        .question .num {
+            color: #FF6B6B;
+        }
+        
+        .question .missing {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            background: #4ECDC4;
+            color: white;
+            border-radius: 12px;
+            margin: 0 5px;
+        }
+        
+        /* Answer Buttons */
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        
+        .ans-btn {
+            padding: 15px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4ECDC4, #45b7aa);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+        }
+        
+        .ans-btn:hover {
+            transform: translateY(-2px);
+        }
+        
+        .ans-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .ans-btn.correct {
+            background: linear-gradient(135deg, #95E1A3, #7BED9F);
+        }
+        
+        .ans-btn.wrong {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            animation: shake 0.4s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        /* Feedback */
+        .feedback {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 15px;
+            min-height: 35px;
+        }
+        
+        .feedback.correct { color: #95E1A3; }
+        .feedback.wrong { color: #FF6B6B; }
+        
+        /* Screens */
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Start Screen */
+        .start {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .start-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .start h2 {
+            font-size: 1.5rem;
+            color: #2D3436;
+            margin-bottom: 10px;
+        }
+        
+        .start p {
+            color: #636E72;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .pairs-preview {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .pair {
+            background: linear-gradient(135deg, #ffe4e6, #fecdd3);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+            color: #FF6B6B;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Done Screen */
+        .done {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .done-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .done h2 {
+            font-size: 1.8rem;
+            color: #2D3436;
+            margin-bottom: 10px;
+        }
+        
+        .done p {
+            color: #636E72;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+        
+        .score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FF6B6B;
+            margin-bottom: 25px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>💕 Verliebte Zahlen</h1>
+            <div class="rewards">
+                <div class="reward">
+                    <span class="star">★</span>
+                    <span id="stars">0</span>
+                </div>
+                <div class="reward">
+                    <span class="diamond">◆</span>
+                    <span id="diamonds">0</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="card">
+            <!-- Start Screen -->
+            <div class="screen active" id="screenStart">
+                <div class="start">
+                    <div class="start-icon">💕</div>
+                    <h2>Verliebte Zahlen</h2>
+                    <p>Manche Zahlen sind verliebt – zusammen ergeben sie immer 10!</p>
+                    
+                    <div class="pairs-preview">
+                        <div class="pair">1 💕 9</div>
+                        <div class="pair">2 💕 8</div>
+                        <div class="pair">3 💕 7</div>
+                        <div class="pair">4 💕 6</div>
+                        <div class="pair">5 💕 5</div>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="btnStart">Los geht's!</button>
+                </div>
+            </div>
+            
+            <!-- Game Screen -->
+            <div class="screen" id="screenGame">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">Aufgabe 1 von 10</div>
+                
+                <div class="heart-container">
+                    <div class="heart">
+                        <div class="heart-shape"></div>
+                        <div class="heart-left" id="heartLeft">3</div>
+                        <div class="heart-plus">+</div>
+                        <div class="heart-right" id="heartRight">?</div>
+                    </div>
+                </div>
+                
+                <div class="frame-container">
+                    <div class="frame" id="frame"></div>
+                </div>
+                
+                <div class="question" id="question">
+                    <span class="num">3</span> + <span class="missing">?</span> = 10
+                </div>
+                
+                <div class="answers" id="answers"></div>
+                
+                <div class="feedback" id="feedback"></div>
+            </div>
+            
+            <!-- Done Screen -->
+            <div class="screen" id="screenDone">
+                <div class="done">
+                    <div class="done-icon">🎉</div>
+                    <h2>Super gemacht!</h2>
+                    <div class="score" id="score">10/10</div>
+                    <p id="doneMessage">Du kennst alle verliebten Zahlen!</p>
+                    <button class="btn btn-primary" id="btnAgain">Nochmal spielen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === STATE ===
+        var state = {
+            stars: 0,
+            diamonds: 0,
+            tasks: [],
+            current: 0,
+            correct: 0,
+            total: 10
+        };
+        
+        // === STORAGE ===
+        function load() {
+            try {
+                var saved = localStorage.getItem('verliebte');
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    state.stars = data.stars || 0;
+                    state.diamonds = data.diamonds || 0;
+                }
+            } catch(e) {}
+            updateRewards();
+        }
+        
+        function save() {
+            try {
+                localStorage.setItem('verliebte', JSON.stringify({
+                    stars: state.stars,
+                    diamonds: state.diamonds
+                }));
+            } catch(e) {}
+        }
+        
+        function updateRewards() {
+            document.getElementById('stars').textContent = state.stars;
+            document.getElementById('diamonds').textContent = state.diamonds;
+        }
+        
+        function addStar() {
+            state.stars++;
+            if (state.stars >= 100) {
+                state.stars -= 100;
+                state.diamonds++;
+            }
+            updateRewards();
+            save();
+        }
+        
+        // === SCREENS ===
+        function showScreen(id) {
+            var screens = document.querySelectorAll('.screen');
+            for (var i = 0; i < screens.length; i++) {
+                screens[i].classList.remove('active');
+            }
+            document.getElementById(id).classList.add('active');
+        }
+        
+        // === GAME LOGIC ===
+        function shuffle(arr) {
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = arr[i];
+                arr[i] = arr[j];
+                arr[j] = temp;
+            }
+            return arr;
+        }
+        
+        function generateTasks() {
+            // Each pair twice
+            var pairs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+            state.tasks = shuffle(pairs).slice(0, state.total);
+        }
+        
+        function startGame() {
+            generateTasks();
+            state.current = 0;
+            state.correct = 0;
+            showScreen('screenGame');
+            showTask();
+        }
+        
+        function showTask() {
+            var num = state.tasks[state.current];
+            var answer = 10 - num;
+            
+            // Update progress
+            var pct = (state.current / state.total) * 100;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = 'Aufgabe ' + (state.current + 1) + ' von ' + state.total;
+            
+            // Clear feedback
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            
+            // Update heart
+            document.getElementById('heartLeft').textContent = num;
+            document.getElementById('heartRight').textContent = '?';
+            
+            // Update question
+            document.getElementById('question').innerHTML = '<span class="num">' + num + '</span> + <span class="missing">?</span> = 10';
+            
+            // Fill frame - left side red, right side empty (to be filled)
+            var frame = document.getElementById('frame');
+            frame.innerHTML = '';
+            for (var i = 0; i < 10; i++) {
+                var dot = document.createElement('div');
+                if (i < num) {
+                    dot.className = 'dot left';
+                } else {
+                    dot.className = 'dot';
+                }
+                frame.appendChild(dot);
+            }
+            
+            // Generate answer buttons
+            var options = [answer];
+            while (options.length < 5) {
+                var opt = Math.floor(Math.random() * 9) + 1;
+                if (options.indexOf(opt) === -1) {
+                    options.push(opt);
+                }
+            }
+            options = shuffle(options);
+            
+            // Create buttons
+            var answersDiv = document.getElementById('answers');
+            answersDiv.innerHTML = '';
+            
+            for (var i = 0; i < options.length; i++) {
+                var btn = document.createElement('button');
+                btn.className = 'ans-btn';
+                btn.textContent = options[i];
+                btn.setAttribute('data-val', options[i]);
+                answersDiv.appendChild(btn);
+            }
+        }
+        
+        function handleAnswer(val) {
+            var num = state.tasks[state.current];
+            var correct = 10 - num;
+            var buttons = document.querySelectorAll('.ans-btn');
+            var feedback = document.getElementById('feedback');
+            
+            // Disable all buttons
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].style.pointerEvents = 'none';
+            }
+            
+            if (val === correct) {
+                // Correct!
+                state.correct++;
+                addStar();
+                feedback.textContent = '💕 ' + num + ' + ' + correct + ' = 10';
+                feedback.className = 'feedback correct';
+                
+                // Update heart
+                document.getElementById('heartRight').textContent = correct;
+                
+                // Fill remaining dots
+                var dots = document.querySelectorAll('#frame .dot');
+                for (var i = num; i < 10; i++) {
+                    (function(idx) {
+                        setTimeout(function() {
+                            dots[idx].classList.add('right');
+                        }, (idx - num) * 100);
+                    })(i);
+                }
+                
+                // Highlight correct button
+                for (var i = 0; i < buttons.length; i++) {
+                    if (parseInt(buttons[i].getAttribute('data-val')) === val) {
+                        buttons[i].classList.add('correct');
+                    }
+                }
+            } else {
+                // Wrong
+                feedback.textContent = '✗ ' + num + ' + ' + correct + ' = 10';
+                feedback.className = 'feedback wrong';
+                
+                // Highlight wrong and correct
+                for (var i = 0; i < buttons.length; i++) {
+                    var btnVal = parseInt(buttons[i].getAttribute('data-val'));
+                    if (btnVal === val) {
+                        buttons[i].classList.add('wrong');
+                    }
+                    if (btnVal === correct) {
+                        buttons[i].classList.add('correct');
+                    }
+                }
+            }
+            
+            // Next task after delay
+            setTimeout(function() {
+                state.current++;
+                if (state.current < state.total) {
+                    showTask();
+                } else {
+                    showDone();
+                }
+            }, 1200);
+        }
+        
+        function showDone() {
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('score').textContent = state.correct + '/' + state.total;
+            
+            var pct = Math.round((state.correct / state.total) * 100);
+            var msg = '';
+            if (pct === 100) {
+                msg = 'Perfekt! Du kennst alle verliebten Zahlen! 💕';
+            } else if (pct >= 80) {
+                msg = 'Super! Fast alle Paare gefunden! 💕';
+            } else if (pct >= 60) {
+                msg = 'Gut! Übe weiter mit den Paaren! 💪';
+            } else {
+                msg = 'Übung macht den Meister! 🎯';
+            }
+            document.getElementById('doneMessage').textContent = msg;
+            
+            showScreen('screenDone');
+        }
+        
+        // === EVENT LISTENERS ===
+        document.getElementById('btnStart').addEventListener('click', startGame);
+        document.getElementById('btnAgain').addEventListener('click', function() {
+            showScreen('screenStart');
+        });
+        
+        // Event delegation for answer buttons
+        document.getElementById('answers').addEventListener('click', function(e) {
+            if (e.target.classList.contains('ans-btn')) {
+                var val = parseInt(e.target.getAttribute('data-val'));
+                handleAnswer(val);
+            }
+        });
+        
+        // === INIT ===
+        load();
+    </script>
+</body>
+</html>

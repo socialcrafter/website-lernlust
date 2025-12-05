@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mengen-Bilder</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #FFF9F0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        
+        /* Header */
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            color: #FF6B6B;
+        }
+        
+        .rewards {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 12px;
+        }
+        
+        .reward {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .star { color: #FFD700; }
+        .diamond { color: #00CED1; }
+        
+        /* Card */
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        /* Progress */
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #6b7280;
+            margin-bottom: 20px;
+        }
+        
+        /* Instruction */
+        .instruction {
+            text-align: center;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #2D3436;
+            margin-bottom: 20px;
+        }
+        
+        /* Ten Frame */
+        .frame-container {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0;
+        }
+        
+        .frame {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            padding: 15px;
+            background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
+            border: 3px solid #4ECDC4;
+            border-radius: 16px;
+        }
+        
+        .dot {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #e5e7eb;
+            transition: all 0.3s;
+        }
+        
+        .dot.filled {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            box-shadow: 0 4px 12px rgba(255, 107, 107, 0.4);
+        }
+        
+        /* Answer Buttons */
+        .answers {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            margin-top: 25px;
+        }
+        
+        .ans-btn {
+            padding: 15px;
+            font-size: 1.4rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #4ECDC4, #45b7aa);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
+        }
+        
+        .ans-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(78, 205, 196, 0.4);
+        }
+        
+        .ans-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .ans-btn.correct {
+            background: linear-gradient(135deg, #95E1A3, #7BED9F);
+        }
+        
+        .ans-btn.wrong {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            animation: shake 0.4s;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            75% { transform: translateX(8px); }
+        }
+        
+        /* Feedback */
+        .feedback {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 20px;
+            min-height: 40px;
+        }
+        
+        .feedback.correct { color: #95E1A3; }
+        .feedback.wrong { color: #FF6B6B; }
+        
+        /* Done Screen */
+        .done {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .done-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .done h2 {
+            font-size: 1.8rem;
+            color: #2D3436;
+            margin-bottom: 10px;
+        }
+        
+        .done p {
+            color: #636E72;
+            font-size: 1.1rem;
+            margin-bottom: 25px;
+        }
+        
+        .score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FF6B6B;
+            margin-bottom: 25px;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+        }
+        
+        /* Screens */
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Start Screen */
+        .start {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .start-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .start h2 {
+            font-size: 1.5rem;
+            color: #2D3436;
+            margin-bottom: 10px;
+        }
+        
+        .start p {
+            color: #636E72;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .level-select {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .level-btn {
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        
+        .level-btn:hover {
+            border-color: #4ECDC4;
+            background: #e0f7fa;
+        }
+        
+        .level-btn.selected {
+            border-color: #4ECDC4;
+            background: #e0f7fa;
+        }
+        
+        .level-title {
+            color: #2D3436;
+        }
+        
+        .level-desc {
+            font-size: 0.85rem;
+            color: #636E72;
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🔢 Mengen-Bilder</h1>
+            <div class="rewards">
+                <div class="reward">
+                    <span class="star">★</span>
+                    <span id="stars">0</span>
+                </div>
+                <div class="reward">
+                    <span class="diamond">◆</span>
+                    <span id="diamonds">0</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="card">
+            <!-- Start Screen -->
+            <div class="screen active" id="screenStart">
+                <div class="start">
+                    <div class="start-icon">🎯</div>
+                    <h2>Mengen erkennen</h2>
+                    <p>Schau dir das Bild an und erkenne sofort wie viele Punkte es sind – ohne zu zählen!</p>
+                    
+                    <div class="level-select">
+                        <button class="level-btn selected" id="level1">
+                            <div class="level-title">⭐ Level 1: Zahlen 1-5</div>
+                            <div class="level-desc">Für Einsteiger</div>
+                        </button>
+                        <button class="level-btn" id="level2">
+                            <div class="level-title">⭐⭐ Level 2: Zahlen 1-10</div>
+                            <div class="level-desc">Für Fortgeschrittene</div>
+                        </button>
+                        <button class="level-btn" id="level3">
+                            <div class="level-title">⭐⭐⭐ Level 3: Schnell!</div>
+                            <div class="level-desc">Zahlen 1-10, weniger Zeit</div>
+                        </button>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="btnStart">Los geht's!</button>
+                </div>
+            </div>
+            
+            <!-- Game Screen -->
+            <div class="screen" id="screenGame">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">Aufgabe 1 von 10</div>
+                
+                <div class="instruction">Wie viele Punkte?</div>
+                
+                <div class="frame-container">
+                    <div class="frame" id="frame"></div>
+                </div>
+                
+                <div class="answers" id="answers"></div>
+                
+                <div class="feedback" id="feedback"></div>
+            </div>
+            
+            <!-- Done Screen -->
+            <div class="screen" id="screenDone">
+                <div class="done">
+                    <div class="done-icon">🎉</div>
+                    <h2>Super gemacht!</h2>
+                    <div class="score" id="score">10/10</div>
+                    <p id="doneMessage">Perfekt! Du bist ein Mengen-Profi!</p>
+                    <button class="btn btn-primary" id="btnAgain">Nochmal spielen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === STATE ===
+        var state = {
+            stars: 0,
+            diamonds: 0,
+            level: 1,
+            maxNum: 5,
+            tasks: [],
+            current: 0,
+            correct: 0,
+            total: 10
+        };
+        
+        // === STORAGE ===
+        function load() {
+            try {
+                var saved = localStorage.getItem('mengenbilder');
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    state.stars = data.stars || 0;
+                    state.diamonds = data.diamonds || 0;
+                }
+            } catch(e) {}
+            updateRewards();
+        }
+        
+        function save() {
+            try {
+                localStorage.setItem('mengenbilder', JSON.stringify({
+                    stars: state.stars,
+                    diamonds: state.diamonds
+                }));
+            } catch(e) {}
+        }
+        
+        function updateRewards() {
+            document.getElementById('stars').textContent = state.stars;
+            document.getElementById('diamonds').textContent = state.diamonds;
+        }
+        
+        function addStar() {
+            state.stars++;
+            if (state.stars >= 100) {
+                state.stars -= 100;
+                state.diamonds++;
+            }
+            updateRewards();
+            save();
+        }
+        
+        // === SCREENS ===
+        function showScreen(id) {
+            var screens = document.querySelectorAll('.screen');
+            for (var i = 0; i < screens.length; i++) {
+                screens[i].classList.remove('active');
+            }
+            document.getElementById(id).classList.add('active');
+        }
+        
+        // === GAME LOGIC ===
+        function generateTasks() {
+            state.tasks = [];
+            var nums = [];
+            
+            // Generate numbers based on level
+            for (var i = 1; i <= state.maxNum; i++) {
+                nums.push(i);
+                nums.push(i); // Each number twice
+            }
+            
+            // Shuffle
+            for (var i = nums.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = nums[i];
+                nums[i] = nums[j];
+                nums[j] = temp;
+            }
+            
+            // Take first 10
+            state.tasks = nums.slice(0, state.total);
+        }
+        
+        function startGame() {
+            generateTasks();
+            state.current = 0;
+            state.correct = 0;
+            showScreen('screenGame');
+            showTask();
+        }
+        
+        function showTask() {
+            var num = state.tasks[state.current];
+            
+            // Update progress
+            var pct = (state.current / state.total) * 100;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = 'Aufgabe ' + (state.current + 1) + ' von ' + state.total;
+            
+            // Clear feedback
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            
+            // Fill frame
+            var frame = document.getElementById('frame');
+            frame.innerHTML = '';
+            for (var i = 0; i < 10; i++) {
+                var dot = document.createElement('div');
+                dot.className = 'dot' + (i < num ? ' filled' : '');
+                frame.appendChild(dot);
+            }
+            
+            // Generate answer buttons
+            var correct = num;
+            var options = [correct];
+            
+            while (options.length < 5) {
+                var opt;
+                if (state.maxNum <= 5) {
+                    opt = Math.floor(Math.random() * 5) + 1;
+                } else {
+                    opt = Math.floor(Math.random() * 10) + 1;
+                }
+                if (options.indexOf(opt) === -1) {
+                    options.push(opt);
+                }
+            }
+            
+            // Shuffle options
+            for (var i = options.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = options[i];
+                options[i] = options[j];
+                options[j] = temp;
+            }
+            
+            // Create buttons
+            var answersDiv = document.getElementById('answers');
+            answersDiv.innerHTML = '';
+            
+            for (var i = 0; i < options.length; i++) {
+                var btn = document.createElement('button');
+                btn.className = 'ans-btn';
+                btn.textContent = options[i];
+                btn.setAttribute('data-val', options[i]);
+                answersDiv.appendChild(btn);
+            }
+        }
+        
+        function handleAnswer(val) {
+            var correct = state.tasks[state.current];
+            var buttons = document.querySelectorAll('.ans-btn');
+            var feedback = document.getElementById('feedback');
+            
+            // Disable all buttons
+            for (var i = 0; i < buttons.length; i++) {
+                buttons[i].style.pointerEvents = 'none';
+            }
+            
+            if (val === correct) {
+                // Correct!
+                state.correct++;
+                addStar();
+                feedback.textContent = '✓ Richtig!';
+                feedback.className = 'feedback correct';
+                
+                // Highlight correct button
+                for (var i = 0; i < buttons.length; i++) {
+                    if (parseInt(buttons[i].getAttribute('data-val')) === val) {
+                        buttons[i].classList.add('correct');
+                    }
+                }
+            } else {
+                // Wrong
+                feedback.textContent = '✗ Das war ' + correct;
+                feedback.className = 'feedback wrong';
+                
+                // Highlight wrong and correct
+                for (var i = 0; i < buttons.length; i++) {
+                    var btnVal = parseInt(buttons[i].getAttribute('data-val'));
+                    if (btnVal === val) {
+                        buttons[i].classList.add('wrong');
+                    }
+                    if (btnVal === correct) {
+                        buttons[i].classList.add('correct');
+                    }
+                }
+            }
+            
+            // Next task after delay
+            setTimeout(function() {
+                state.current++;
+                if (state.current < state.total) {
+                    showTask();
+                } else {
+                    showDone();
+                }
+            }, 1000);
+        }
+        
+        function showDone() {
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('score').textContent = state.correct + '/' + state.total;
+            
+            var pct = Math.round((state.correct / state.total) * 100);
+            var msg = '';
+            if (pct === 100) {
+                msg = 'Perfekt! Du bist ein Mengen-Profi! 🌟';
+            } else if (pct >= 80) {
+                msg = 'Super gemacht! Weiter so! 👏';
+            } else if (pct >= 60) {
+                msg = 'Gut! Übung macht den Meister! 💪';
+            } else {
+                msg = 'Versuch es nochmal! Du schaffst das! 🎯';
+            }
+            document.getElementById('doneMessage').textContent = msg;
+            
+            showScreen('screenDone');
+        }
+        
+        // === EVENT LISTENERS ===
+        document.getElementById('level1').addEventListener('click', function() {
+            selectLevel(1, 5, this);
+        });
+        
+        document.getElementById('level2').addEventListener('click', function() {
+            selectLevel(2, 10, this);
+        });
+        
+        document.getElementById('level3').addEventListener('click', function() {
+            selectLevel(3, 10, this);
+        });
+        
+        function selectLevel(level, maxNum, btn) {
+            state.level = level;
+            state.maxNum = maxNum;
+            
+            var btns = document.querySelectorAll('.level-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove('selected');
+            }
+            btn.classList.add('selected');
+        }
+        
+        document.getElementById('btnStart').addEventListener('click', startGame);
+        document.getElementById('btnAgain').addEventListener('click', function() {
+            showScreen('screenStart');
+        });
+        
+        // Event delegation for answer buttons
+        document.getElementById('answers').addEventListener('click', function(e) {
+            if (e.target.classList.contains('ans-btn')) {
+                var val = parseInt(e.target.getAttribute('data-val'));
+                handleAnswer(val);
+            }
+        });
+        
+        // === INIT ===
+        load();
+    </script>
+</body>
+</html>

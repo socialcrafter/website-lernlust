@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Karteikarten Plus</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #FFF9F0;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 1.8rem;
+            color: #FF6B6B;
+        }
+        
+        .rewards {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 12px;
+        }
+        
+        .reward {
+            background: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .star { color: #FFD700; }
+        .diamond { color: #00CED1; }
+        
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+        
+        /* Progress */
+        .progress-bar {
+            height: 8px;
+            background: #e5e7eb;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+        
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: #636E72;
+            margin-bottom: 15px;
+        }
+        
+        /* Instruction */
+        .instruction {
+            text-align: center;
+            font-size: 1rem;
+            color: #636E72;
+            margin-bottom: 15px;
+            padding: 10px;
+            background: #fef3c7;
+            border-radius: 12px;
+        }
+        
+        /* Flashcard */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 20px 0;
+        }
+        
+        .flashcard {
+            background: linear-gradient(135deg, #fff, #f8f9fa);
+            border: 3px solid #e5e7eb;
+            border-radius: 20px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2D3436;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        
+        .flashcard:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+        }
+        
+        .flashcard.revealed {
+            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+            border-color: #10b981;
+        }
+        
+        .flashcard .answer {
+            color: #10b981;
+        }
+        
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+        }
+        
+        .btn:active {
+            transform: scale(0.98);
+        }
+        
+        .btn-reveal {
+            background: linear-gradient(135deg, #4ECDC4, #45b7aa);
+            color: white;
+        }
+        
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn-knew {
+            flex: 1;
+            background: linear-gradient(135deg, #95E1A3, #7BED9F);
+            color: white;
+        }
+        
+        .btn-didnt {
+            flex: 1;
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            color: white;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
+            color: white;
+        }
+        
+        /* Screens */
+        .screen { display: none; }
+        .screen.active { display: block; }
+        
+        /* Start Screen */
+        .start {
+            text-align: center;
+            padding: 20px 0;
+        }
+        
+        .start-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .start h2 {
+            font-size: 1.5rem;
+            color: #2D3436;
+            margin-bottom: 10px;
+        }
+        
+        .start p {
+            color: #636E72;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+        
+        .level-select {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .level-btn {
+            padding: 15px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        
+        .level-btn:hover, .level-btn.selected {
+            border-color: #4ECDC4;
+            background: #e0f7fa;
+        }
+        
+        .level-title { color: #2D3436; }
+        .level-desc { font-size: 0.85rem; color: #636E72; font-weight: 400; }
+        
+        /* Done Screen */
+        .done {
+            text-align: center;
+            padding: 30px 0;
+        }
+        
+        .done-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+        
+        .done h2 {
+            font-size: 1.8rem;
+            color: #2D3436;
+            margin-bottom: 10px;
+        }
+        
+        .done p {
+            color: #636E72;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+        
+        .score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #FF6B6B;
+            margin-bottom: 15px;
+        }
+        
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .stat-val.green { color: #10b981; }
+        .stat-val.red { color: #FF6B6B; }
+        
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: #636E72;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🃏 Karteikarten Plus</h1>
+            <div class="rewards">
+                <div class="reward">
+                    <span class="star">★</span>
+                    <span id="stars">0</span>
+                </div>
+                <div class="reward">
+                    <span class="diamond">◆</span>
+                    <span id="diamonds">0</span>
+                </div>
+            </div>
+        </header>
+        
+        <div class="card">
+            <!-- Start Screen -->
+            <div class="screen active" id="screenStart">
+                <div class="start">
+                    <div class="start-icon">🃏</div>
+                    <h2>Addition automatisieren</h2>
+                    <p>Nicht rechnen – sofort wissen! Präge dir die Ergebnisse ein.</p>
+                    
+                    <div class="level-select">
+                        <button class="level-btn selected" id="level1">
+                            <div class="level-title">⭐ Einfach: bis 10</div>
+                            <div class="level-desc">3+4, 5+2, ...</div>
+                        </button>
+                        <button class="level-btn" id="level2">
+                            <div class="level-title">⭐⭐ Mittel: Zehnerübergang</div>
+                            <div class="level-desc">8+5, 7+6, ...</div>
+                        </button>
+                        <button class="level-btn" id="level3">
+                            <div class="level-title">⭐⭐⭐ Schwer: Gemischt</div>
+                            <div class="level-desc">Alles durcheinander</div>
+                        </button>
+                    </div>
+                    
+                    <button class="btn btn-primary" id="btnStart">Los geht's!</button>
+                </div>
+            </div>
+            
+            <!-- Game Screen -->
+            <div class="screen" id="screenGame">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">Karte 1 von 10</div>
+                
+                <div class="instruction">Nicht rechnen – einprägen!</div>
+                
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <span id="cardContent">3 + 4</span>
+                    </div>
+                </div>
+                
+                <div id="preReveal">
+                    <button class="btn btn-reveal" id="btnReveal">Lösung zeigen</button>
+                </div>
+                
+                <div id="postReveal" style="display: none;">
+                    <p style="text-align: center; margin-bottom: 10px; color: #636E72;">Wusstest du es sofort?</p>
+                    <div class="btn-row">
+                        <button class="btn btn-knew" id="btnKnew">✓ Ja!</button>
+                        <button class="btn btn-didnt" id="btnDidnt">✗ Nein</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Done Screen -->
+            <div class="screen" id="screenDone">
+                <div class="done">
+                    <div class="done-icon">🎉</div>
+                    <h2>Geschafft!</h2>
+                    <div class="score" id="score">8/10</div>
+                    
+                    <div class="stats-row">
+                        <div class="stat">
+                            <div class="stat-val green" id="knewCount">8</div>
+                            <div class="stat-lbl">Gewusst</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val red" id="didntCount">2</div>
+                            <div class="stat-lbl">Üben</div>
+                        </div>
+                    </div>
+                    
+                    <p id="doneMessage">Super! Weiter so!</p>
+                    <button class="btn btn-primary" id="btnAgain">Nochmal üben</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === DATA ===
+        var cardsEasy = [
+            {q: '3 + 4', a: 7}, {q: '2 + 5', a: 7}, {q: '4 + 3', a: 7},
+            {q: '5 + 2', a: 7}, {q: '6 + 3', a: 9}, {q: '4 + 4', a: 8},
+            {q: '2 + 6', a: 8}, {q: '5 + 3', a: 8}, {q: '3 + 5', a: 8},
+            {q: '4 + 5', a: 9}, {q: '1 + 8', a: 9}, {q: '6 + 2', a: 8},
+            {q: '3 + 3', a: 6}, {q: '2 + 4', a: 6}, {q: '5 + 4', a: 9}
+        ];
+        
+        var cardsMedium = [
+            {q: '8 + 5', a: 13}, {q: '7 + 6', a: 13}, {q: '9 + 4', a: 13},
+            {q: '6 + 7', a: 13}, {q: '8 + 4', a: 12}, {q: '7 + 5', a: 12},
+            {q: '9 + 3', a: 12}, {q: '6 + 5', a: 11}, {q: '8 + 6', a: 14},
+            {q: '7 + 4', a: 11}, {q: '9 + 5', a: 14}, {q: '8 + 7', a: 15},
+            {q: '6 + 6', a: 12}, {q: '9 + 6', a: 15}, {q: '7 + 7', a: 14}
+        ];
+        
+        // === STATE ===
+        var state = {
+            stars: 0,
+            diamonds: 0,
+            level: 1,
+            cards: [],
+            current: 0,
+            knew: 0,
+            didnt: 0,
+            total: 10,
+            revealed: false,
+            gameActive: false
+        };
+        
+        // === STORAGE ===
+        function load() {
+            try {
+                var saved = localStorage.getItem('karteikarten_plus');
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    state.stars = data.stars || 0;
+                    state.diamonds = data.diamonds || 0;
+                }
+            } catch(e) {}
+            updateRewards();
+        }
+        
+        function save() {
+            try {
+                localStorage.setItem('karteikarten_plus', JSON.stringify({
+                    stars: state.stars,
+                    diamonds: state.diamonds
+                }));
+            } catch(e) {}
+        }
+        
+        function updateRewards() {
+            document.getElementById('stars').textContent = state.stars;
+            document.getElementById('diamonds').textContent = state.diamonds;
+        }
+        
+        function addStar() {
+            state.stars++;
+            if (state.stars >= 100) {
+                state.stars -= 100;
+                state.diamonds++;
+            }
+            updateRewards();
+            save();
+        }
+        
+        // === SCREENS ===
+        function showScreen(id) {
+            var screens = document.querySelectorAll('.screen');
+            for (var i = 0; i < screens.length; i++) {
+                screens[i].classList.remove('active');
+            }
+            document.getElementById(id).classList.add('active');
+        }
+        
+        // === GAME LOGIC ===
+        function shuffle(arr) {
+            var a = arr.slice();
+            for (var i = a.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+            return a;
+        }
+        
+        function generateCards() {
+            var pool = [];
+            if (state.level === 1) {
+                pool = cardsEasy;
+            } else if (state.level === 2) {
+                pool = cardsMedium;
+            } else {
+                pool = cardsEasy.concat(cardsMedium);
+            }
+            state.cards = shuffle(pool).slice(0, state.total);
+        }
+        
+        function startGame() {
+            if (state.gameActive) return;
+            state.gameActive = true;
+            
+            generateCards();
+            state.current = 0;
+            state.knew = 0;
+            state.didnt = 0;
+            state.revealed = false;
+            showScreen('screenGame');
+            
+            // Small delay to ensure DOM is ready
+            setTimeout(showCard, 50);
+        }
+        
+        function showCard() {
+            var card = state.cards[state.current];
+            state.revealed = false;
+            
+            // Update progress
+            var pct = (state.current / state.total) * 100;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = 'Karte ' + (state.current + 1) + ' von ' + state.total;
+            
+            // Show question
+            var flashcard = document.getElementById('flashcard');
+            flashcard.classList.remove('revealed');
+            document.getElementById('cardContent').innerHTML = card.q;
+            
+            // Show reveal button
+            document.getElementById('preReveal').style.display = 'block';
+            document.getElementById('postReveal').style.display = 'none';
+        }
+        
+        function revealCard() {
+            var card = state.cards[state.current];
+            state.revealed = true;
+            
+            var flashcard = document.getElementById('flashcard');
+            flashcard.classList.add('revealed');
+            document.getElementById('cardContent').innerHTML = card.q + ' = <span class="answer">' + card.a + '</span>';
+            
+            document.getElementById('preReveal').style.display = 'none';
+            document.getElementById('postReveal').style.display = 'block';
+        }
+        
+        function rateCard(knew) {
+            if (knew) {
+                state.knew++;
+                addStar();
+            } else {
+                state.didnt++;
+            }
+            
+            state.current++;
+            if (state.current < state.total) {
+                showCard();
+            } else {
+                showDone();
+            }
+        }
+        
+        function showDone() {
+            document.getElementById('progressBar').style.width = '100%';
+            document.getElementById('score').textContent = state.knew + '/' + state.total;
+            document.getElementById('knewCount').textContent = state.knew;
+            document.getElementById('didntCount').textContent = state.didnt;
+            
+            var pct = Math.round((state.knew / state.total) * 100);
+            var msg = '';
+            if (pct === 100) {
+                msg = 'Perfekt! Alles im Kopf! 🌟';
+            } else if (pct >= 80) {
+                msg = 'Super! Fast alles gewusst! 👏';
+            } else if (pct >= 60) {
+                msg = 'Gut! Weiter üben! 💪';
+            } else {
+                msg = 'Übung macht den Meister! 🎯';
+            }
+            document.getElementById('doneMessage').textContent = msg;
+            
+            showScreen('screenDone');
+        }
+        
+        // === EVENT LISTENERS ===
+        document.getElementById('level1').addEventListener('click', function() {
+            selectLevel(1, this);
+        });
+        document.getElementById('level2').addEventListener('click', function() {
+            selectLevel(2, this);
+        });
+        document.getElementById('level3').addEventListener('click', function() {
+            selectLevel(3, this);
+        });
+        
+        function selectLevel(level, btn) {
+            state.level = level;
+            var btns = document.querySelectorAll('.level-btn');
+            for (var i = 0; i < btns.length; i++) {
+                btns[i].classList.remove('selected');
+            }
+            btn.classList.add('selected');
+        }
+        
+        document.getElementById('btnStart').addEventListener('click', startGame);
+        document.getElementById('btnReveal').addEventListener('click', revealCard);
+        document.getElementById('btnKnew').addEventListener('click', function() { rateCard(true); });
+        document.getElementById('btnDidnt').addEventListener('click', function() { rateCard(false); });
+        document.getElementById('btnAgain').addEventListener('click', function() {
+            state.gameActive = false;
+            showScreen('screenStart');
+        });
+        
+        // Click on flashcard to reveal
+        document.getElementById('flashcard').addEventListener('click', function() {
+            if (!state.revealed) {
+                revealCard();
+            }
+        });
+        
+        // === INIT ===
+        load();
+    </script>
+</body>
+</html>
