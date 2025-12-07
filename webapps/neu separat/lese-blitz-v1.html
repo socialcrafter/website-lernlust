@@ -597,6 +597,7 @@
     </style>
 </head>
 <body>
+    <audio id="tts-player" preload="auto"></audio>
     <div class="bg-shapes">
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
@@ -1037,13 +1038,10 @@
         // SPEECH SYNTHESIS
         // ==========================================
         function speak(text) {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.lang = 'de-DE';
-                utterance.rate = 0.8;
-                window.speechSynthesis.speak(utterance);
-            }
+            const player = document.getElementById('tts-player');
+            const filename = text.toLowerCase().replace(/ /g, '_') + '.mp3';
+            player.src = 'lese-blitz-v1_audio/' + filename;
+            player.play().catch(e => console.error("Audio playback failed for " + filename, e));
         }
 
         function speakSilbe() {
@@ -1093,7 +1091,6 @@
             document.getElementById('ssFeedback').textContent = `${kon}${vok}`;
             document.getElementById('ssPreReveal').classList.add('hidden');
             document.getElementById('ssPostReveal').classList.remove('hidden');
-            speak(kon.toLowerCase() + vok);
         }
 
         function rateSilbe(correct) {
@@ -1233,7 +1230,6 @@
             document.getElementById('wbFeedback').textContent = item.wort;
             document.getElementById('wbPreReveal').classList.add('hidden');
             document.getElementById('wbPostReveal').classList.remove('hidden');
-            speak(item.wort);
         }
 
         function rateWort(correct) {

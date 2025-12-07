@@ -87,7 +87,7 @@
             position: relative; min-height: 200px;
         }
         .line {
-            display: block; padding: 8px 12px; border-radius: 8px; transition: all 0.3s; cursor: pointer; margin: 4px 0;
+            display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; border-radius: 8px; transition: all 0.3s; cursor: pointer; margin: 4px 0;
         }
         .line:hover { background: rgba(78, 205, 196, 0.1); }
         .line.active { background: rgba(255, 107, 107, 0.15); border-left: 4px solid var(--primary); }
@@ -117,6 +117,20 @@
         .btn-record:active { transform: scale(0.95); }
         .btn-record.recording { background: var(--primary); color: white; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4); } 70% { box-shadow: 0 0 0 20px rgba(255, 107, 107, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); } }
+
+        .btn-audio-line {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+            margin-left: 8px;
+        }
+        .btn-audio-line:hover {
+            opacity: 1;
+        }
+
 
         .controls { display: flex; gap: 10px; margin-top: 15px; justify-content: space-between; }
         .controls-center { justify-content: center; }
@@ -176,6 +190,7 @@
     </style>
 </head>
 <body>
+    <audio id="tts-player" preload="auto"></audio>
     <div class="bg-shapes">
         <div class="shape shape-1"></div>
         <div class="shape shape-2"></div>
@@ -426,6 +441,19 @@
         var mediaRecorder = null;
         var audioChunks = [];
 
+        // === SPEECH ===
+        function speak(text) {
+            // This function can be used for general purpose TTS if needed later
+            console.warn("General speak function not implemented with pre-generated audio.")
+        }
+        
+        function speakLine(textId, lineIndex) {
+            const player = document.getElementById('tts-player');
+            const filename = `${textId}_${lineIndex}.mp3`;
+            player.src = 'lese-profi-v2_audio/' + filename;
+            player.play().catch(e => console.error("Audio playback failed for " + filename, e));
+        }
+
         // === LOAD/SAVE ===
         function load() {
             try {
@@ -567,7 +595,8 @@
                 }
                 
                 var activeClass = i === state.currentLine ? ' active' : '';
-                html += '<span class="line' + activeClass + '" data-idx="' + i + '">' + lineText + '</span>';
+                // Use a DIV as a flex container for the line
+                html += '<div class="line' + activeClass + '" data-idx="' + i + '"><span>' + lineText + '</span><button class="btn-audio-line" onclick="event.stopPropagation(); speakLine(\''+ state.currentText.id +'\', ' + i + ')">🔊</button></div>';
             }
             
             container.innerHTML = html;
@@ -577,7 +606,9 @@
             var lineEls = container.querySelectorAll('.line');
             for (var j = 0; j < lineEls.length; j++) {
                 (function(el, idx) {
-                    el.onclick = function() { jumpToLine(idx); };
+                    el.onclick = function() {
+                        jumpToLine(idx); 
+                    };
                 })(lineEls[j], j);
             }
             

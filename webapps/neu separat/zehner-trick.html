@@ -3,413 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zehner-Trick</title>
+    <title>10 voll machen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --secondary: #FF6B9D;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #FFF9F0;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
             min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-shape { position: absolute; border-radius: 50%; opacity: 0.1; animation: float 20s infinite ease-in-out; }
+        .bg-shape:nth-child(1) { width: 300px; height: 300px; background: var(--primary); top: -100px; right: -100px; }
+        .bg-shape:nth-child(2) { width: 200px; height: 200px; background: var(--secondary); bottom: 10%; left: -50px; animation-delay: -5s; }
+        .bg-shape:nth-child(3) { width: 150px; height: 150px; background: var(--success); top: 40%; right: 10%; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-10px, 20px) rotate(-5deg); } }
+
+        .container { position: relative; z-index: 1; max-width: 450px; margin: 0 auto; width: 100%; }
         
-        .container {
-            max-width: 420px;
-            margin: 0 auto;
-        }
+        header { text-align: center; padding: 20px; margin-bottom: 20px; }
+        header h1 { font-weight: 800; font-size: 2.5rem; color: var(--text-primary); margin-bottom: 10px; }
+        header h1 .fa-solid { color: var(--primary-light); margin-right: 10px; }
+
+        .rewards-display { display: flex; justify-content: center; gap: 15px; margin-top: 12px; }
+        .reward-item { background: var(--card-bg); padding: 8px 16px; border-radius: 50px; font-weight: 600; display: flex; align-items: center; gap: 6px; border: 1px solid var(--card-border); }
+        .reward-item .fa-star { color: var(--warning); }
+        .reward-item .fa-gem { color: var(--success); }
+
+        .card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 24px; padding: 30px; border: 1px solid var(--card-border); }
         
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .header h1 {
-            font-size: 1.8rem;
-            color: #FF6B6B;
-        }
-        
-        .rewards {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 12px;
-        }
-        
-        .reward {
-            background: white;
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .star { color: #FFD700; }
-        .diamond { color: #00CED1; }
-        
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
-        
-        /* Progress */
-        .progress-bar {
-            height: 8px;
-            background: #e5e7eb;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
-            border-radius: 10px;
-            transition: width 0.3s;
-        }
-        
-        .progress-text {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #636E72;
-            margin-bottom: 20px;
-        }
-        
-        /* Tasks Display */
-        .tasks-container {
-            margin: 25px 0;
-        }
-        
-        .task-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 15px;
-            border-radius: 16px;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-            font-weight: 700;
-            transition: all 0.3s;
-        }
-        
-        .task-small {
-            background: linear-gradient(135deg, #e0f7fa, #e8f5e9);
-            border: 3px solid #4ECDC4;
-        }
-        
-        .task-small.done {
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            border-color: #10b981;
-        }
-        
-        .task-small.active {
-            box-shadow: 0 0 0 4px rgba(78, 205, 196, 0.3);
-        }
-        
-        .task-big {
-            background: linear-gradient(135deg, #ffe4e6, #fecdd3);
-            border: 3px solid #FF6B6B;
-            opacity: 0.5;
-        }
-        
-        .task-big.active {
-            opacity: 1;
-            box-shadow: 0 0 0 4px rgba(255, 107, 107, 0.3);
-        }
-        
-        .task-big.done {
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            border-color: #10b981;
-            opacity: 1;
-        }
-        
-        .num-a { color: #3b82f6; }
-        .num-b { color: #8b5cf6; }
-        .result { color: #10b981; }
-        
-        /* Arrow between tasks */
-        .arrow {
-            text-align: center;
-            font-size: 2rem;
-            color: #4ECDC4;
-            margin: -5px 0;
-        }
-        
-        /* Instruction */
-        .instruction {
-            text-align: center;
-            font-size: 1.1rem;
-            color: #636E72;
-            margin-bottom: 15px;
-            padding: 12px;
-            background: #f0fdf4;
-            border-radius: 12px;
-        }
-        
-        /* Answer Buttons */
-        .answers {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 20px;
-        }
-        
-        .ans-btn {
-            padding: 15px 10px;
-            font-size: 1.3rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #4ECDC4, #45b7aa);
-            color: white;
-            cursor: pointer;
-            transition: all 0.2s;
-            box-shadow: 0 4px 12px rgba(78, 205, 196, 0.3);
-        }
-        
-        .ans-btn:hover {
-            transform: translateY(-2px);
-        }
-        
-        .ans-btn:active {
-            transform: scale(0.95);
-        }
-        
-        .ans-btn.correct {
-            background: linear-gradient(135deg, #95E1A3, #7BED9F);
-        }
-        
-        .ans-btn.wrong {
-            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
-            animation: shake 0.4s;
-        }
-        
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-8px); }
-            75% { transform: translateX(8px); }
-        }
-        
-        /* Feedback */
-        .feedback {
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-top: 15px;
-            min-height: 30px;
-        }
-        
-        .feedback.correct { color: #10b981; }
-        .feedback.wrong { color: #FF6B6B; }
-        
-        /* Screens */
         .screen { display: none; }
-        .screen.active { display: block; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .start, .done { text-align: center; padding: 20px 0; }
+        .start-icon, .done-icon { font-size: 4rem; margin-bottom: 15px; color: var(--primary); }
+        .start h2, .done h2 { font-size: 1.8rem; color: var(--text-primary); margin-bottom: 10px; }
+        .start p, .done p { color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
+
+        .example-box { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 16px; margin-bottom: 25px; text-align: left; }
+        .example-title { font-weight: 600; color: var(--text-primary); margin-bottom: 12px; text-align: center; }
+        .example-step { font-size: 1.1rem; margin: 8px 0; padding: 8px 12px; background: var(--card-bg); border-radius: 8px; border-left: 3px solid var(--primary-light); }
+        .example-step .red { color: #fca5a5; font-weight: 700; }
+        .example-step .teal { color: #99f6e4; font-weight: 700; }
+        .example-step .green { color: #86efac; font-weight: 700; }
         
-        /* Start Screen */
-        .start {
-            text-align: center;
-            padding: 20px 0;
-        }
+        .btn { width: 100%; padding: 16px; font-size: 1.1rem; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
+        .btn:active { transform: scale(0.98); }
+
+        .progress-bar { height: 8px; background: var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.3s; }
+        .progress-text { text-align: center; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
         
-        .start-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
-        }
+        .task-display { text-align: center; font-size: 2.5rem; font-weight: 800; margin: 15px 0; color: var(--text-primary); }
+        .task-display .num-a { color: var(--primary); }
+        .task-display .num-b { color: var(--secondary); }
+
+        .visual-container { display: flex; justify-content: center; gap: 15px; margin: 20px 0; align-items: flex-start; }
+        .visual-box { text-align: center; }
+        .visual-label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; }
+
+        .frame { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 10px; background: rgba(0,0,0,0.2); border: 2px solid var(--card-border); border-radius: 12px; }
+        .dot { width: 28px; height: 28px; border-radius: 50%; background: var(--card-border); transition: all 0.3s; }
+        .dot.filled { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+        .dot.move-in { background: linear-gradient(135deg, var(--secondary), #31a198); animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
         
-        .start h2 {
-            font-size: 1.5rem;
-            color: #2D3436;
-            margin-bottom: 10px;
-        }
+        .vorrat { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; background: rgba(0,0,0,0.2); border: 2px solid var(--card-border); border-radius: 12px; min-width: 60px; min-height: 80px; justify-content: center; align-content: flex-start; }
+        .vorrat .dot { background: linear-gradient(135deg, var(--success), #31a198); }
+        .vorrat .dot.used { opacity: 0; transform: scale(0); }
         
-        .start p {
-            color: #636E72;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
+        .instruction { text-align: center; font-size: 1.1rem; color: var(--text-secondary); margin: 15px 0; padding: 12px; background: rgba(0,0,0,0.15); border-radius: 12px; }
         
-        .example-box {
-            background: linear-gradient(135deg, #f0fdf4, #dcfce7);
-            padding: 20px;
-            border-radius: 16px;
-            margin-bottom: 25px;
-        }
+        .answers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .ans-btn { padding: 14px 10px; font-size: 1.3rem; font-weight: 700; border: 1px solid var(--card-border); border-radius: 12px; background: var(--card-bg); color: white; cursor: pointer; transition: all 0.2s; }
+        .ans-btn:hover { transform: translateY(-2px); border-color: var(--secondary); }
+        .ans-btn.correct { background: linear-gradient(135deg, var(--success), #31a198); }
+        .ans-btn.wrong { background: linear-gradient(135deg, var(--primary), #ee5a5a); animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
         
-        .example-title {
-            font-weight: 600;
-            color: #2D3436;
-            margin-bottom: 10px;
-        }
+        .feedback { text-align: center; font-size: 1.2rem; font-weight: 700; margin-top: 15px; min-height: 30px; }
+        .feedback.correct { color: var(--success); }
+        .feedback.wrong { color: var(--primary); }
         
-        .example-row {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin: 8px 0;
-        }
-        
-        .example-row .small { color: #4ECDC4; }
-        .example-row .big { color: #FF6B6B; }
-        
-        .btn {
-            padding: 14px 32px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
-            color: white;
-            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
-        }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-        }
-        
-        /* Done Screen */
-        .done {
-            text-align: center;
-            padding: 30px 0;
-        }
-        
-        .done-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
-        }
-        
-        .done h2 {
-            font-size: 1.8rem;
-            color: #2D3436;
-            margin-bottom: 10px;
-        }
-        
-        .done p {
-            color: #636E72;
-            font-size: 1.1rem;
-            margin-bottom: 25px;
-        }
-        
-        .score {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #FF6B6B;
-            margin-bottom: 25px;
-        }
+        .score { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
     </style>
 </head>
 <body>
+    <div class="bg-shapes"><div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div></div>
     <div class="container">
         <header class="header">
-            <h1>🔄 Zehner-Trick</h1>
-            <div class="rewards">
-                <div class="reward">
-                    <span class="star">★</span>
-                    <span id="stars">0</span>
-                </div>
-                <div class="reward">
-                    <span class="diamond">◆</span>
-                    <span id="diamonds">0</span>
-                </div>
+            <h1><i class="fa-solid fa-arrow-up-10"></i> 10 voll machen</h1>
+            <div class="rewards-display">
+                <div class="reward-item"><i class="fa-solid fa-star"></i> <span id="stars">0</span></div>
+                <div class="reward-item"><i class="fa-solid fa-gem"></i> <span id="diamonds">0</span></div>
             </div>
         </header>
         
         <div class="card">
-            <!-- Start Screen -->
             <div class="screen active" id="screenStart">
                 <div class="start">
-                    <div class="start-icon">🔄</div>
-                    <h2>Der Zehner-Trick</h2>
-                    <p>Wenn du eine kleine Aufgabe kannst, kannst du auch die große!</p>
-                    
+                    <div class="start-icon"><i class="fa-solid fa-person-chalkboard"></i></div>
+                    <h2>Die 10 voll machen</h2>
+                    <p>Bei großen Plusaufgaben: Erst die 10 voll machen, dann den Rest dazu!</p>
                     <div class="example-box">
-                        <div class="example-title">So geht's:</div>
-                        <div class="example-row">
-                            <span class="small">3 + 4 = 7</span>
-                        </div>
-                        <div class="example-row">↓ gleiche Einer!</div>
-                        <div class="example-row">
-                            <span class="big">53 + 4 = 57</span>
-                        </div>
+                        <div class="example-title">Beispiel: 8 + 5</div>
+                        <div class="example-step">1. <span class="red">8</span> + <span class="teal">2</span> = <span class="green">10</span> (10 voll!)</div>
+                        <div class="example-step">2. Von 5 bleiben noch <span class="teal">3</span> übrig</div>
+                        <div class="example-step">3. <span class="green">10</span> + <span class="teal">3</span> = <span class="green">13</span> <i class="fa-solid fa-check" style="color: var(--success);"></i></div>
                     </div>
-                    
-                    <button class="btn btn-primary" id="btnStart">Los geht's!</button>
+                    <button class="btn btn-primary" id="btnStart"><i class="fa-solid fa-play"></i> Los geht's!</button>
                 </div>
             </div>
             
-            <!-- Game Screen -->
             <div class="screen" id="screenGame">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
-                </div>
+                <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
                 <div class="progress-text" id="progressText">Aufgabe 1 von 8</div>
-                
-                <div class="instruction" id="instruction">Löse zuerst die kleine Aufgabe!</div>
-                
-                <div class="tasks-container">
-                    <div class="task-row task-small active" id="taskSmall">
-                        <span class="num-a">3</span>
-                        <span>+</span>
-                        <span class="num-b">4</span>
-                        <span>=</span>
-                        <span class="result" id="resultSmall">?</span>
+                <div class="task-display">
+                    <span class="num-a" id="numA">8</span> + <span class="num-b" id="numB">5</span> = ?
+                </div>
+                <div class="visual-container">
+                    <div class="visual-box">
+                        <div class="visual-label">10er-Feld</div>
+                        <div class="frame" id="frame"></div>
                     </div>
-                    
-                    <div class="arrow">↓</div>
-                    
-                    <div class="task-row task-big" id="taskBig">
-                        <span class="num-a" id="bigFirst">53</span>
-                        <span>+</span>
-                        <span class="num-b" id="bigSecond">4</span>
-                        <span>=</span>
-                        <span class="result" id="resultBig">?</span>
+                    <div class="visual-box">
+                        <div class="visual-label">Vorrat</div>
+                        <div class="vorrat" id="vorrat"></div>
                     </div>
                 </div>
-                
+                <div class="instruction" id="instruction">Wie viele fehlen bis zur 10?</div>
                 <div class="answers" id="answers"></div>
-                
                 <div class="feedback" id="feedback"></div>
             </div>
             
-            <!-- Done Screen -->
             <div class="screen" id="screenDone">
                 <div class="done">
-                    <div class="done-icon">🎉</div>
+                    <div class="done-icon"><i class="fa-solid fa-trophy"></i></div>
                     <h2>Super gemacht!</h2>
                     <div class="score" id="score">8/8</div>
-                    <p id="doneMessage">Du beherrschst den Zehner-Trick!</p>
-                    <button class="btn btn-primary" id="btnAgain">Nochmal spielen</button>
+                    <p id="doneMessage">Du kannst die 10 voll machen!</p>
+                    <button class="btn btn-primary" id="btnAgain"><i class="fa-solid fa-rotate-right"></i> Nochmal spielen</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        // === STATE ===
-        var state = {
-            stars: 0,
-            diamonds: 0,
-            tasks: [],
-            current: 0,
-            correct: 0,
-            total: 8,
-            step: 1 // 1 = small task, 2 = big task
-        };
+        var state = { stars: 0, diamonds: 0, tasks: [], current: 0, correct: 0, total: 8, step: 1, a: 0, b: 0, toTen: 0, rest: 0, result: 0 };
         
-        // === STORAGE ===
         function load() {
             try {
-                var saved = localStorage.getItem('zehnertrick');
+                var saved = localStorage.getItem('zehnvoll_dark');
                 if (saved) {
                     var data = JSON.parse(saved);
                     state.stars = data.stars || 0;
@@ -420,12 +188,7 @@
         }
         
         function save() {
-            try {
-                localStorage.setItem('zehnertrick', JSON.stringify({
-                    stars: state.stars,
-                    diamonds: state.diamonds
-                }));
-            } catch(e) {}
+            localStorage.setItem('zehnvoll_dark', JSON.stringify({ stars: state.stars, diamonds: state.diamonds }));
         }
         
         function updateRewards() {
@@ -435,48 +198,24 @@
         
         function addStar() {
             state.stars++;
-            if (state.stars >= 100) {
-                state.stars -= 100;
-                state.diamonds++;
-            }
+            if (state.stars >= 100) { state.stars -= 100; state.diamonds++; }
             updateRewards();
             save();
         }
         
-        // === SCREENS ===
         function showScreen(id) {
-            var screens = document.querySelectorAll('.screen');
-            for (var i = 0; i < screens.length; i++) {
-                screens[i].classList.remove('active');
-            }
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
-        }
-        
-        // === GAME LOGIC ===
-        function shuffle(arr) {
-            for (var i = arr.length - 1; i > 0; i--) {
-                var j = Math.floor(Math.random() * (i + 1));
-                var temp = arr[i];
-                arr[i] = arr[j];
-                arr[j] = temp;
-            }
-            return arr;
         }
         
         function generateTasks() {
             var base = [
-                { a: 3, b: 4, tens: 50 },
-                { a: 2, b: 5, tens: 30 },
-                { a: 4, b: 3, tens: 40 },
-                { a: 5, b: 2, tens: 60 },
-                { a: 2, b: 6, tens: 70 },
-                { a: 3, b: 5, tens: 20 },
-                { a: 4, b: 4, tens: 80 },
-                { a: 1, b: 7, tens: 50 },
-                { a: 6, b: 3, tens: 30 },
-                { a: 2, b: 4, tens: 90 }
+                { a: 8, b: 5 }, { a: 7, b: 6 }, { a: 9, b: 4 }, { a: 6, b: 7 },
+                { a: 8, b: 4 }, { a: 7, b: 5 }, { a: 9, b: 3 }, { a: 6, b: 5 },
+                { a: 8, b: 6 }, { a: 7, b: 4 }
             ];
-            state.tasks = shuffle(base).slice(0, state.total);
+            for (let i = base.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [base[i], base[j]] = [base[j], base[i]]; }
+            state.tasks = base.slice(0, state.total);
         }
         
         function startGame() {
@@ -489,232 +228,157 @@
         
         function showTask() {
             var t = state.tasks[state.current];
-            state.step = 1;
+            Object.assign(state, { ...t, toTen: 10 - t.a, rest: t.b - (10 - t.a), result: t.a + t.b, step: 1 });
             
-            // Update progress
-            var pct = (state.current / state.total) * 100;
-            document.getElementById('progressBar').style.width = pct + '%';
-            document.getElementById('progressText').textContent = 'Aufgabe ' + (state.current + 1) + ' von ' + state.total;
+            document.getElementById('progressBar').style.width = (state.current / state.total) * 100 + '%';
+            document.getElementById('progressText').textContent = `Aufgabe ${state.current + 1} von ${state.total}`;
             
-            // Clear feedback
-            document.getElementById('feedback').textContent = '';
-            document.getElementById('feedback').className = 'feedback';
+            var feedback = document.getElementById('feedback');
+            feedback.textContent = '';
+            feedback.className = 'feedback';
             
-            // Set instruction
-            document.getElementById('instruction').textContent = 'Löse zuerst die kleine Aufgabe!';
+            document.getElementById('numA').textContent = state.a;
+            document.getElementById('numB').textContent = state.b;
             
-            // Setup small task
-            var taskSmall = document.getElementById('taskSmall');
-            taskSmall.className = 'task-row task-small active';
-            taskSmall.innerHTML = '<span class="num-a">' + t.a + '</span><span>+</span><span class="num-b">' + t.b + '</span><span>=</span><span class="result" id="resultSmall">?</span>';
+            var frame = document.getElementById('frame');
+            frame.innerHTML = Array.from({ length: 10 }, (_, i) => `<div class="dot ${i < state.a ? 'filled' : ''}"></div>`).join('');
             
-            // Setup big task
-            var bigFirst = t.tens + t.a;
-            var taskBig = document.getElementById('taskBig');
-            taskBig.className = 'task-row task-big';
-            taskBig.innerHTML = '<span class="num-a">' + bigFirst + '</span><span>+</span><span class="num-b">' + t.b + '</span><span>=</span><span class="result" id="resultBig">?</span>';
+            var vorrat = document.getElementById('vorrat');
+            vorrat.innerHTML = Array.from({ length: state.b }, () => '<div class="dot"></div>').join('');
             
-            // Show answers for small task
-            showSmallAnswers();
+            document.getElementById('instruction').textContent = 'Wie viele fehlen bis zur 10?';
+            showStep1Answers();
         }
-        
-        function showSmallAnswers() {
-            var t = state.tasks[state.current];
-            var correct = t.a + t.b;
-            
-            var options = [correct];
-            while (options.length < 4) {
-                var opt = Math.floor(Math.random() * 15) + 2;
-                if (options.indexOf(opt) === -1 && opt !== correct) {
-                    options.push(opt);
-                }
-            }
-            options = shuffle(options);
-            
+
+        function renderButtons(options) {
             var answersDiv = document.getElementById('answers');
             answersDiv.innerHTML = '';
-            
-            for (var i = 0; i < options.length; i++) {
+            options.forEach(opt => {
                 var btn = document.createElement('button');
                 btn.className = 'ans-btn';
-                btn.textContent = options[i];
-                btn.setAttribute('data-val', options[i]);
+                btn.textContent = opt;
+                btn.dataset.val = opt;
                 answersDiv.appendChild(btn);
-            }
+            });
         }
         
-        function showBigAnswers() {
-            var t = state.tasks[state.current];
-            var correct = t.tens + t.a + t.b;
-            
-            var options = [correct];
+        function showStep1Answers() {
+            var options = [state.toTen];
             while (options.length < 4) {
-                var opt = correct + Math.floor(Math.random() * 11) - 5;
-                if (opt > 10 && options.indexOf(opt) === -1 && opt !== correct) {
-                    options.push(opt);
-                }
+                var opt = Math.floor(Math.random() * 6) + 1;
+                if (!options.includes(opt)) options.push(opt);
             }
-            options = shuffle(options);
-            
-            var answersDiv = document.getElementById('answers');
-            answersDiv.innerHTML = '';
-            
-            for (var i = 0; i < options.length; i++) {
-                var btn = document.createElement('button');
-                btn.className = 'ans-btn';
-                btn.textContent = options[i];
-                btn.setAttribute('data-val', options[i]);
-                answersDiv.appendChild(btn);
+            for (let i = options.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [options[i], options[j]] = [options[j], options[i]]; }
+            renderButtons(options);
+        }
+        
+        function showStep2Answers() {
+             var options = [state.rest];
+            while (options.length < 4) {
+                var opt = Math.floor(Math.random() * 7) + 1;
+                if (!options.includes(opt)) options.push(opt);
             }
+            for (let i = options.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [options[i], options[j]] = [options[j], options[i]]; }
+            renderButtons(options);
+        }
+
+        function showStep3Answers() {
+            var options = [state.result];
+            while (options.length < 4) {
+                var opt = state.result + Math.floor(Math.random() * 7) - 3;
+                if (opt > 10 && opt < 20 && !options.includes(opt)) options.push(opt);
+            }
+            for (let i = options.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [options[i], options[j]] = [options[j], options[i]]; }
+            renderButtons(options);
         }
         
         function handleAnswer(val) {
-            var t = state.tasks[state.current];
             var buttons = document.querySelectorAll('.ans-btn');
             var feedback = document.getElementById('feedback');
+            buttons.forEach(btn => btn.style.pointerEvents = 'none');
             
-            // Disable all buttons
-            for (var i = 0; i < buttons.length; i++) {
-                buttons[i].style.pointerEvents = 'none';
-            }
+            let correctVal;
+            if (state.step === 1) correctVal = state.toTen;
+            else if (state.step === 2) correctVal = state.rest;
+            else correctVal = state.result;
             
-            if (state.step === 1) {
-                // Small task
-                var correctSmall = t.a + t.b;
+            if (val === correctVal) {
+                feedback.textContent = 'Richtig!';
+                feedback.className = 'feedback correct';
+                buttons.forEach(btn => parseInt(btn.dataset.val) === val && btn.classList.add('correct'));
                 
-                if (val === correctSmall) {
-                    // Correct!
-                    document.getElementById('resultSmall').textContent = correctSmall;
-                    document.getElementById('taskSmall').classList.add('done');
-                    document.getElementById('taskSmall').classList.remove('active');
-                    
-                    // Highlight correct button
-                    for (var i = 0; i < buttons.length; i++) {
-                        if (parseInt(buttons[i].getAttribute('data-val')) === val) {
-                            buttons[i].classList.add('correct');
-                        }
-                    }
-                    
-                    feedback.textContent = '✓ Richtig!';
-                    feedback.className = 'feedback correct';
-                    
-                    // Move to big task
-                    setTimeout(function() {
-                        state.step = 2;
-                        document.getElementById('instruction').textContent = 'Jetzt die große – gleiche Einer!';
-                        document.getElementById('taskBig').classList.add('active');
-                        document.getElementById('feedback').textContent = '';
-                        document.getElementById('feedback').className = 'feedback';
-                        showBigAnswers();
-                    }, 800);
+                if (state.step === 1) {
+                    setTimeout(transitionToStep2, 800);
+                } else if (state.step === 2) {
+                    setTimeout(transitionToStep3, 800);
                 } else {
-                    // Wrong
-                    feedback.textContent = '✗ Das war ' + correctSmall;
-                    feedback.className = 'feedback wrong';
-                    
-                    for (var i = 0; i < buttons.length; i++) {
-                        var btnVal = parseInt(buttons[i].getAttribute('data-val'));
-                        if (btnVal === val) buttons[i].classList.add('wrong');
-                        if (btnVal === correctSmall) buttons[i].classList.add('correct');
-                    }
-                    
-                    // Retry after delay
-                    setTimeout(function() {
-                        document.getElementById('feedback').textContent = '';
-                        document.getElementById('feedback').className = 'feedback';
-                        showSmallAnswers();
-                    }, 1200);
-                }
-            } else {
-                // Big task
-                var correctBig = t.tens + t.a + t.b;
-                
-                if (val === correctBig) {
-                    // Correct!
                     state.correct++;
                     addStar();
-                    
-                    document.getElementById('resultBig').textContent = correctBig;
-                    document.getElementById('taskBig').classList.add('done');
-                    document.getElementById('taskBig').classList.remove('active');
-                    
-                    for (var i = 0; i < buttons.length; i++) {
-                        if (parseInt(buttons[i].getAttribute('data-val')) === val) {
-                            buttons[i].classList.add('correct');
-                        }
-                    }
-                    
-                    feedback.textContent = '🎉 Super! Gleiche Einer!';
-                    feedback.className = 'feedback correct';
-                    
-                    // Next task
-                    setTimeout(function() {
-                        state.current++;
-                        if (state.current < state.total) {
-                            showTask();
-                        } else {
-                            showDone();
-                        }
-                    }, 1200);
+                    setTimeout(nextTask, 1200);
+                }
+            } else {
+                feedback.textContent = `Das waren ${correctVal}`;
+                feedback.className = 'feedback wrong';
+                buttons.forEach(btn => {
+                    if(parseInt(btn.dataset.val) === val) btn.classList.add('wrong');
+                    if(parseInt(btn.dataset.val) === correctVal) btn.classList.add('correct');
+                });
+                if(state.step === 3) {
+                     setTimeout(nextTask, 1500);
                 } else {
-                    // Wrong
-                    feedback.textContent = '✗ Das war ' + correctBig;
-                    feedback.className = 'feedback wrong';
-                    
-                    for (var i = 0; i < buttons.length; i++) {
-                        var btnVal = parseInt(buttons[i].getAttribute('data-val'));
-                        if (btnVal === val) buttons[i].classList.add('wrong');
-                        if (btnVal === correctBig) buttons[i].classList.add('correct');
-                    }
-                    
-                    // Next task anyway
-                    setTimeout(function() {
-                        state.current++;
-                        if (state.current < state.total) {
-                            showTask();
-                        } else {
-                            showDone();
-                        }
-                    }, 1500);
+                    setTimeout(() => {
+                        feedback.textContent = '';
+                        feedback.className = 'feedback';
+                        state.step === 1 ? showStep1Answers() : showStep2Answers();
+                    }, 1200);
                 }
             }
+        }
+        
+        function transitionToStep2() {
+            document.getElementById('instruction').textContent = `Erst ${state.toTen} dazu, dann bleiben...`;
+            document.querySelectorAll('#vorrat .dot').forEach((dot, i) => {
+                if(i < state.toTen) setTimeout(() => dot.classList.add('used'), i * 150);
+            });
+            document.querySelectorAll('#frame .dot:not(.filled)').forEach((dot, i) => {
+                if(i < state.toTen) setTimeout(() => dot.classList.add('move-in'), i * 150);
+            });
+            setTimeout(() => {
+                document.getElementById('feedback').textContent = '';
+                showStep2Answers();
+            }, state.toTen * 150 + 600);
+        }
+
+        function transitionToStep3() {
+            document.getElementById('instruction').textContent = `10 + ${state.rest} = ?`;
+            document.querySelectorAll('#vorrat .dot.used').forEach(dot => dot.style.display = 'none');
+            setTimeout(() => {
+                document.getElementById('feedback').textContent = '';
+                showStep3Answers();
+            }, 800);
+        }
+
+        function nextTask() {
+            state.current++;
+            if (state.current < state.total) showTask();
+            else showDone();
         }
         
         function showDone() {
-            document.getElementById('progressBar').style.width = '100%';
-            document.getElementById('score').textContent = state.correct + '/' + state.total;
-            
             var pct = Math.round((state.correct / state.total) * 100);
-            var msg = '';
-            if (pct === 100) {
-                msg = 'Perfekt! Du beherrschst den Zehner-Trick! 🔄';
-            } else if (pct >= 75) {
-                msg = 'Super! Fast alle richtig! 👏';
-            } else if (pct >= 50) {
-                msg = 'Gut! Übung macht den Meister! 💪';
-            } else {
-                msg = 'Versuch es nochmal! Du schaffst das! 🎯';
-            }
-            document.getElementById('doneMessage').textContent = msg;
+            var msg = (pct === 100) ? 'Perfekt! Du bist ein Zehner-Profi!' : (pct >= 75) ? 'Super! Fast alle richtig!' : 'Gut! Übung macht den Meister!';
             
+            document.getElementById('score').textContent = `${state.correct}/${state.total}`;
+            document.getElementById('doneMessage').textContent = msg;
             showScreen('screenDone');
         }
         
-        // === EVENT LISTENERS ===
         document.getElementById('btnStart').addEventListener('click', startGame);
-        document.getElementById('btnAgain').addEventListener('click', function() {
-            showScreen('screenStart');
+        document.getElementById('btnAgain').addEventListener('click', () => showScreen('screenStart'));
+        document.getElementById('answers').addEventListener('click', (e) => {
+            if (e.target.classList.contains('ans-btn')) handleAnswer(parseInt(e.target.dataset.val));
         });
         
-        // Event delegation for answer buttons
-        document.getElementById('answers').addEventListener('click', function(e) {
-            if (e.target.classList.contains('ans-btn')) {
-                var val = parseInt(e.target.getAttribute('data-val'));
-                handleAnswer(val);
-            }
-        });
-        
-        // === INIT ===
         load();
     </script>
 </body>

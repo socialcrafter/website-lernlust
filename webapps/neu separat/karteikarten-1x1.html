@@ -4,307 +4,156 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Karteikarten 1×1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --secondary: #FF6B9D;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background: #FFF9F0;
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
             min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
-        
-        .container {
-            max-width: 420px;
-            margin: 0 auto;
-        }
-        
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        
-        .header h1 {
-            font-size: 1.8rem;
-            color: #FF6B6B;
-        }
-        
-        .rewards {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 12px;
-        }
-        
-        .reward {
-            background: white;
-            padding: 8px 16px;
-            border-radius: 50px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-        }
-        
-        .star { color: #FFD700; }
-        .diamond { color: #00CED1; }
-        
-        .card {
-            background: white;
-            border-radius: 24px;
-            padding: 25px;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
-        }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-shape { position: absolute; border-radius: 50%; opacity: 0.1; animation: float 20s infinite ease-in-out; }
+        .bg-shape:nth-child(1) { width: 300px; height: 300px; background: var(--primary); top: -100px; right: -100px; animation-delay: 0s; }
+        .bg-shape:nth-child(2) { width: 200px; height: 200px; background: var(--secondary); bottom: 10%; left: -50px; animation-delay: -5s; }
+        .bg-shape:nth-child(3) { width: 150px; height: 150px; background: var(--success); top: 40%; right: 10%; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-10px, 20px) rotate(-5deg); } }
+
+        .container { position: relative; z-index: 1; max-width: 450px; margin: 0 auto; width: 100%; }
+
+        header { text-align: center; padding: 20px; margin-bottom: 20px; }
+        header h1 { font-family: 'Nunito', sans-serif; font-size: 2.5rem; color: var(--text-primary); margin-bottom: 10px; }
+        header h1 .fa-solid { color: var(--text-primary); margin-right: 10px; }
+
+        .rewards-display { display: flex; justify-content: center; gap: 15px; margin-top: 12px; }
+        .reward-item { background: var(--card-bg); padding: 8px 16px; border-radius: 50px; font-weight: 600; display: flex; align-items: center; gap: 6px; border: 1px solid var(--card-border); }
+        .reward-item .fa-star { color: var(--warning); }
+        .reward-item .fa-gem { color: var(--success); }
+
+        .card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 24px; padding: 30px; border: 1px solid var(--card-border); margin-bottom: 20px; }
         
         /* Progress */
-        .progress-bar {
-            height: 8px;
-            background: #e5e7eb;
-            border-radius: 10px;
-            overflow: hidden;
-            margin-bottom: 8px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #FF6B6B, #4ECDC4);
-            border-radius: 10px;
-            transition: width 0.3s;
-        }
-        
-        .progress-text {
-            text-align: center;
-            font-size: 0.9rem;
-            color: #636E72;
-            margin-bottom: 15px;
-        }
+        .progress-bar { height: 8px; background: var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.3s; }
+        .progress-text { text-align: center; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 15px; }
         
         /* Instruction */
-        .instruction {
-            text-align: center;
-            font-size: 1rem;
-            color: #636E72;
-            margin-bottom: 15px;
-            padding: 10px;
-            background: #fef3c7;
-            border-radius: 12px;
-        }
+        .instruction { text-align: center; font-size: 1rem; color: var(--text-secondary); margin-bottom: 15px; padding: 10px; background: rgba(255, 230, 109, 0.1); border-radius: 12px; border: 1px solid var(--warning); }
         
         /* Flashcard */
-        .flashcard-container {
-            perspective: 1000px;
-            margin: 20px 0;
-        }
-        
+        .flashcard-container { perspective: 1000px; margin: 20px 0; }
         .flashcard {
-            background: linear-gradient(135deg, #fff, #f8f9fa);
-            border: 3px solid #e5e7eb;
-            border-radius: 20px;
-            height: 180px;
+            background: linear-gradient(135deg, var(--card-bg), rgba(255, 255, 255, 0.05));
+            border: 3px solid var(--card-border);
+            border-radius: 20px; height: 180px; display: flex; align-items: center; justify-content: center;
+            font-size: 3rem; font-weight: 700; color: var(--text-primary); transition: all 0.3s; cursor: pointer;
+            position: relative;
+        }
+        .flashcard:hover { transform: scale(1.02); box-shadow: 0 8px 25px rgba(0,0,0,0.2); }
+        .flashcard.revealed { background: linear-gradient(135deg, var(--success), rgba(78, 205, 196, 0.5)); border-color: var(--success); }
+        .flashcard .answer { color: white; margin-left: 10px; }
+        
+        /* Audio Button on Flashcard */
+        .btn-audio-flashcard {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            font-weight: 700;
-            color: #2D3436;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .flashcard:hover {
-            transform: scale(1.02);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-        
-        .flashcard.revealed {
-            background: linear-gradient(135deg, #d1fae5, #a7f3d0);
-            border-color: #10b981;
-        }
-        
-        .flashcard .answer {
-            color: #10b981;
-        }
-        
-        /* Buttons */
-        .btn {
-            width: 100%;
-            padding: 16px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: none;
-            border-radius: 16px;
+            border: 1px solid rgba(255,255,255,0.3);
             cursor: pointer;
             transition: all 0.2s;
-            margin-bottom: 10px;
         }
-        
-        .btn:active {
-            transform: scale(0.98);
-        }
-        
-        .btn-reveal {
-            background: linear-gradient(135deg, #4ECDC4, #45b7aa);
-            color: white;
-        }
-        
-        .btn-row {
-            display: flex;
-            gap: 10px;
-        }
-        
-        .btn-knew {
-            flex: 1;
-            background: linear-gradient(135deg, #95E1A3, #7BED9F);
-            color: white;
-        }
-        
-        .btn-didnt {
-            flex: 1;
-            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
-            color: white;
-        }
-        
-        .btn-primary {
-            background: linear-gradient(135deg, #FF6B6B, #ee5a5a);
-            color: white;
-        }
+        .btn-audio-flashcard:hover { background: rgba(255,255,255,0.3); }
+        .btn-audio-flashcard .fa-solid { color: var(--text-primary); font-size: 1.2rem; }
+
+        /* Buttons */
+        .btn { width: 100%; padding: 16px; font-size: 1.1rem; font-weight: 600; border: none; border-radius: 16px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
+        .btn:active { transform: scale(0.98); }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
+        .btn-reveal { background: linear-gradient(135deg, var(--secondary), rgba(78, 205, 196, 0.8)); color: white; }
+        .btn-row { display: flex; gap: 10px; }
+        .btn-knew { flex: 1; background: linear-gradient(135deg, var(--success), rgba(149, 225, 163, 0.8)); color: white; }
+        .btn-didnt { flex: 1; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
         
         /* Screens */
         .screen { display: none; }
         .screen.active { display: block; }
         
         /* Start Screen */
-        .start {
-            text-align: center;
-            padding: 20px 0;
-        }
+        .start { text-align: center; padding: 20px 0; }
+        .start-icon { font-size: 4rem; margin-bottom: 15px; color: var(--text-secondary); }
+        .start h2 { font-family: 'Nunito', sans-serif; font-size: 1.8rem; color: var(--text-primary); margin-bottom: 10px; }
+        .start p { color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
         
-        .start-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
-        }
-        
-        .start h2 {
-            font-size: 1.5rem;
-            color: #2D3436;
-            margin-bottom: 10px;
-        }
-        
-        .start p {
-            color: #636E72;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
-        
-        .reihe-select {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        
-        .reihe-btn {
-            padding: 12px 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            border: 2px solid #e5e7eb;
-            border-radius: 12px;
-            background: white;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .reihe-btn:hover {
-            border-color: #4ECDC4;
-            background: #e0f7fa;
-        }
-        
-        .reihe-btn.selected {
-            border-color: #4ECDC4;
-            background: #4ECDC4;
-            color: white;
-        }
-        
-        .mix-btn {
-            grid-column: span 5;
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            border-color: #f59e0b;
-            color: #92400e;
-        }
-        
-        .mix-btn.selected {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-            border-color: #d97706;
-        }
+        .reihe-select { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 20px; }
+        .reihe-btn { padding: 12px 8px; font-size: 1.1rem; font-weight: 600; border: 2px solid var(--card-border); border-radius: 12px; background: var(--card-bg); color: var(--text-primary); cursor: pointer; transition: all 0.2s; }
+        .reihe-btn:hover { border-color: var(--secondary); background: rgba(78, 205, 196, 0.1); }
+        .reihe-btn.selected { border-color: var(--secondary); background: var(--secondary); color: white; }
+        .mix-btn { grid-column: span 5; background: linear-gradient(135deg, var(--warning), rgba(255, 230, 109, 0.8)); border-color: var(--warning); color: var(--text-dark); }
+        .mix-btn.selected { background: linear-gradient(135deg, var(--warning), rgba(255, 230, 109, 0.8)); border-color: var(--warning); color: var(--text-dark); }
+        .mix-btn:hover { border-color: var(--warning); }
         
         /* Done Screen */
-        .done {
-            text-align: center;
-            padding: 30px 0;
-        }
+        .done { text-align: center; padding: 30px 0; }
+        .done-icon { font-size: 4rem; margin-bottom: 15px; color: var(--text-secondary); }
+        .done h2 { font-family: 'Nunito', sans-serif; font-size: 1.8rem; color: var(--text-primary); margin-bottom: 10px; }
+        .done p { color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 15px; }
+        .score { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 15px; }
         
-        .done-icon {
-            font-size: 4rem;
-            margin-bottom: 15px;
-        }
-        
-        .done h2 {
-            font-size: 1.8rem;
-            color: #2D3436;
-            margin-bottom: 10px;
-        }
-        
-        .done p {
-            color: #636E72;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-        }
-        
-        .score {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #FF6B6B;
-            margin-bottom: 15px;
-        }
-        
-        .stats-row {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 25px;
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-val {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-        
-        .stat-val.green { color: #10b981; }
-        .stat-val.red { color: #FF6B6B; }
-        
-        .stat-lbl {
-            font-size: 0.85rem;
-            color: #636E72;
-        }
+        .stats-row { display: flex; justify-content: center; gap: 20px; margin-bottom: 25px; }
+        .stat { text-align: center; }
+        .stat-val { font-size: 1.5rem; font-weight: 700; }
+        .stat-val.green { color: var(--success); }
+        .stat-val.red { color: var(--primary); }
+        .stat-lbl { font-size: 0.85rem; color: var(--text-secondary); }
     </style>
 </head>
 <body>
+    <div class="bg-shapes">
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+    </div>
+    <audio id="tts-player" preload="auto"></audio>
+
     <div class="container">
-        <header class="header">
-            <h1>🃏 Karteikarten 1×1</h1>
-            <div class="rewards">
-                <div class="reward">
-                    <span class="star">★</span>
+        <header>
+            <h1><i class="fa-solid fa-clone"></i> Karteikarten 1×1</h1>
+            <div class="rewards-display">
+                <div class="reward-item">
+                    <i class="fa-solid fa-star"></i>
                     <span id="stars">0</span>
                 </div>
-                <div class="reward">
-                    <span class="diamond">◆</span>
+                <div class="reward-item">
+                    <i class="fa-solid fa-gem"></i>
                     <span id="diamonds">0</span>
                 </div>
             </div>
@@ -314,7 +163,7 @@
             <!-- Start Screen -->
             <div class="screen active" id="screenStart">
                 <div class="start">
-                    <div class="start-icon">✖️</div>
+                    <div class="start-icon"><i class="fa-solid fa-xmark"></i></div>
                     <h2>Das kleine 1×1</h2>
                     <p>Nicht rechnen – sofort wissen! Wähle eine Reihe oder übe alles gemischt.</p>
                     
@@ -329,10 +178,10 @@
                         <button class="reihe-btn" data-reihe="9">9er</button>
                         <button class="reihe-btn" data-reihe="10">10er</button>
                         <button class="reihe-btn selected" data-reihe="0">1er</button>
-                        <button class="reihe-btn mix-btn" data-reihe="mix">🎲 Alles gemischt</button>
+                        <button class="reihe-btn mix-btn" data-reihe="mix"><i class="fa-solid fa-shuffle"></i> Alles gemischt</button>
                     </div>
                     
-                    <button class="btn btn-primary" id="btnStart">Los geht's!</button>
+                    <button class="btn btn-primary" id="btnStart"><i class="fa-solid fa-play"></i> Los geht's!</button>
                 </div>
             </div>
             
@@ -352,14 +201,14 @@
                 </div>
                 
                 <div id="preReveal">
-                    <button class="btn btn-reveal" id="btnReveal">Lösung zeigen</button>
+                    <button class="btn btn-reveal" id="btnReveal"><i class="fa-solid fa-eye"></i> Lösung zeigen</button>
                 </div>
                 
                 <div id="postReveal" style="display: none;">
-                    <p style="text-align: center; margin-bottom: 10px; color: #636E72;">Wusstest du es sofort?</p>
+                    <p style="text-align: center; margin-bottom: 10px; color:var(--text-secondary);">Wusstest du es sofort?</p>
                     <div class="btn-row">
-                        <button class="btn btn-knew" id="btnKnew">✓ Ja!</button>
-                        <button class="btn btn-didnt" id="btnDidnt">✗ Nein</button>
+                        <button class="btn btn-knew" id="btnKnew"><i class="fa-solid fa-check"></i> Ja!</button>
+                        <button class="btn btn-didnt" id="btnDidnt"><i class="fa-solid fa-xmark"></i> Nein</button>
                     </div>
                 </div>
             </div>
@@ -367,7 +216,7 @@
             <!-- Done Screen -->
             <div class="screen" id="screenDone">
                 <div class="done">
-                    <div class="done-icon">🎉</div>
+                    <div class="done-icon"><i class="fa-solid fa-trophy"></i></div>
                     <h2>Geschafft!</h2>
                     <div class="score" id="score">8/10</div>
                     
@@ -383,7 +232,7 @@
                     </div>
                     
                     <p id="doneMessage">Super! Weiter so!</p>
-                    <button class="btn btn-primary" id="btnAgain">Nochmal üben</button>
+                    <button class="btn btn-primary" id="btnAgain"><i class="fa-solid fa-rotate-right"></i> Nochmal üben</button>
                 </div>
             </div>
         </div>
@@ -406,7 +255,7 @@
         // === STORAGE ===
         function load() {
             try {
-                var saved = localStorage.getItem('karteikarten_1x1');
+                var saved = localStorage.getItem('karteikarten_1x1_dark');
                 if (saved) {
                     var data = JSON.parse(saved);
                     state.stars = data.stars || 0;
@@ -418,7 +267,7 @@
         
         function save() {
             try {
-                localStorage.setItem('karteikarten_1x1', JSON.stringify({
+                localStorage.setItem('karteikarten_1x1_dark', JSON.stringify({
                     stars: state.stars,
                     diamonds: state.diamonds
                 }));
@@ -466,7 +315,7 @@
             
             if (state.reihe === 'mix') {
                 // All rows mixed
-                for (var r = 2; r <= 10; r++) {
+                for (var r = 1; r <= 10; r++) { // Changed from 2 to 1 to include 1er-Reihe
                     for (var i = 1; i <= 10; i++) {
                         pool.push({ a: r, b: i, ans: r * i });
                     }
@@ -524,11 +373,15 @@
         }
         
         function rateCard(knew) {
+            const card = state.cards[state.current]; // Get the current card
             if (knew) {
                 state.knew++;
                 addStar();
             } else {
                 state.didnt++;
+                // Add card to the end of the deck for repetition
+                state.cards.push(card);
+                state.total = state.cards.length;
             }
             
             state.current++;
@@ -548,13 +401,13 @@
             var pct = Math.round((state.knew / state.total) * 100);
             var msg = '';
             if (pct === 100) {
-                msg = 'Perfekt! Alles im Kopf! 🌟';
+                msg = 'Perfekt! Alles im Kopf!';
             } else if (pct >= 80) {
-                msg = 'Super! Fast alles gewusst! 👏';
+                msg = 'Super! Fast alles gewusst!';
             } else if (pct >= 60) {
-                msg = 'Gut! Weiter üben! 💪';
+                msg = 'Gut! Weiter üben!';
             } else {
-                msg = 'Übung macht den Meister! 🎯';
+                msg = 'Übung macht den Meister!';
             }
             document.getElementById('doneMessage').textContent = msg;
             
