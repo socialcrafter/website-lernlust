@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Impressum - Lernlust">
+    <title>Impressum - Lernlust</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .legal-page {
+            max-width: 800px;
+            margin: 80px auto 40px;
+            padding: 40px 20px;
+        }
+        .legal-page h1 {
+            font-size: 2.5em;
+            margin-bottom: 30px;
+            color: #2D2A32;
+        }
+        .legal-page h2 {
+            font-size: 1.8em;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #2D2A32;
+        }
+        .legal-page p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+            color: #4A4A4A;
+        }
+        .legal-page a {
+            color: #FF6B9D;
+            text-decoration: none;
+        }
+        .legal-page a:hover {
+            text-decoration: underline;
+        }
+        .email-protected {
+            unicode-bidi: bidi-override;
+            direction: rtl;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-text">Lernlust</span>
+            </a>
+            <div class="nav-menu" id="navMenu">
+                <a href="index.html#apps" class="nav-link">Apps</a>
+                <a href="index.html#community" class="nav-link">Community</a>
+                <a href="https://github.com/socialcrafter/website-lernlust" class="nav-link" target="_blank">Github</a>
+                <a href="index.html#contact" class="nav-link">Kontakt</a>
+            </div>
+            <div class="nav-toggle" id="navToggle">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="legal-page">
+        <h1>Impressum</h1>
+
+        <h2>Angaben gemäss Schweizer Recht</h2>
+
+        <p>
+            <strong>Betreiber der Website:</strong><br>
+            Mario Robles<br>
+            Schweiz
+        </p>
+
+        <h2>Kontakt</h2>
+        <p>
+            E-Mail: <span class="email-protected">hc.tsulnrel@ofni</span>
+        </p>
+
+        <h2>Haftungsausschluss</h2>
+
+        <h3>Inhalt des Onlineangebotes</h3>
+        <p>
+            Der Autor übernimmt keinerlei Gewähr für die Aktualität, Korrektheit, Vollständigkeit oder Qualität der bereitgestellten Informationen. Haftungsansprüche gegen den Autor, welche sich auf Schäden materieller oder ideeller Art beziehen, die durch die Nutzung oder Nichtnutzung der dargebotenen Informationen bzw. durch die Nutzung fehlerhafter und unvollständiger Informationen verursacht wurden, sind grundsätzlich ausgeschlossen.
+        </p>
+
+        <h3>Verweise und Links</h3>
+        <p>
+            Bei direkten oder indirekten Verweisen auf fremde Webseiten ("Hyperlinks"), die ausserhalb des Verantwortungsbereiches des Autors liegen, würde eine Haftungsverpflichtung ausschliesslich in dem Fall in Kraft treten, in dem der Autor von den Inhalten Kenntnis hat und es ihm technisch möglich und zumutbar wäre, die Nutzung im Falle rechtswidriger Inhalte zu verhindern.
+        </p>
+
+        <h3>Urheberrecht</h3>
+        <p>
+            Der Autor ist bestrebt, in allen Publikationen die Urheberrechte der verwendeten Bilder, Grafiken, Tondokumente, Videosequenzen und Texte zu beachten, von ihm selbst erstellte Bilder, Grafiken, Tondokumente, Videosequenzen und Texte zu nutzen oder auf lizenzfreie Grafiken, Tondokumente, Videosequenzen und Texte zurückzugreifen.
+        </p>
+        <p>
+            Alle innerhalb des Internetangebotes genannten und ggf. durch Dritte geschützten Marken- und Warenzeichen unterliegen uneingeschränkt den Bestimmungen des jeweils gültigen Kennzeichenrechts und den Besitzrechten der jeweiligen eingetragenen Eigentümer.
+        </p>
+
+        <h2>Open Source</h2>
+        <p>
+            Alle Lern-Apps auf dieser Website sind Open Source und kostenlos verfügbar. Der Quellcode ist auf <a href="https://github.com/socialcrafter/website-lernlust" target="_blank">GitHub</a> einsehbar.
+        </p>
+
+        <p style="margin-top: 40px; font-size: 0.9em; color: #888;">
+            Stand: Dezember 2025
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-text">Lernlust</span>
+                </div>
+                <div class="footer-links">
+                    <a href="impressum.html">Impressum</a>
+                    <a href="datenschutz.html">Datenschutz</a>
+                </div>
+                <p class="footer-copyright">Alle Apps sind kostenlos und werbefrei</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile Navigation Toggle
+        const navToggle = document.getElementById('navToggle');
+        const navMenu = document.getElementById('navMenu');
+
+        if (navToggle) {
+            navToggle.addEventListener('click', () => {
+                navMenu.classList.toggle('active');
+                navToggle.classList.toggle('active');
+            });
+        }
+    </script>
+</body>
+</html>
