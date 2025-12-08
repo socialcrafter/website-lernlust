@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahlen-Baumeister 🏗️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           DESIGN SYSTEM
+           Didaktisches Prinzip: Reizreduktion
+           - Klare Farben, wenig Ablenkung
+           - Montessori-inspirierte Farbcodierung
+        ============================================ */
+        :root {
+            /* Stellenwert-Farben (Montessori-inspiriert) */
+            --hundreds-color: #4CAF50;      /* Grün für Hunderter */
+            --hundreds-light: #81C784;
+            --tens-color: #F44336;          /* Rot für Zehner */
+            --tens-light: #E57373;
+            --ones-color: #2196F3;          /* Blau für Einer */
+            --ones-light: #64B5F6;
+            
+            /* UI Farben */
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ============================================
+           HEADER
+           Didaktisches Prinzip: Visuell vor Verbal
+           - Große, klare Zielzahl
+           - Permanent sichtbar (Arbeitsgedächtnis-Entlastung)
+        ============================================ */
+        header {
+            text-align: center;
+            padding: 10px 0 15px;
+        }
+
+        .logo {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--warning), #FF6B9D);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 5px;
+        }
+
+        /* Zielzahl - IMMER SICHTBAR */
+        .target-display {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .target-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .target-number {
+            font-family: 'Fredoka One', cursive;
+            font-size: 4rem;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        /* Farbcodierte Ziffern für visuelles Lernen */
+        .digit-hundreds {
+            color: var(--hundreds-color);
+        }
+
+        .digit-tens {
+            color: var(--tens-color);
+        }
+
+        .digit-ones {
+            color: var(--ones-color);
+        }
+
+        /* ============================================
+           ARBEITSFLÄCHE
+           Didaktisches Prinzip: Strukturierte Anordnung
+           - Drei klare Spalten für H/Z/E
+           - Automatische Anordnung für Simultanerfassung
+        ============================================ */
+        .workspace {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 20px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 15px;
+        }
+
+        .columns-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            flex: 1;
+        }
+
+        .column {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 16px;
+            padding: 15px 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px dashed transparent;
+            transition: all 0.3s ease;
+        }
+
+        .column.hundreds { border-color: rgba(76, 175, 80, 0.3); }
+        .column.tens { border-color: rgba(244, 67, 54, 0.3); }
+        .column.ones { border-color: rgba(33, 150, 243, 0.3); }
+
+        .column.correct {
+            border-style: solid;
+            animation: correctPulse 0.5s ease;
+        }
+
+        .column.hundreds.correct { 
+            border-color: var(--hundreds-color);
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.3);
+        }
+        .column.tens.correct { 
+            border-color: var(--tens-color);
+            box-shadow: 0 0 20px rgba(244, 67, 54, 0.3);
+        }
+        .column.ones.correct { 
+            border-color: var(--ones-color);
+            box-shadow: 0 0 20px rgba(33, 150, 243, 0.3);
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .column-header {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .column.hundreds .column-header {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--hundreds-color);
+        }
+
+        .column.tens .column-header {
+            background: rgba(244, 67, 54, 0.2);
+            color: var(--tens-color);
+        }
+
+        .column.ones .column-header {
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--ones-color);
+        }
+
+        /* Bereich für die platzierten Elemente */
+        .placed-items {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
+            padding: 10px 0;
+            min-height: 150px;
+        }
+
+        /* Live-Zähler unter jeder Spalte */
+        .column-counter {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.5rem;
+            padding: 5px 20px;
+            border-radius: 15px;
+            margin-top: auto;
+        }
+
+        .column.hundreds .column-counter {
+            background: rgba(76, 175, 80, 0.2);
+            color: var(--hundreds-color);
+        }
+
+        .column.tens .column-counter {
+            background: rgba(244, 67, 54, 0.2);
+            color: var(--tens-color);
+        }
+
+        .column.ones .column-counter {
+            background: rgba(33, 150, 243, 0.2);
+            color: var(--ones-color);
+        }
+
+        /* ============================================
+           MATERIAL-ELEMENTE
+           Didaktisches Prinzip: Simultanerfassung
+           - Hunderter: Große Quadrate (Platten)
+           - Zehner: Lange Balken (Stangen)
+           - Einer: Punkte in strukturierter Anordnung
+        ============================================ */
+        
+        /* Hunderter-Platte */
+        .hundred-plate {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--hundreds-color), var(--hundreds-light));
+            border-radius: 8px;
+            box-shadow: 
+                0 4px 8px rgba(0, 0, 0, 0.2),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3);
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            grid-template-rows: repeat(5, 1fr);
+            gap: 1px;
+            padding: 3px;
+            animation: itemIn 0.3s ease-out;
+        }
+
+        .hundred-plate .mini-dot {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 1px;
+        }
+
+        /* Zehner-Stange */
+        .ten-bar {
+            width: 70px;
+            height: 14px;
+            background: linear-gradient(135deg, var(--tens-color), var(--tens-light));
+            border-radius: 4px;
+            box-shadow: 
+                0 3px 6px rgba(0, 0, 0, 0.2),
+                inset 0 2px 0 rgba(255, 255, 255, 0.3);
+            display: flex;
+            gap: 2px;
+            padding: 2px;
+            animation: itemIn 0.3s ease-out;
+        }
+
+        .ten-bar .mini-dot {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        /* Einer-Container für strukturierte Anordnung */
+        .ones-container {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 4px;
+            width: 100%;
+            max-width: 90px;
+        }
+
+        .one-dot {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(135deg, var(--ones-color), var(--ones-light));
+            border-radius: 50%;
+            box-shadow: 
+                0 2px 4px rgba(0, 0, 0, 0.2),
+                inset 0 2px 0 rgba(255, 255, 255, 0.4);
+            animation: itemIn 0.3s ease-out;
+        }
+
+        @keyframes itemIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(-20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        /* ============================================
+           MATERIALLAGER
+           Didaktisches Prinzip: Touch-friendly
+           - Große Klickflächen
+           - Klare visuelle Unterscheidung
+        ============================================ */
+        .material-dock {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 15px;
+        }
+
+        .dock-label {
+            text-align: center;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dock-items {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .dock-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .dock-item:hover {
+            transform: translateY(-3px);
+        }
+
+        .dock-item:active {
+            transform: scale(0.95);
+        }
+
+        .dock-item.hundreds {
+            border-color: rgba(76, 175, 80, 0.3);
+        }
+        .dock-item.hundreds:hover {
+            background: rgba(76, 175, 80, 0.15);
+            border-color: var(--hundreds-color);
+        }
+
+        .dock-item.tens {
+            border-color: rgba(244, 67, 54, 0.3);
+        }
+        .dock-item.tens:hover {
+            background: rgba(244, 67, 54, 0.15);
+            border-color: var(--tens-color);
+        }
+
+        .dock-item.ones {
+            border-color: rgba(33, 150, 243, 0.3);
+        }
+        .dock-item.ones:hover {
+            background: rgba(33, 150, 243, 0.15);
+            border-color: var(--ones-color);
+        }
+
+        /* Fehlerprävention: Deaktivierter Zustand */
+        .dock-item.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .dock-item-label {
+            font-family: 'Fredoka One', cursive;
+            font-size: 0.9rem;
+        }
+
+        .dock-item.hundreds .dock-item-label { color: var(--hundreds-color); }
+        .dock-item.tens .dock-item-label { color: var(--tens-color); }
+        .dock-item.ones .dock-item-label { color: var(--ones-color); }
+
+        /* Dock-Elemente (kleinere Vorschau) */
+        .dock-hundred {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--hundreds-color), var(--hundreds-light));
+            border-radius: 6px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .dock-ten {
+            width: 50px;
+            height: 12px;
+            background: linear-gradient(135deg, var(--tens-color), var(--tens-light));
+            border-radius: 3px;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        .dock-one {
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--ones-color), var(--ones-light));
+            border-radius: 50%;
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+        }
+
+        /* ============================================
+           FEEDBACK & ERFOLG
+           Didaktisches Prinzip: Sofortiges Feedback
+           - Visuell klar (grün = richtig)
+           - Keine Bestrafung bei Fehlern
+        ============================================ */
+        .success-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .success-overlay.visible {
+            display: flex;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .success-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--success);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            animation: successIn 0.4s ease-out;
+        }
+
+        @keyframes successIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .success-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+        }
+
+        .success-text {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2rem;
+            color: var(--success);
+            margin-bottom: 10px;
+        }
+
+        .success-detail {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        /* ============================================
+           CONTROLS
+        ============================================ */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .control-btn {
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-family: 'Nunito', sans-serif;
+            font-weight: 700;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 2px solid var(--card-border);
+            color: var(--text-secondary);
+        }
+
+        .btn-reset:hover {
+            border-color: var(--tens-color);
+            color: var(--tens-color);
+        }
+
+        .btn-new {
+            background: linear-gradient(135deg, #6C63FF, #8B85FF);
+            color: white;
+            box-shadow: 0 5px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-new:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        /* Shake animation für Fehlerprävention */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-5px); }
+            40%, 80% { transform: translateX(5px); }
+        }
+
+        .shake {
+            animation: shake 0.4s ease;
+        }
+
+        /* Responsive */
+        @media (max-width: 500px) {
+            .target-number {
+                font-size: 3rem;
+            }
+
+            .dock-items {
+                gap: 10px;
+            }
+
+            .dock-item {
+                padding: 12px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">🏗️ Zahlen-Baumeister</h1>
+        </header>
+
+        <!-- 
+            ZIELZAHL - PERMANENT SICHTBAR
+            Didaktisches Prinzip: Arbeitsgedächtnis-Entlastung
+            Die Zahl bleibt immer sichtbar, das Kind muss sie nicht im Kopf behalten
+        -->
+        <div class="target-display">
+            <div class="target-label">Baue diese Zahl:</div>
+            <div class="target-number" id="targetNumber">
+                <span class="digit-hundreds" id="digitH">5</span>
+                <span class="digit-tens" id="digitT">7</span>
+                <span class="digit-ones" id="digitO">8</span>
+            </div>
+        </div>
+
+        <!-- 
+            ARBEITSFLÄCHE
+            Didaktisches Prinzip: Strukturierte Anordnung
+            Drei klare Spalten für die Stellenwerte
+        -->
+        <div class="workspace">
+            <div class="columns-container">
+                <!-- Hunderter-Spalte -->
+                <div class="column hundreds" id="colHundreds">
+                    <div class="column-header">H</div>
+                    <div class="placed-items" id="placedHundreds"></div>
+                    <div class="column-counter" id="counterH">0</div>
+                </div>
+
+                <!-- Zehner-Spalte -->
+                <div class="column tens" id="colTens">
+                    <div class="column-header">Z</div>
+                    <div class="placed-items" id="placedTens"></div>
+                    <div class="column-counter" id="counterT">0</div>
+                </div>
+
+                <!-- Einer-Spalte -->
+                <div class="column ones" id="colOnes">
+                    <div class="column-header">E</div>
+                    <div class="placed-items" id="placedOnes">
+                        <!-- 
+                            Didaktisches Prinzip: Simultanerfassung
+                            Einer werden in 5er-Gruppen angeordnet (wie Würfelbild)
+                        -->
+                        <div class="ones-container" id="onesContainer"></div>
+                    </div>
+                    <div class="column-counter" id="counterO">0</div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button class="control-btn btn-reset" onclick="resetPlacement()">🗑️ Leeren</button>
+                <button class="control-btn btn-new" onclick="generateNewNumber()">🎲 Neue Zahl</button>
+            </div>
+        </div>
+
+        <!-- 
+            MATERIALLAGER
+            Didaktisches Prinzip: Touch-friendly
+            Große Klickflächen für einfache Bedienung
+        -->
+        <div class="material-dock">
+            <div class="dock-label">Klicke auf das Material:</div>
+            <div class="dock-items">
+                <div class="dock-item hundreds" id="dockHundred" onclick="addItem('hundreds')">
+                    <div class="dock-hundred"></div>
+                    <span class="dock-item-label">100</span>
+                </div>
+                <div class="dock-item tens" id="dockTen" onclick="addItem('tens')">
+                    <div class="dock-ten"></div>
+                    <span class="dock-item-label">10</span>
+                </div>
+                <div class="dock-item ones" id="dockOne" onclick="addItem('ones')">
+                    <div class="dock-one"></div>
+                    <span class="dock-item-label">1</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Erfolgs-Overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-card">
+            <div class="success-icon">🎉</div>
+            <div class="success-text">Super!</div>
+            <div class="success-detail" id="successDetail">578 = 5H + 7Z + 8E</div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================
+           GAME STATE
+        ============================================ */
+        let targetNumber = {
+            hundreds: 5,
+            tens: 7,
+            ones: 8
+        };
+
+        let placedItems = {
+            hundreds: 0,
+            tens: 0,
+            ones: 0
+        };
+
+        /* ============================================
+           INITIALIZATION
+        ============================================ */
+        function init() {
+            generateNewNumber();
+        }
+
+        /* ============================================
+           NEUE ZAHL GENERIEREN
+           Generiert Zahlen im Bereich 100-999
+        ============================================ */
+        function generateNewNumber() {
+            // Mindestens 1 Hunderter, um im Zahlenraum bis 1000 zu bleiben
+            targetNumber.hundreds = Math.floor(Math.random() * 9) + 1; // 1-9
+            targetNumber.tens = Math.floor(Math.random() * 10);        // 0-9
+            targetNumber.ones = Math.floor(Math.random() * 10);        // 0-9
+
+            updateTargetDisplay();
+            resetPlacement();
+        }
+
+        /* ============================================
+           ANZEIGE AKTUALISIEREN
+           Didaktisches Prinzip: Visuell vor Verbal
+           Farbcodierte Ziffern für visuelles Lernen
+        ============================================ */
+        function updateTargetDisplay() {
+            document.getElementById('digitH').textContent = targetNumber.hundreds;
+            document.getElementById('digitT').textContent = targetNumber.tens;
+            document.getElementById('digitO').textContent = targetNumber.ones;
+        }
+
+        /* ============================================
+           ELEMENT HINZUFÜGEN
+           Didaktisches Prinzip: Fehler-Prävention
+           Elemente werden nur akzeptiert, wenn noch Platz ist
+        ============================================ */
+        function addItem(type) {
+            const target = targetNumber[type];
+            const current = placedItems[type];
+
+            // Fehlerprävention: Nicht mehr als nötig zulassen
+            if (current >= target) {
+                // Visuelles Feedback: Kurzes Wackeln
+                const dockItem = document.getElementById(`dock${capitalize(type)}`);
+                dockItem.classList.add('shake');
+                setTimeout(() => dockItem.classList.remove('shake'), 400);
+                return;
+            }
+
+            // Element hinzufügen
+            placedItems[type]++;
+            renderPlacedItems(type);
+            updateCounter(type);
+            checkCompletion();
+            updateDockState();
+        }
+
+        /* ============================================
+           PLATZIERTE ELEMENTE RENDERN
+           Didaktisches Prinzip: Simultanerfassung
+           Automatische Anordnung für Mengenerfassung
+        ============================================ */
+        function renderPlacedItems(type) {
+            if (type === 'hundreds') {
+                renderHundreds();
+            } else if (type === 'tens') {
+                renderTens();
+            } else {
+                renderOnes();
+            }
+        }
+
+        function renderHundreds() {
+            const container = document.getElementById('placedHundreds');
+            container.innerHTML = '';
+
+            for (let i = 0; i < placedItems.hundreds; i++) {
+                const plate = document.createElement('div');
+                plate.className = 'hundred-plate';
+                
+                // 5x5 Grid mit Mini-Punkten für visuelle Struktur
+                for (let j = 0; j < 25; j++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'mini-dot';
+                    plate.appendChild(dot);
+                }
+                
+                container.appendChild(plate);
+            }
+        }
+
+        function renderTens() {
+            const container = document.getElementById('placedTens');
+            container.innerHTML = '';
+
+            for (let i = 0; i < placedItems.tens; i++) {
+                const bar = document.createElement('div');
+                bar.className = 'ten-bar';
+                
+                // 10 Mini-Punkte für visuelle Struktur
+                for (let j = 0; j < 10; j++) {
+                    const dot = document.createElement('div');
+                    dot.className = 'mini-dot';
+                    bar.appendChild(dot);
+                }
+                
+                container.appendChild(bar);
+            }
+        }
+
+        /* 
+            Didaktisches Prinzip: Simultanerfassung (Subitizing)
+            Einer werden in strukturierter 5er-Anordnung dargestellt
+            Das verhindert das "Abzählen" und fördert Mengenerfassung
+        */
+        function renderOnes() {
+            const container = document.getElementById('onesContainer');
+            container.innerHTML = '';
+
+            for (let i = 0; i < placedItems.ones; i++) {
+                const dot = document.createElement('div');
+                dot.className = 'one-dot';
+                container.appendChild(dot);
+            }
+        }
+
+        /* ============================================
+           COUNTER AKTUALISIEREN
+           Live-Feedback für sofortige Orientierung
+        ============================================ */
+        function updateCounter(type) {
+            const counterId = `counter${type.charAt(0).toUpperCase()}`;
+            document.getElementById(counterId).textContent = placedItems[type];
+        }
+
+        function updateAllCounters() {
+            document.getElementById('counterH').textContent = placedItems.hundreds;
+            document.getElementById('counterT').textContent = placedItems.tens;
+            document.getElementById('counterO').textContent = placedItems.ones;
+        }
+
+        /* ============================================
+           DOCK-ZUSTAND AKTUALISIEREN
+           Didaktisches Prinzip: Fehler-Prävention
+           Deaktiviert Materialien, die nicht mehr benötigt werden
+        ============================================ */
+        function updateDockState() {
+            const types = ['hundreds', 'tens', 'ones'];
+            const dockIds = ['dockHundred', 'dockTen', 'dockOne'];
+
+            types.forEach((type, index) => {
+                const dock = document.getElementById(dockIds[index]);
+                if (placedItems[type] >= targetNumber[type]) {
+                    dock.classList.add('disabled');
+                } else {
+                    dock.classList.remove('disabled');
+                }
+            });
+        }
+
+        /* ============================================
+           VOLLSTÄNDIGKEITS-CHECK
+           Didaktisches Prinzip: Sofortiges Feedback
+           Prüft ob alle Stellenwerte korrekt sind
+        ============================================ */
+        function checkCompletion() {
+            const hundredsCorrect = placedItems.hundreds === targetNumber.hundreds;
+            const tensCorrect = placedItems.tens === targetNumber.tens;
+            const onesCorrect = placedItems.ones === targetNumber.ones;
+
+            // Spalten-Feedback
+            document.getElementById('colHundreds').classList.toggle('correct', hundredsCorrect);
+            document.getElementById('colTens').classList.toggle('correct', tensCorrect);
+            document.getElementById('colOnes').classList.toggle('correct', onesCorrect);
+
+            // Alles korrekt?
+            if (hundredsCorrect && tensCorrect && onesCorrect) {
+                showSuccess();
+            }
+        }
+
+        /* ============================================
+           ERFOLGS-ANZEIGE
+           Didaktisches Prinzip: Positive Verstärkung
+        ============================================ */
+        function showSuccess() {
+            const totalValue = targetNumber.hundreds * 100 + targetNumber.tens * 10 + targetNumber.ones;
+            document.getElementById('successDetail').textContent = 
+                `${totalValue} = ${targetNumber.hundreds}H + ${targetNumber.tens}Z + ${targetNumber.ones}E`;
+
+            const overlay = document.getElementById('successOverlay');
+            overlay.classList.add('visible');
+
+            // Nach 2 Sekunden automatisch neue Zahl
+            setTimeout(() => {
+                overlay.classList.remove('visible');
+                generateNewNumber();
+            }, 2000);
+        }
+
+        /* ============================================
+           PLATZIERUNG ZURÜCKSETZEN
+        ============================================ */
+        function resetPlacement() {
+            placedItems = { hundreds: 0, tens: 0, ones: 0 };
+
+            document.getElementById('placedHundreds').innerHTML = '';
+            document.getElementById('placedTens').innerHTML = '';
+            document.getElementById('onesContainer').innerHTML = '';
+
+            updateAllCounters();
+            updateDockState();
+
+            // Korrekt-Markierungen entfernen
+            document.querySelectorAll('.column').forEach(col => {
+                col.classList.remove('correct');
+            });
+        }
+
+        /* ============================================
+           HILFSFUNKTIONEN
+        ============================================ */
+        function capitalize(str) {
+            if (str === 'hundreds') return 'Hundred';
+            if (str === 'tens') return 'Ten';
+            if (str === 'ones') return 'One';
+            return str;
+        }
+
+        // App starten
+        init();
+    </script>
+</body>
+</html>
