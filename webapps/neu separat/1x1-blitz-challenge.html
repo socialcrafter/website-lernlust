@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>1x1 Blitz Challenge</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B9D;
+            --primary-light: #ff87b5;
+            --secondary: #4ECDC4;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-error: #FF6B9D;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-shape { position: absolute; border-radius: 50%; opacity: 0.1; animation: float 20s infinite ease-in-out; }
+        .bg-shape:nth-child(1) { width: 300px; height: 300px; background: var(--primary); top: -100px; right: -100px; animation-delay: 0s; }
+        .bg-shape:nth-child(2) { width: 200px; height: 200px; background: var(--secondary); bottom: 10%; left: -50px; animation-delay: -5s; }
+        .bg-shape:nth-child(3) { width: 150px; height: 150px; background: var(--success); top: 40%; right: 10%; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-10px, 20px) rotate(-5deg); } }
+        
+        .container { position: relative; z-index: 1; }
+        
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 20px;
+            border: 1px solid var(--card-border);
+            text-align: center;
+            width: 450px; /* Etwas breiter für die Gleichung */
+            height: 350px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            align-items: center;
+            overflow: hidden;
+            position: relative; /* Für die Zyklus-Anzeige */
+        }
+
+        @keyframes number-appear {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .task-equation {
+            font-size: 6rem; /* Angepasst für die Gleichung */
+            font-weight: 800;
+            line-height: 1;
+            color: var(--text-primary);
+            animation: number-appear 0.3s ease-out;
+        }
+
+        .task-equation.error {
+            color: var(--text-error);
+            animation: none;
+        }
+        
+        .input-display {
+            font-size: 5rem; /* Angepasst */
+            font-weight: 700;
+            color: var(--text-primary);
+            min-height: 5.5rem;
+            line-height: 1;
+        }
+        
+        .input-display.correct {
+            color: var(--success);
+        }
+
+        .solution-display {
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--success);
+            min-height: 5.5rem;
+            line-height: 1;
+        }
+        
+        .cycle-info {
+            position: absolute;
+            bottom: 15px;
+            right: 20px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        #inputField {
+            position: absolute;
+            top: -100px;
+            left: -100px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div>
+    </div>
+    <div class="container">
+        <div class="card" id="app-card">
+            <div class="task-equation" id="taskEquation"></div>
+            <div class="input-display" id="inputDisplay"></div>
+            <div class="solution-display" id="solutionDisplay"></div>
+            <div class="cycle-info">Mathematik | Zyklus 1 & 2</div>
+        </div>
+    </div>
+    <input type="number" id="inputField" autofocus maxlength="3">
+
+    <script>
+        const taskEquationEl = document.getElementById('taskEquation');
+        const inputDisplayEl = document.getElementById('inputDisplay');
+        const solutionDisplayEl = document.getElementById('solutionDisplay');
+        const inputField = document.getElementById('inputField');
+
+        let currentTask = { text: '', solution: 0 };
+        let state = 'playing';
+        let timeout_2s; // 2 Sekunden Zeitlimit für 1x1
+
+        function generate_task() {
+            let a = Math.floor(Math.random() * 10) + 1; // 1-10
+            let b = Math.floor(Math.random() * 10) + 1; // 1-10
+            let solution = a * b;
+            
+            return {
+                text: `${a} × ${b} =`,
+                solution: solution
+            };
+        }
+
+        function new_task(is_retry = false) {
+            state = 'playing';
+            
+            taskEquationEl.classList.remove('error');
+            inputDisplayEl.textContent = '';
+            inputDisplayEl.classList.remove('correct');
+            solutionDisplayEl.textContent = '';
+            inputField.value = '';
+            inputField.focus();
+
+            if (!is_retry) {
+                currentTask = generate_task();
+            }
+
+            taskEquationEl.textContent = currentTask.text;
+            
+            clearTimeout(timeout_2s);
+            timeout_2s = setTimeout(() => handle_input(null, true), 2000); // 2 Sekunden Zeitlimit
+        }
+
+        function handle_input(event, is_timeout = false) {
+            if (state !== 'playing') return;
+            
+            clearTimeout(timeout_2s);
+            state = 'feedback';
+            
+            const user_input = inputField.value;
+
+            if (is_timeout || parseInt(user_input) !== currentTask.solution) {
+                taskEquationEl.classList.add('error');
+                solutionDisplayEl.textContent = currentTask.solution;
+                setTimeout(() => new_task(true), 1500);
+            } else {
+                inputDisplayEl.textContent = user_input;
+                inputDisplayEl.classList.add('correct');
+                setTimeout(() => new_task(false), 500);
+            }
+        }
+        
+        inputField.addEventListener('input', () => {
+            inputDisplayEl.textContent = inputField.value;
+            // Prüfen, ob die Länge der Eingabe der Länge der Lösung entspricht
+            // oder ob die Eingabe bereits die korrekte Lösung ist (für schnelle Tipper)
+            if (String(inputField.value).length === String(currentTask.solution).length || parseInt(inputField.value) === currentTask.solution) {
+                handle_input();
+            }
+        });
+        
+        document.body.addEventListener('click', () => {
+            inputField.focus();
+        });
+
+        new_task();
+    </script>
+</body>
+</html>

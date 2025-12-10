@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mathematik Förderplan | Lehrplan 21 Primar-/Unterstufe</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF6B9D;
+            --primary-light: #ff87b5;
+            --secondary: #4ECDC4;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --text-error: #FF6B9D;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden; /* Prevent horizontal scroll for floating shapes */
+        }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-shape { position: absolute; border-radius: 50%; opacity: 0.1; animation: float 20s infinite ease-in-out; }
+        .bg-shape:nth-child(1) { width: 300px; height: 300px; background: var(--primary); top: -100px; right: -100px; animation-delay: 0s; }
+        .bg-shape:nth-child(2) { width: 200px; height: 200px; background: var(--secondary); bottom: 10%; left: -50px; animation-delay: -5s; }
+        .bg-shape:nth-child(3) { width: 150px; height: 150px; background: var(--success); top: 40%; right: 10%; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-10px, 20px) rotate(-5deg); } }
+        
+        .container { position: relative; z-index: 1; max-width: 800px; width: 100%; }
+        
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--card-border);
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            text-align: center;
+            margin-bottom: 30px;
+            font-weight: 900;
+        }
+
+        h2 {
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--card-border);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            margin-top: 30px;
+            margin-bottom: 15px;
+        }
+
+        h4 {
+            font-size: 1.2rem;
+            color: var(--primary-light);
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        p, ul, ol, li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: var(--text-secondary);
+            margin-bottom: 10px;
+        }
+
+        ul, ol {
+            margin-left: 20px;
+        }
+
+        strong {
+            color: var(--text-primary);
+        }
+
+        .note {
+            background: rgba(var(--warning), 0.1);
+            border-left: 4px solid var(--warning);
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+
+        .app-concept {
+            background: rgba(var(--success), 0.1);
+            border-left: 4px solid var(--success);
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div>
+    </div>
+    <div class="container">
+        <h1>Mathematik Förderplan | Lehrplan 21</h1>
+
+        <div class="card">
+            <h2>Einführung: Fachliche Überlegungen zur Förderung von ADHS-Kindern in Mathematik</h2>
+            <p>Dieser Förderplan basiert auf neuesten Erkenntnissen der Neuropsychologie und Didaktik, insbesondere aus der Fachliteratur (u.a. Born & Oehler, Hasselhorn & Gold). Er berücksichtigt die spezifischen Herausforderungen von Kindern mit ADHS im Lernprozess. Kernprinzipien sind die <strong>Entlastung des Arbeitsgedächtnisses</strong>, die <strong>Automatisierung von Grundfertigkeiten</strong>, visuell-handelndes Lernen und ein fehlerfreundliches Feedback.</p>
+            <p>Die drei Zyklen des Lehrplans 21 bilden die Struktur, wobei der Fokus auf dem schrittweisen Aufbau von Kompetenzen und deren Automatisierung liegt, um kognitive Ressourcen für komplexere Aufgaben freizusetzen.</p>
+        </div>
+
+        <div class="card">
+            <h2>Zyklus 1 (Kindergarten bis 2. Klasse)</h2>
+            <p><strong>Didaktisches Leitprinzip:</strong> Radikale Vereinfachung, Entlastung des Arbeitsgedächtnisses und schnelle Automatisierung der Kernfakten. Dies schafft Kapazitäten für komplexere Themen in Zyklus 2. Zählstrategien sollen aktiv unterbunden werden.</p>
+
+            <h3>Kompetenzbereich: MA.1 - Zahl und Variable</h3>
+            
+            <h4>Lernziel: Zahl-Menge-Verknüpfung & Simultanerfassung (bis 10)</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Tendenz zu zählenden statt simultanen Strategien. Zählen ist langsam, fehleranfällig und blockiert das Arbeitsgedächtnis. Visuelle Verarbeitungsdefizite erschweren das Erfassen unstrukturierter Mengen.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> <strong>Automatisierung der visuellen Mengenerfassung (Subitizing)</strong>. Das Gehirn soll das "Bild" einer Menge (z.B. 5 Punkte auf dem Würfel) direkt mit dem Symbol "5" verknüpfen. Dies erfordert kurze Darbietungszeiten, die Zählen unmöglich machen. Strukturierte, wiederkehrende visuelle Muster (wie auf einem 10er-Steckbrett) erleichtern das "Abfotografieren".</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Mengen-Blitz"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Mengen-Blitz"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Zeigt für max. 1 Sekunde ein 10er-Steckbrett mit 1 bis 10 Kugeln in strukturierter Anordnung (immer von links oben gefüllt).</li>
+                            <li><strong>Interaktion:</strong> Kind tippt die erkannte Zahl per Tastatur ein. Kein Multiple-Choice, um reines Wiedererkennen zu vermeiden.</li>
+                            <li><strong>Feedback:</strong> Sofortiges, klares Feedback. Bei Fehler wird die korrekte Zahl und das dazugehörige Steckbrett-Bild für 1.5 Sekunden angezeigt, bevor <strong>dieselbe Aufgabe</strong> wiederholt wird (fehlerfreies Lernen).</li>
+                            <li><strong>Design:</strong> Absolut minimalistisch, grosse, klare Darstellung.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <h4>Lernziel: Zerlegung der 10 ("Verliebte Zahlen") automatisieren</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Ohne automatisierte 10er-Zerlegung ist der Zehnerübergang eine hohe kognitive Last.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> <strong>Direkte, reziproke Verknüpfung erzwingen.</strong> Das Gehirn muss lernen: `7 -> 3` und `3 -> 7`. Zeitdruck unterbindet Denk- und Zählprozesse.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: `zehner-paare-blitz-v2.html`</strong>
+                    <div class="app-concept">
+                        <p>Die von uns erstellte App <code>zehner-paare-blitz-v2.html</code> setzt dies bereits perfekt um: Kurzes Zeitlimit (2 Sek.), minimalistisches Design im Stil der Sammlung, und die Wiederholung derselben Aufgabe bei Fehler.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <h4>Lernziel: Zehnerübergang (+/- im 20er-Raum) automatisieren</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Ohne automatisierte 10er-Zerlegung und ohne automatisierte Plus/Minus-Rechnungen im kleinen Zahlenraum wird der Zehnerübergang zu einer Kaskade von fehleranfälligen Einzelrechnungen im Arbeitsgedächtnis.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> Zuerst das Konzept mit einer App wie `zehn-voll-machen.html` visuell und handelnd verstehen. Danach die gesamte Handlungssequenz (z.B. `8+5=13`) als eine einzige Informationseinheit automatisieren. Das Gehirn soll nicht mehr den Rechenweg gehen, sondern `8+5` als Signal für die direkte Antwort `13` nutzen.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: `zehner-bruecke-blitz.html`</strong>
+                    <div class="app-concept">
+                        <p>Die von uns erstellte App <code>zehner-bruecke-blitz.html</code> setzt dies ideal um: 3-Sekunden-Limit, Zufallsaufgaben `a +/- b =`, Wiederholung derselben Aufgabe bei Fehler. Das didaktisch wertvolle <code>zehn-voll-machen.html</code> dient der Strategie-Vermittlung.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Kompetenzbereich: MA.2 - Form und Raum</h3>
+
+            <h4>Lernziel: Geometrische Grundformen erkennen und benennen</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Visuelle Differenzierung kann schwerfallen bei Ablenkung. Die Verknüpfung von visuellem Bild (z.B. ein Quadrat) und dem abstrakten Begriff ("Quadrat") ist eine Gedächtnisaufgabe, die oft zu wenig wiederholt wird und zu Interferenz führt.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> <strong>Isolierte visuelle Konfrontation und direkter Abruf des Namens.</strong> Die Form muss klar und ohne Ablenkung gezeigt werden. Die Antwort sollte den direkten Abruf des Namens erfordern, nicht nur das Wiedererkennen.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Formen-Blitz"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Formen-Blitz"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Eine einzelne, grosse geometrische Form (Kreis, Quadrat, Dreieck, Rechteck) erscheint für 2 Sekunden im Zentrum der Card.</li>
+                            <li><strong>Interaktion:</strong> Die Form verschwindet und vier Text-Buttons mit den Namen der vier Formen erscheinen. Das Kind muss den korrekten Namen anklicken.</li>
+                            <li><strong>Feedback:</strong> Bei richtiger Wahl leuchtet der Button grün. Bei falscher Wahl wird der falsche rot und der richtige grün. Nach 1.5 Sekunden startet eine neue Runde.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Kompetenzbereich: MA.3 - Grössen, Funktionen, Daten, Zufall</h3>
+
+            <h4>Lernziel: Uhrzeit ablesen (volle und halbe Stunden)</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Das Ablesen analoger Uhren kann komplex sein (zwei Zeiger, unterschiedliche Skalen). Fehlende Automatisierung führt zu langen Überlegungszeiten und Fehlern, die sich bei "ganz einfach" erscheinenden Aufgaben anhäufen.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> <strong>Visuelle Assoziation und Automatisierung der Kernzeiten.</strong> Fokus auf die visuelle Verknüpfung von Zeigerposition und Zeit. Keine Ablenkung.
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Uhrzeit-Blitz"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Uhrzeit-Blitz"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Zeigt eine einfache analoge Uhr (z.B. ohne Minutenstriche) mit einer vollen oder halben Stunde.</li>
+                            <li><strong>Interaktion:</strong> Kind tippt die korrekte Zeit digital ein (z.B. "3:30").</li>
+                            <li><strong>Feedback:</strong> Dasselbe Blitz-Prinzip: 2 Sekunden Zeit, bei Fehler wird die richtige Zeit angezeigt und die Aufgabe wiederholt.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Zyklus 2 (3. bis 6. Klasse)</h2>
+            <p><strong>Didaktisches Leitprinzip:</strong> Automatisierung von mehrstufigen Prozessen und Anwendung der Grundfakten im grösseren Zahlenraum. Die Grundautomatisierungen aus Zyklus 1 sind Voraussetzung. Fokus auf die Bewältigung von Regel-Interferenz und der schrittweisen Abarbeitung von Rechenstrategien.</p>
+
+            <h3>Kompetenzbereich: MA.1 - Zahl und Variable</h3>
+            
+            <h4>Lernziel: Kleines Einmaleins (1x1 bis 10x10) vollständig automatisieren</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Die oft genutzten "Herleit"-Strategien (z.B. 7x8 aus 5x8 + 2x8) blockieren das Arbeitsgedächtnis vollständig und sind fehleranfällig. Die Menge der Fakten ist ohne Automatisierung überwältigend.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> <strong>Erzwingung des direkten Faktenabrufs.</strong> Die Verbindung `Aufgabe -> Lösung` muss ein automatischer Reflex werden. Kurze Darbietungszeit, gemischte Aufgaben und sofortiges, fehlerfreundliches Feedback unterbinden Herleitungen und fördern die direkte neuronale Verdrahtung.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: `1x1-blitz-challenge.html`</strong>
+                    <div class="app-concept">
+                        <p>Die von uns erstellte App <code>1x1-blitz-challenge.html</code> ist das perfekte Werkzeug dafür. Das 2-Sekunden-Limit, die zufällige Aufgabenstellung und die Wiederholung derselben Aufgabe bei Fehlern sind entscheidend.</p>
+                    </div>
+                </li>
+            </ul>
+
+            <h4>Lernziel: Zahlenraum bis 1'000'000 verstehen (Stellenwertsystem)</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Grosse Zahlen sind abstrakt. Die Bedeutung der Position jeder Ziffer (Stellenwert) ist schwer zu visualisieren und zu behalten, was zu Fehlern beim schriftlichen Rechnen führt.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> <strong>Visuelle und interaktive Strukturierung.</strong> Die Zerlegung einer Zahl in ihre Stellenwerte muss visuell erlebbar und "anfassbar" gemacht werden, um ein mentales "Regalsystem" für Tausender, Hunderter, Zehner etc. zu festigen.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Stellenwert-Zerleger"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Stellenwert-Zerleger"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Eine grosse Zahl (z.B. `27'581`) wird angezeigt.</li>
+                            <li><strong>Interaktion:</strong> Darunter erscheinen Eingabefelder für `Zehntausender`, `Tausender`, `Hunderter`, `Zehner`, `Einer`. Das Kind tippt die Ziffern in die korrekten Felder ein.</li>
+                            <li><strong>Feedback:</strong> Korrekt platzierte Ziffern werden grün. Falsche bleiben rot und die Aufgabe muss wiederholt werden. Visuelle Verstärkung des Stellenwertsystems.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Kompetenzbereich: MA.2 - Form und Raum</h3>
+
+            <h4>Lernziel: Flächen- und Umfangsberechnung (Rechteck)</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Klassischer Fehler durch Regel-Interferenz im Arbeitsgedächtnis. Formeln für Fläche und Umfang werden verwechselt, besonders wenn sie im gleichen Kontext gelernt werden.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> <strong>Isolierung und Automatisierung der Formel vor der Berechnung.</strong> Die korrekte Formel muss als eigenständiges Wissenselement abgerufen werden, bevor mit der eigentlichen Rechnung begonnen wird.
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Flächen-Formel-Blitz"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Flächen-Formel-Blitz"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Zeigt ein Rechteck mit beschrifteten Seitenlängen (z.B. "Länge: 5cm", "Breite: 3cm"). Darüber die Frage: "Fläche = ?" oder "Umfang = ?".</li>
+                            <li><strong>Interaktion (Schritt 1):</strong> Das Kind wählt zuerst die korrekte Formel aus zwei Buttons (z.B. `[ L * B ]` vs `[ 2*L + 2*B ]`). Bei falscher Wahl, korrekte Formel anzeigen und dieselbe Frage wiederholen.</li>
+                            <li><strong>Interaktion (Schritt 2):</strong> Erst nach korrekter Formelwahl erscheint ein Eingabefeld für das Rechenergebnis.</li>
+                            <li><strong>Feedback:</strong> Separates Feedback für Formelwahl und Ergebnis.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Kompetenzbereich: MA.3 - Grössen, Funktionen, Daten, Zufall</h3>
+
+            <h4>Lernziel: Grössen umwandeln (m <-> cm, kg <-> g, l <-> dl)</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Verwirrung bei Umrechnungsfaktoren (10, 100, 1000) und Operationen (mal oder geteilt). Reine Gedächtnisarbeit, die anfällig für Fehler ist.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> **Visuelle Anker für Umrechnungsregeln.** Erstelle eine feste, einfache visuelle Regel, die den Umrechnungsfaktor und die Operation klar darstellt. Isoliere den Abruf der Regel von der Berechnung.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Grössen-Wandler"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Grössen-Wandler"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Eine Aufgabe wie `3.5 m = ? cm`.</li>
+                            <li><strong>Visueller Anker:</strong> Über der Aufgabe wird eine dauerhaft präsente, minimalistische Grafik angezeigt, die die Regel illustriert (z.B. `m --(x 100)--> cm`).</li>
+                            <li><strong>Interaktion:</strong> Kind tippt das Ergebnis ein. Das visuelle Regel-Display entlastet das Arbeitsgedächtnis.</li>
+                            <li><strong>Feedback:</strong> Blitz-Prinzip (Zeitlimit, bei Fehler Lösung anzeigen und Aufgabe wiederholen).</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Zyklus 3 (7. bis 9. Klasse / Sekundarstufe I)</h2>
+            <p><strong>Didaktisches Leitprinzip:</strong> Mathematik wird in diesem Zyklus zunehmend abstrakt. Die Herausforderung für ADHS-Kinder liegt im Management von <strong>mehrstufigen abstrakten Prozessen</strong> und deren flexibler Anwendung. Der Fokus liegt auf der Externalisierung und Visualisierung von Prozessen ("Fahrpläne") sowie der Isolierung und Automatisierung von Regeln, um das Arbeitsgedächtnis zu entlasten.</p>
+
+            <h3>Kompetenzbereich: MA.1 - Zahl und Variable (Algebra)</h3>
+            
+            <h4>Lernziel: Terme vereinfachen und Gleichungen lösen</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Der Überblick über die Abfolge der Rechenschritte geht verloren. Häufige Vorzeichenfehler, Fehler beim Anwenden von Operationen auf beide Seiten der Gleichung. Die komplexe Sequenz an Schritten überlastet das Arbeitsgedächtnis.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> **Visualisierung des Lösungsprozesses ("Fahrplan").** Der abstrakte Lösungsweg wird in eine konkrete, sichtbare, Schritt-für-Schritt-Anleitung überführt. Das Kind lernt, dem Fahrplan zu folgen, anstatt sich die Reihenfolge merken zu müssen.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Gleichungs-Lotse"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Gleichungs-Lotse"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Eine Gleichung (z.B. `3(x + 5) = 2x + 12`). Daneben wird ein interaktiver "Fahrplan" angezeigt: `1. Klammern auflösen`, `2. Zusammenfassen`, `3. x auf eine Seite`, `4. Zahlen auf eine Seite`, `5. Ergebnis ermitteln`.</li>
+                            <li><strong>Interaktion:</strong> Das Kind muss zuerst auf den <strong>nächsten korrekten Schritt-Button</strong> im Fahrplan klicken, bevor es die entsprechende Umformung der Gleichung vornimmt.</li>
+                            <li><strong>Feedback:</strong> Die App validiert die Wahl des Schrittes *vor* der Berechnung. Bei falschem Schritt, wird der richtige Schritt aufgezeigt und erklärt. Das trainiert die Prozess-Automatisierung.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <h4>Lernziel: Bruchrechnen (Addition, Subtraktion, Multiplikation, Division)</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Extreme Regel-Interferenz. Die spezifischen Regeln für die vier Grundrechenarten mit Brüchen werden ständig verwechselt. Ohne sicheren Abruf der korrekten Regel ist jeder Versuch zu rechnen fehleranfällig.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> **Regel-Isolierung und Konditionierung des Regel-Abrufs.** Das Kind muss gezwungen werden, die korrekte Regel *vor* jeder Aktion abzurufen.
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Bruchrechen-Weiche"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Bruchrechen-Weiche"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Eine Bruchrechenaufgabe (z.B. `2/3 + 3/4` oder `2/3 * 3/4`).</li>
+                            <li><strong>Interaktion (Regel-Weiche):</strong> Bevor das Kind mit dem Rechnen beginnt, muss es eine Entscheidungsfrage beantworten: "Muss ein Hauptnenner gefunden werden?" `[ JA ]` `[ NEIN ]` oder "Muss ich mit dem Kehrwert multiplizieren?" `[ JA ]` `[ NEIN ]`.</li>
+                            <li><strong>Feedback:</strong> Bei korrekter Regelwahl wird der Rechenteil freigeschaltet. Bei falscher Regelwahl wird die korrekte Regel eingeblendet und die Aufgabe wiederholt.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Kompetenzbereich: MA.2 - Form und Raum (Geometrie)</h3>
+
+            <h4>Lernziel: Satz des Pythagoras anwenden</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Häufiges Verwechseln von Katheten und Hypotenuse, insbesondere bei gedrehten Dreiecken. Die Formel `a²+b²=c²` wird falsch oder nicht sicher erinnert. Hohe Fehlerquote beim Ablesen der Seiten.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> **Visuelle Verknüpfung von Element, Rolle und Formel.** Die Identifikation der Hypotenuse (immer gegenüber dem rechten Winkel) muss automatisiert werden. Die Formel muss direkt mit der Rolle der Seiten verknüpft werden.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Pythagoras-Trainer"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Pythagoras-Trainer"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Zeigt ein rechtwinkliges Dreieck mit beschrifteten Seiten (x, y, z) in zufälliger Ausrichtung an.</li>
+                            <li><strong>Interaktion (Schritt 1):</strong> "Klicke auf die Hypotenuse!". Sofortiges Feedback auf diese Identifikation.</li>
+                            <li><strong>Interaktion (Schritt 2):</strong> Nach korrekter Identifikation muss das Kind die passende Formel wählen: `[ x²+y²=z² ]` (mit den angezeigten Buchstaben).</li>
+                            <li><strong>Interaktion (Schritt 3):</strong> Erst nach korrekter Formelwahl erscheinen die Eingabefelder für die Berechnung der fehlenden Seite.</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+
+            <h3>Kompetenzbereich: MA.3 - Grössen, Funktionen, Daten, Zufall</h3>
+
+            <h4>Lernziel: Lineare Funktionen verstehen und anwenden (`y = mx + b`)</h4>
+            <ul>
+                <li><strong>Problem bei ADHS (Hintergrund):</strong> Abstrakte Natur der Parameter `m` (Steigung) und `b` (y-Achsenabschnitt). Schwierigkeiten, die abstrakte Formel mit der visuellen Darstellung (dem Graphen) zu verknüpfen. Das blockiert das intuitive Verständnis.</li>
+                <li><strong>Didaktisches Prinzip (Lösung):</strong> **Interaktive, direkte Visualisierung der Parameter-Auswirkungen.** Das Kind muss die abstrakten Parameter "anfassen" und ihre unmittelbare Auswirkung auf den Graphen sehen. Dies schafft eine intuitive, handelnde Verknüpfung.</li>
+                <li><strong>Potenzielles App-Konzept & Gestaltung: "Funktions-Slider"</strong>
+                    <div class="app-concept">
+                        <p><strong>App: "Funktions-Slider"</strong></p>
+                        <ul>
+                            <li><strong>Anzeige:</strong> Links ein Koordinatensystem mit einem Graphen, rechts die Gleichung `y = mx + b`.</li>
+                            <li><strong>Interaktion:</strong> Zwei Schieberegler: einer für `m` und einer für `b`. Bei Bewegung des `m`-Reglers ändert sich die Steigung der Linie in Echtzeit. Bei Bewegung des `b`-Reglers verschiebt sich die Linie auf der y-Achse.</li>
+                            <li><strong>Gamification:</strong> "Stelle die Linie so ein, dass sie durch die Punkte (0,2) und (1,5) geht!" oder "Finde die Gleichung für diese Linie!".</li>
+                        </ul>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zahlenstrahl-Trainer 📏</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Fredoka+One&display=swap" rel="stylesheet">
+    <style>
+        /* ============================================
+           DESIGN SYSTEM
+           Didaktisches Prinzip: Reizreduktion
+           - Clean, hochstrukturiert, selbsterklärend
+           - Keine ablenkenden Animationen
+        ============================================ */
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --secondary: #FF6B9D;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --anchor-color: #2196F3;      /* Blau für Ankerzahlen */
+            --mid-anchor: #FF9800;        /* Orange für 550 (Mitte) */
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --line-color: rgba(255, 255, 255, 0.6);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            user-select: none;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 15px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 10px 0 20px;
+        }
+
+        .logo {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            background: linear-gradient(135deg, var(--anchor-color), var(--mid-anchor));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* ============================================
+           MODE SELECTION
+        ============================================ */
+        .mode-select {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .mode-select h2 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.4rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--warning);
+        }
+
+        .mode-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            flex: 1;
+            min-width: 200px;
+            max-width: 280px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid var(--card-border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            border-color: var(--primary-light);
+            background: rgba(108, 99, 255, 0.1);
+            transform: translateY(-3px);
+        }
+
+        .mode-btn .icon {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .mode-btn h3 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .mode-btn p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        /* ============================================
+           GAME AREA
+        ============================================ */
+        .game-area {
+            display: none;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .game-area.active {
+            display: flex;
+        }
+
+        /* Progress & Controls */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .back-btn {
+            background: transparent;
+            border: 2px solid var(--card-border);
+            color: var(--text-secondary);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn:hover {
+            border-color: var(--primary-light);
+            color: var(--text-primary);
+        }
+
+        .score-display {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+        }
+
+        .score-display span {
+            color: var(--success);
+        }
+
+        /* Task Display */
+        .task-display {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .task-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .task-number {
+            font-family: 'Fredoka One', cursive;
+            font-size: 3.5rem;
+            color: var(--warning);
+        }
+
+        /* ============================================
+           ZAHLENSTRAHL
+           Didaktisches Prinzip: Visuelle Anker
+           - 500, 550, 600 als "Leuchttürme"
+           - 550 in Signalfarbe (Kraft der Mitte)
+        ============================================ */
+        .numberline-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 20px;
+            padding: 30px 20px;
+            margin-bottom: 20px;
+        }
+
+        .numberline {
+            position: relative;
+            height: 120px;
+            margin: 0 30px;
+        }
+
+        /* Main line */
+        .line-track {
+            position: absolute;
+            top: 50px;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--line-color);
+            border-radius: 2px;
+        }
+
+        /* Tick marks */
+        .tick {
+            position: absolute;
+            top: 35px;
+            width: 2px;
+            background: var(--line-color);
+            transform: translateX(-50%);
+        }
+
+        .tick.tens {
+            height: 40px;
+            top: 25px;
+            width: 3px;
+            background: var(--line-color);
+        }
+
+        .tick.fives {
+            height: 28px;
+            top: 34px;
+            width: 2px;
+            background: rgba(255, 255, 255, 0.8);
+        }
+
+        .tick.ones {
+            height: 16px;
+            top: 42px;
+            width: 1.5px;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* Anchor labels */
+        .anchor-label {
+            position: absolute;
+            top: 70px;
+            transform: translateX(-50%);
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.1rem;
+            color: var(--anchor-color);
+        }
+
+        .anchor-label.main {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .anchor-label.mid {
+            color: var(--mid-anchor);
+            font-size: 1.3rem;
+        }
+
+        /* Ball marker for "Erkennen" mode */
+        .ball-marker {
+            position: absolute;
+            top: 15px;
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--secondary), #ff4777);
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 4px 15px rgba(255, 107, 157, 0.5);
+            transition: left 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: none;
+        }
+
+        .ball-marker.visible {
+            display: block;
+            animation: ballBounce 0.5s ease-out;
+        }
+
+        @keyframes ballBounce {
+            0% { transform: translateX(-50%) translateY(-30px); opacity: 0; }
+            60% { transform: translateX(-50%) translateY(5px); }
+            100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        /* Arrow marker for "Verorten" mode */
+        .arrow-marker {
+            position: absolute;
+            top: 5px;
+            width: 30px;
+            height: 40px;
+            transform: translateX(-50%);
+            cursor: grab;
+            display: none;
+            transition: left 0.1s ease-out;
+            z-index: 10;
+        }
+
+        .arrow-marker.visible {
+            display: block;
+        }
+
+        .arrow-marker.dragging {
+            cursor: grabbing;
+        }
+
+        .arrow-marker svg {
+            width: 100%;
+            height: 100%;
+            filter: drop-shadow(0 3px 6px rgba(0,0,0,0.3));
+        }
+
+        .arrow-marker .arrow-fill {
+            fill: var(--success);
+            transition: fill 0.3s ease;
+        }
+
+        .arrow-marker.snapped .arrow-fill {
+            fill: var(--warning);
+        }
+
+        /* Feedback visualization */
+        .feedback-arc {
+            position: absolute;
+            top: 45px;
+            height: 20px;
+            border: 3px solid var(--success);
+            border-top: none;
+            border-radius: 0 0 100px 100px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feedback-arc.visible {
+            opacity: 1;
+        }
+
+        /* ============================================
+           ANSWER OPTIONS (Mode 1: Erkennen)
+           Didaktisches Prinzip: Kein Tippen
+           Große Klickflächen für Multiple Choice
+        ============================================ */
+        .answer-options {
+            display: none;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .answer-options.visible {
+            display: flex;
+        }
+
+        .answer-btn {
+            min-width: 100px;
+            padding: 20px 30px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.8rem;
+            background: var(--card-bg);
+            border: 3px solid var(--card-border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .answer-btn:hover {
+            border-color: var(--primary-light);
+            transform: translateY(-3px);
+        }
+
+        .answer-btn.correct {
+            border-color: var(--success);
+            background: rgba(78, 205, 196, 0.2);
+            animation: correctPulse 0.5s ease;
+        }
+
+        .answer-btn.wrong {
+            border-color: var(--secondary);
+            background: rgba(255, 107, 157, 0.1);
+            opacity: 0.5;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* ============================================
+           VERORTEN MODE CONTROLS
+        ============================================ */
+        .place-controls {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .place-controls.visible {
+            display: flex;
+        }
+
+        .place-instruction {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .confirm-btn {
+            padding: 15px 40px;
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--success), #3db8b0);
+            border: none;
+            border-radius: 30px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 20px rgba(78, 205, 196, 0.4);
+        }
+
+        .confirm-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px rgba(78, 205, 196, 0.5);
+        }
+
+        .confirm-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* ============================================
+           FEEDBACK
+           Didaktisches Prinzip: Sofortiges Feedback
+           - Kein rotes Kreuz, sanfte Korrektur
+           - Dezentes positives Feedback
+        ============================================ */
+        .feedback-display {
+            text-align: center;
+            min-height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+        }
+
+        .feedback-message {
+            font-family: 'Fredoka One', cursive;
+            font-size: 1.3rem;
+            padding: 10px 25px;
+            border-radius: 20px;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+        }
+
+        .feedback-message.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feedback-message.success {
+            background: rgba(78, 205, 196, 0.2);
+            color: var(--success);
+        }
+
+        .feedback-message.hint {
+            background: rgba(255, 152, 0, 0.2);
+            color: var(--mid-anchor);
+        }
+
+        /* ============================================
+           LEVEL PROGRESSION
+           Didaktisches Prinzip: Scaffolding
+           Erst Zehner, dann Fünfer
+        ============================================ */
+        .level-indicator {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .level-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--card-border);
+            transition: all 0.3s ease;
+        }
+
+        .level-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .level-dot.completed {
+            background: var(--primary-light);
+        }
+
+        /* Hidden */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="logo">📏 Zahlenstrahl-Trainer</h1>
+        </header>
+
+        <!-- Mode Selection -->
+        <div class="mode-select" id="modeSelect">
+            <h2>Wähle dein Training!</h2>
+            <div class="mode-buttons">
+                <button class="mode-btn" onclick="startGame('recognize')">
+                    <div class="icon">🎯</div>
+                    <h3>Erkennen</h3>
+                    <p>Wo liegt die Zahl?</p>
+                </button>
+                <button class="mode-btn" onclick="startGame('place')">
+                    <div class="icon">📍</div>
+                    <h3>Verorten</h3>
+                    <p>Zeige die Stelle!</p>
+                </button>
+            </div>
+        </div>
+
+        <!-- Game Area -->
+        <div class="game-area" id="gameArea">
+            <div class="game-header">
+                <button class="back-btn" onclick="showModeSelect()">←</button>
+                <div class="score-display">
+                    Richtig: <span id="scoreDisplay">0</span> / <span id="totalDisplay">0</span>
+                </div>
+            </div>
+
+            <!-- Level Progress -->
+            <div class="level-indicator" id="levelIndicator">
+                <div class="level-dot" data-level="1"></div>
+                <div class="level-dot" data-level="2"></div>
+                <div class="level-dot" data-level="3"></div>
+                <div class="level-dot" data-level="4"></div>
+                <div class="level-dot" data-level="5"></div>
+            </div>
+
+            <!-- Task (for Place mode) -->
+            <div class="task-display" id="taskDisplay">
+                <div class="task-label">Finde diese Zahl:</div>
+                <div class="task-number" id="taskNumber">520</div>
+            </div>
+
+            <!-- Numberline -->
+            <div class="numberline-container">
+                <div class="numberline" id="numberline">
+                    <div class="line-track"></div>
+                    
+                    <!-- Ball marker for Erkennen mode -->
+                    <div class="ball-marker" id="ballMarker"></div>
+                    
+                    <!-- Arrow marker for Verorten mode -->
+                    <div class="arrow-marker" id="arrowMarker">
+                        <svg viewBox="0 0 30 40">
+                            <path class="arrow-fill" d="M15 0 L30 15 L22 15 L22 40 L8 40 L8 15 L0 15 Z"/>
+                        </svg>
+                    </div>
+
+                    <!-- Ticks and labels will be generated by JS -->
+                </div>
+            </div>
+
+            <!-- Answer Options (Erkennen mode) -->
+            <div class="answer-options" id="answerOptions">
+                <button class="answer-btn" onclick="checkAnswer(0)">510</button>
+                <button class="answer-btn" onclick="checkAnswer(1)">520</button>
+                <button class="answer-btn" onclick="checkAnswer(2)">530</button>
+            </div>
+
+            <!-- Place Controls (Verorten mode) -->
+            <div class="place-controls" id="placeControls">
+                <p class="place-instruction">Ziehe den Pfeil zur richtigen Stelle!</p>
+                <button class="confirm-btn" id="confirmBtn" onclick="checkPlacement()">
+                    ✓ Hier ist es!
+                </button>
+            </div>
+
+            <!-- Feedback -->
+            <div class="feedback-display">
+                <div class="feedback-message" id="feedbackMessage"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================
+           GAME CONFIGURATION
+           Didaktisches Prinzip: Scaffolding
+           Level 1-2: Nur Zehner (510, 520, 530...)
+           Level 3-4: Fünfer dazu (515, 525...)
+           Level 5: Gemischt
+        ============================================ */
+        const levels = [
+            { name: "Zehner", numbers: [510, 520, 530, 540, 560, 570, 580, 590] },
+            { name: "Zehner+", numbers: [510, 520, 530, 540, 550, 560, 570, 580, 590] },
+            { name: "Fünfer", numbers: [505, 515, 525, 535, 545, 555, 565, 575, 585, 595] },
+            { name: "Fünfer+", numbers: [505, 510, 515, 520, 525, 530, 535, 540, 545, 550, 555, 560, 565, 570, 575, 580, 585, 590, 595] },
+            { name: "Meister", numbers: [502, 508, 513, 527, 534, 541, 556, 563, 578, 589, 594] }
+        ];
+
+        /* ============================================
+           GAME STATE
+        ============================================ */
+        let gameState = {
+            mode: 'recognize',
+            currentLevel: 0,
+            currentQuestion: 0,
+            questionsPerLevel: 5,
+            score: 0,
+            total: 0,
+            targetNumber: 520,
+            options: [],
+            arrowPosition: 550,
+            isDragging: false
+        };
+
+        /* ============================================
+           INITIALIZATION
+        ============================================ */
+        function init() {
+            renderNumberline();
+            setupDragHandlers();
+        }
+
+        /* ============================================
+           RENDER NUMBERLINE
+           Didaktisches Prinzip: Visuelle Anker
+           500, 550, 600 als feste Orientierungspunkte
+        ============================================ */
+        function renderNumberline() {
+            const numberline = document.getElementById('numberline');
+            
+            // Clear existing ticks (keep markers)
+            const existingTicks = numberline.querySelectorAll('.tick, .anchor-label');
+            existingTicks.forEach(el => el.remove());
+
+            // Create ticks for tens (510, 520, 530, etc.) - always visible
+            for (let num = 500; num <= 600; num += 10) {
+                const position = ((num - 500) / 100) * 100;
+                
+                // Tick mark
+                const tick = document.createElement('div');
+                tick.className = 'tick tens';
+                tick.style.left = `${position}%`;
+                numberline.appendChild(tick);
+
+                // Anchor labels for 500, 550, 600
+                if (num === 500 || num === 550 || num === 600) {
+                    const label = document.createElement('div');
+                    label.className = `anchor-label ${num === 550 ? 'mid' : 'main'}`;
+                    label.style.left = `${position}%`;
+                    label.textContent = num;
+                    numberline.appendChild(label);
+                }
+            }
+
+            // Create fives ticks (505, 515, etc.) - always visible for structure
+            for (let num = 505; num <= 595; num += 10) {
+                const position = ((num - 500) / 100) * 100;
+                const tick = document.createElement('div');
+                tick.className = 'tick fives';
+                tick.style.left = `${position}%`;
+                numberline.appendChild(tick);
+            }
+
+            // Create ones ticks (501, 502, 503, 504, 506, 507, 508, 509, etc.)
+            // Skip only the 5er and 10er positions
+            for (let num = 501; num <= 599; num++) {
+                if (num % 10 === 0) continue; // Skip 10er (already rendered)
+                if (num % 5 === 0) continue;  // Skip 5er (already rendered)
+                
+                const position = ((num - 500) / 100) * 100;
+                const tick = document.createElement('div');
+                tick.className = 'tick ones';
+                tick.style.left = `${position}%`;
+                numberline.appendChild(tick);
+            }
+        }
+
+        /* ============================================
+           MODE SELECTION
+        ============================================ */
+        function showModeSelect() {
+            document.getElementById('modeSelect').style.display = 'block';
+            document.getElementById('gameArea').classList.remove('active');
+        }
+
+        function startGame(mode) {
+            gameState.mode = mode;
+            gameState.currentLevel = 0;
+            gameState.currentQuestion = 0;
+            gameState.score = 0;
+            gameState.total = 0;
+
+            document.getElementById('modeSelect').style.display = 'none';
+            document.getElementById('gameArea').classList.add('active');
+
+            // Show/hide mode-specific elements
+            document.getElementById('answerOptions').classList.toggle('visible', mode === 'recognize');
+            document.getElementById('placeControls').classList.toggle('visible', mode === 'place');
+            document.getElementById('taskDisplay').style.display = mode === 'place' ? 'block' : 'none';
+            document.getElementById('ballMarker').classList.toggle('visible', mode === 'recognize');
+            document.getElementById('arrowMarker').classList.toggle('visible', mode === 'place');
+
+            updateLevelIndicator();
+            renderNumberline();
+            nextQuestion();
+        }
+
+        /* ============================================
+           QUESTION GENERATION
+        ============================================ */
+        function nextQuestion() {
+            // Check level progression
+            if (gameState.currentQuestion >= gameState.questionsPerLevel) {
+                gameState.currentLevel++;
+                gameState.currentQuestion = 0;
+
+                if (gameState.currentLevel >= levels.length) {
+                    showCompletion();
+                    return;
+                }
+
+                updateLevelIndicator();
+                renderNumberline();
+            }
+
+            gameState.currentQuestion++;
+            updateScoreDisplay();
+
+            const level = levels[gameState.currentLevel];
+            const availableNumbers = [...level.numbers];
+            
+            // Pick random target
+            const targetIndex = Math.floor(Math.random() * availableNumbers.length);
+            gameState.targetNumber = availableNumbers[targetIndex];
+
+            if (gameState.mode === 'recognize') {
+                generateRecognizeQuestion();
+            } else {
+                generatePlaceQuestion();
+            }
+
+            clearFeedback();
+        }
+
+        function generateRecognizeQuestion() {
+            // Position the ball
+            const position = ((gameState.targetNumber - 500) / 100) * 100;
+            const ball = document.getElementById('ballMarker');
+            ball.style.left = `${position}%`;
+            ball.classList.add('visible');
+
+            // Generate options (correct + 2 distractors)
+            const options = [gameState.targetNumber];
+            
+            // Add nearby distractors
+            const step = gameState.currentLevel < 2 ? 10 : 5;
+            const distractor1 = gameState.targetNumber + step;
+            const distractor2 = gameState.targetNumber - step;
+            
+            if (distractor1 <= 600) options.push(distractor1);
+            else options.push(gameState.targetNumber - step * 2);
+            
+            if (distractor2 >= 500) options.push(distractor2);
+            else options.push(gameState.targetNumber + step * 2);
+
+            // Shuffle
+            options.sort(() => Math.random() - 0.5);
+            gameState.options = options;
+
+            // Update buttons
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach((btn, i) => {
+                btn.textContent = options[i];
+                btn.className = 'answer-btn';
+                btn.disabled = false;
+            });
+        }
+
+        function generatePlaceQuestion() {
+            document.getElementById('taskNumber').textContent = gameState.targetNumber;
+            
+            // Reset arrow to middle
+            gameState.arrowPosition = 550;
+            updateArrowPosition();
+            
+            document.getElementById('confirmBtn').disabled = false;
+        }
+
+        /* ============================================
+           ANSWER CHECKING (Erkennen Mode)
+        ============================================ */
+        function checkAnswer(index) {
+            const selected = gameState.options[index];
+            const correct = selected === gameState.targetNumber;
+            gameState.total++;
+
+            const buttons = document.querySelectorAll('.answer-btn');
+            buttons.forEach((btn, i) => {
+                btn.disabled = true;
+                if (gameState.options[i] === gameState.targetNumber) {
+                    btn.classList.add('correct');
+                } else if (i === index) {
+                    btn.classList.add('wrong');
+                }
+            });
+
+            if (correct) {
+                gameState.score++;
+                showFeedback('Super! ✓', 'success');
+            } else {
+                // Sanfte Korrektur ohne Bestrafung
+                showFeedback(`Das war ${gameState.targetNumber}`, 'hint');
+                
+                // Ball rollt zur richtigen Stelle (already there, just highlight)
+                document.getElementById('ballMarker').style.animation = 'none';
+                setTimeout(() => {
+                    document.getElementById('ballMarker').style.animation = 'ballBounce 0.3s ease';
+                }, 10);
+            }
+
+            updateScoreDisplay();
+
+            setTimeout(() => {
+                nextQuestion();
+            }, 1500);
+        }
+
+        /* ============================================
+           PLACEMENT CHECKING (Verorten Mode)
+           Didaktisches Prinzip: Fehlertoleranz
+           ±5 wird als korrekt gewertet
+        ============================================ */
+        function checkPlacement() {
+            const tolerance = gameState.currentLevel < 3 ? 8 : 5; // Mehr Toleranz am Anfang
+            const diff = Math.abs(gameState.arrowPosition - gameState.targetNumber);
+            const correct = diff <= tolerance;
+            
+            gameState.total++;
+            document.getElementById('confirmBtn').disabled = true;
+
+            if (correct) {
+                gameState.score++;
+                showFeedback('Genau richtig! ✓', 'success');
+                
+                // Snap to exact position
+                gameState.arrowPosition = gameState.targetNumber;
+                updateArrowPosition();
+            } else {
+                // Sanfte Korrektur: Pfeil gleitet zur richtigen Stelle
+                showFeedback(`Fast! Es war hier: ${gameState.targetNumber}`, 'hint');
+                
+                // Animate to correct position
+                const arrow = document.getElementById('arrowMarker');
+                arrow.style.transition = 'left 0.8s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                gameState.arrowPosition = gameState.targetNumber;
+                updateArrowPosition();
+                
+                setTimeout(() => {
+                    arrow.style.transition = 'left 0.1s ease-out';
+                }, 800);
+            }
+
+            updateScoreDisplay();
+
+            setTimeout(() => {
+                nextQuestion();
+            }, 2000);
+        }
+
+        /* ============================================
+           DRAG HANDLERS (Verorten Mode)
+           Didaktisches Prinzip: Magnetisches Einrasten
+           Rastet an Zehner/Fünfer-Strichen ein
+        ============================================ */
+        function setupDragHandlers() {
+            const arrow = document.getElementById('arrowMarker');
+            const numberline = document.getElementById('numberline');
+
+            // Mouse events
+            arrow.addEventListener('mousedown', startDrag);
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+
+            // Touch events
+            arrow.addEventListener('touchstart', startDrag, { passive: false });
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('touchend', endDrag);
+
+            // Click on numberline to move arrow
+            numberline.addEventListener('click', (e) => {
+                if (gameState.mode !== 'place') return;
+                if (e.target === arrow || arrow.contains(e.target)) return;
+                
+                const rect = numberline.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const percentage = (x / rect.width) * 100;
+                const rawNumber = 500 + percentage;
+                
+                gameState.arrowPosition = snapToGrid(rawNumber);
+                updateArrowPosition();
+            });
+        }
+
+        function startDrag(e) {
+            if (gameState.mode !== 'place') return;
+            e.preventDefault();
+            gameState.isDragging = true;
+            document.getElementById('arrowMarker').classList.add('dragging');
+        }
+
+        function drag(e) {
+            if (!gameState.isDragging) return;
+            e.preventDefault();
+
+            const numberline = document.getElementById('numberline');
+            const rect = numberline.getBoundingClientRect();
+            
+            const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            const x = clientX - rect.left;
+            const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100));
+            const rawNumber = 500 + percentage;
+
+            gameState.arrowPosition = snapToGrid(rawNumber);
+            updateArrowPosition();
+        }
+
+        function endDrag() {
+            gameState.isDragging = false;
+            document.getElementById('arrowMarker').classList.remove('dragging');
+        }
+
+        /* 
+            Didaktisches Prinzip: Magnetisches Einrasten
+            Verhindert Frustration durch motorische Ungenauigkeit
+        */
+        function snapToGrid(number) {
+            const step = gameState.currentLevel < 2 ? 10 : 5;
+            return Math.round(number / step) * step;
+        }
+
+        function updateArrowPosition() {
+            const position = ((gameState.arrowPosition - 500) / 100) * 100;
+            const arrow = document.getElementById('arrowMarker');
+            arrow.style.left = `${position}%`;
+            
+            // Visual feedback for snapping
+            const isSnapped = gameState.arrowPosition % 10 === 0 || gameState.arrowPosition % 5 === 0;
+            arrow.classList.toggle('snapped', isSnapped);
+        }
+
+        /* ============================================
+           UI UPDATES
+        ============================================ */
+        function updateScoreDisplay() {
+            document.getElementById('scoreDisplay').textContent = gameState.score;
+            document.getElementById('totalDisplay').textContent = gameState.total;
+        }
+
+        function updateLevelIndicator() {
+            const dots = document.querySelectorAll('.level-dot');
+            dots.forEach((dot, i) => {
+                dot.classList.remove('active', 'completed');
+                if (i < gameState.currentLevel) {
+                    dot.classList.add('completed');
+                } else if (i === gameState.currentLevel) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        function showFeedback(message, type) {
+            const feedback = document.getElementById('feedbackMessage');
+            feedback.textContent = message;
+            feedback.className = `feedback-message ${type} visible`;
+        }
+
+        function clearFeedback() {
+            const feedback = document.getElementById('feedbackMessage');
+            feedback.classList.remove('visible');
+        }
+
+        function showCompletion() {
+            const percentage = Math.round((gameState.score / gameState.total) * 100);
+            showFeedback(`🎉 Geschafft! ${percentage}% richtig!`, 'success');
+            
+            setTimeout(() => {
+                showModeSelect();
+            }, 3000);
+        }
+
+        // Start
+        init();
+    </script>
+</body>
+</html>
