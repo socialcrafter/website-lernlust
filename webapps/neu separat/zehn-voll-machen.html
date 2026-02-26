@@ -173,207 +173,203 @@
     </div>
 
     <script>
-        var state = { stars: 0, diamonds: 0, tasks: [], current: 0, correct: 0, total: 8, step: 1, a: 0, b: 0, toTen: 0, rest: 0, result: 0 };
-        
+        var stars = 0, diamonds = 0;
+        var tasks = [], current = 0, taskCorrect = 0;
+        var TOTAL = 8;
+        // Aufgaben-Werte der aktuellen Frage
+        var numA, numB, toTen, rest, result;
+        // Was ist gerade die richtige Antwort? Wird direkt beim Anzeigen der Buttons gesetzt.
+        var currentPhase = 1; // 1=toTen, 2=rest, 3=result
+        var waiting = false;  // Klicks sperren während Animation
+
         function load() {
             try {
-                var saved = localStorage.getItem('zehnvoll_dark');
-                if (saved) {
-                    var data = JSON.parse(saved);
-                    state.stars = data.stars || 0;
-                    state.diamonds = data.diamonds || 0;
-                }
+                var d = JSON.parse(localStorage.getItem('zehnvoll_dark') || '{}');
+                stars = d.stars || 0; diamonds = d.diamonds || 0;
             } catch(e) {}
             updateRewards();
         }
-        
-        function save() {
-            localStorage.setItem('zehnvoll_dark', JSON.stringify({ stars: state.stars, diamonds: state.diamonds }));
-        }
-        
+        function save() { localStorage.setItem('zehnvoll_dark', JSON.stringify({stars, diamonds})); }
         function updateRewards() {
-            document.getElementById('stars').textContent = state.stars;
-            document.getElementById('diamonds').textContent = state.diamonds;
+            document.getElementById('stars').textContent = stars;
+            document.getElementById('diamonds').textContent = diamonds;
         }
-        
         function addStar() {
-            state.stars++;
-            if (state.stars >= 100) { state.stars -= 100; state.diamonds++; }
-            updateRewards();
-            save();
+            stars++; if (stars >= 100) { stars -= 100; diamonds++; }
+            updateRewards(); save();
         }
-        
         function showScreen(id) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(id).classList.add('active');
         }
-        
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
         function generateTasks() {
             var base = [
-                { a: 8, b: 5 }, { a: 7, b: 6 }, { a: 9, b: 4 }, { a: 6, b: 7 },
-                { a: 8, b: 4 }, { a: 7, b: 5 }, { a: 9, b: 3 }, { a: 6, b: 5 },
-                { a: 8, b: 6 }, { a: 7, b: 4 }
+                {a:8,b:5},{a:7,b:6},{a:9,b:4},{a:6,b:7},
+                {a:8,b:4},{a:7,b:5},{a:9,b:3},{a:6,b:5},{a:8,b:6},{a:7,b:4}
             ];
-            for (let i = base.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [base[i], base[j]] = [base[j], base[i]]; }
-            state.tasks = base.slice(0, state.total);
+            tasks = shuffle(base).slice(0, TOTAL);
         }
-        
+
         function startGame() {
-            generateTasks();
-            state.current = 0;
-            state.correct = 0;
-            showScreen('screenGame');
-            showTask();
+            generateTasks(); current = 0; taskCorrect = 0;
+            showScreen('screenGame'); showTask();
         }
-        
+
         function showTask() {
-            var t = state.tasks[state.current];
-            Object.assign(state, { ...t, toTen: 10 - t.a, rest: t.b - (10 - t.a), result: t.a + t.b, step: 1 });
-            
-            document.getElementById('progressBar').style.width = (state.current / state.total) * 100 + '%';
-            document.getElementById('progressText').textContent = `Aufgabe ${state.current + 1} von ${state.total}`;
-            
-            var feedback = document.getElementById('feedback');
-            feedback.textContent = '';
-            feedback.className = 'feedback';
-            
-            document.getElementById('numA').textContent = state.a;
-            document.getElementById('numB').textContent = state.b;
-            
-            var frame = document.getElementById('frame');
-            frame.innerHTML = Array.from({ length: 10 }, (_, i) => `<div class="dot ${i < state.a ? 'filled' : ''}"></div>`).join('');
-            
-            var vorrat = document.getElementById('vorrat');
-            vorrat.innerHTML = Array.from({ length: state.b }, () => '<div class="dot"></div>').join('');
-            
+            var t = tasks[current];
+            numA = t.a; numB = t.b;
+            toTen  = 10 - numA;
+            rest   = numB - toTen;
+            result = numA + numB;
+
+            document.getElementById('progressBar').style.width = (current / TOTAL) * 100 + '%';
+            document.getElementById('progressText').textContent = `Aufgabe ${current + 1} von ${TOTAL}`;
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('numA').textContent = numA;
+            document.getElementById('numB').textContent = numB;
+            document.getElementById('frame').innerHTML =
+                Array.from({length:10}, (_,i) => `<div class="dot ${i < numA ? 'filled' : ''}"></div>`).join('');
+            document.getElementById('vorrat').innerHTML =
+                Array.from({length:numB}, () => '<div class="dot"></div>').join('');
             document.getElementById('instruction').textContent = 'Wie viele fehlen bis zur 10?';
-            showStep1Answers();
+            showPhase(1);
         }
-        
+
+        // showPhase setzt currentPhase und rendert die passenden Buttons
+        function showPhase(phase) {
+            currentPhase = phase;
+            waiting = false;
+            var correctVal = phase === 1 ? toTen : phase === 2 ? rest : result;
+            var options;
+            if (phase === 1) {
+                options = makeOptions(correctVal, 1, 9, 4);
+            } else if (phase === 2) {
+                options = makeOptions(correctVal, 1, 9, 4);
+            } else {
+                options = makeOptions(correctVal, correctVal - 3, correctVal + 3, 4, 11, 19);
+            }
+            renderButtons(shuffle(options));
+        }
+
+        function makeOptions(correct, min, max, count, rangeMin, rangeMax) {
+            rangeMin = rangeMin !== undefined ? rangeMin : min;
+            rangeMax = rangeMax !== undefined ? rangeMax : max;
+            var opts = [correct];
+            var tries = 0;
+            while (opts.length < count && tries < 200) {
+                tries++;
+                var v = Math.floor(Math.random() * (rangeMax - rangeMin + 1)) + rangeMin;
+                if (!opts.includes(v) && v >= rangeMin && v <= rangeMax) opts.push(v);
+            }
+            // Fallback: fülle mit sequentiellen Werten auf
+            for (var v2 = rangeMin; opts.length < count && v2 <= rangeMax; v2++) {
+                if (!opts.includes(v2)) opts.push(v2);
+            }
+            return opts;
+        }
+
         function renderButtons(options) {
-            var answersDiv = document.getElementById('answers');
-            answersDiv.innerHTML = '';
+            var div = document.getElementById('answers');
+            div.innerHTML = '';
             options.forEach(opt => {
                 var btn = document.createElement('button');
                 btn.className = 'ans-btn';
                 btn.textContent = opt;
-                btn.dataset.val = opt;
-                answersDiv.appendChild(btn);
+                btn.dataset.val = String(opt);
+                div.appendChild(btn);
             });
         }
-        
-        function showStep1Answers() {
-            var options = [state.toTen];
-            while (options.length < 4) {
-                var opt = Math.floor(Math.random() * 6) + 1;
-                if (!options.includes(opt)) options.push(opt);
-            }
-            for (let i = options.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [options[i], options[j]] = [options[j], options[i]]; }
-            renderButtons(options);
-        }
-        
-        function showStep2Answers() {
-             var options = [state.rest];
-            while (options.length < 4) {
-                var opt = Math.floor(Math.random() * 7) + 1;
-                if (!options.includes(opt)) options.push(opt);
-            }
-            for (let i = options.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [options[i], options[j]] = [options[j], options[i]]; }
-            renderButtons(options);
-        }
 
-        function showStep3Answers() {
-            var options = [state.result];
-            // Feste Ablenkungswerte relativ zum Ergebnis, immer im Bereich 11-19
-            var candidates = [-3, -2, -1, 1, 2, 3].map(d => state.result + d).filter(v => v > 10 && v < 20 && v !== state.result);
-            for (let i = candidates.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [candidates[i], candidates[j]] = [candidates[j], candidates[i]]; }
-            options = options.concat(candidates.slice(0, 3));
-            for (let i = options.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [options[i], options[j]] = [options[j], options[i]]; }
-            renderButtons(options);
-        }
-        
         function handleAnswer(val) {
-            var buttons = document.querySelectorAll('.ans-btn');
+            if (waiting) return;
+            waiting = true;
+
+            var correctVal = currentPhase === 1 ? toTen : currentPhase === 2 ? rest : result;
             var feedback = document.getElementById('feedback');
-            buttons.forEach(btn => btn.style.pointerEvents = 'none');
-            
-            let correctVal;
-            if (state.step === 1) correctVal = state.toTen;
-            else if (state.step === 2) correctVal = state.rest;
-            else correctVal = state.result;
-            
+            var buttons  = document.querySelectorAll('.ans-btn');
+
             if (val === correctVal) {
-                feedback.textContent = 'Richtig!';
+                feedback.textContent = '✅ Richtig!';
                 feedback.className = 'feedback correct';
-                buttons.forEach(btn => parseInt(btn.dataset.val) === val && btn.classList.add('correct'));
-                
-                if (state.step === 1) setTimeout(transitionToStep2, 800);
-                else if (state.step === 2) setTimeout(transitionToStep3, 800);
-                else { state.correct++; addStar(); setTimeout(nextTask, 1200); }
+                buttons.forEach(btn => { if (Number(btn.dataset.val) === val) btn.classList.add('correct'); });
+
+                if (currentPhase === 1) {
+                    setTimeout(goPhase2, 800);
+                } else if (currentPhase === 2) {
+                    setTimeout(goPhase3, 800);
+                } else {
+                    taskCorrect++; addStar();
+                    setTimeout(nextTask, 1200);
+                }
             } else {
-                feedback.textContent = `Das waren ${correctVal}`;
+                feedback.textContent = `❌ Richtig wäre: ${correctVal}`;
                 feedback.className = 'feedback wrong';
                 buttons.forEach(btn => {
-                    if(parseInt(btn.dataset.val) === val) btn.classList.add('wrong');
-                    if(parseInt(btn.dataset.val) === correctVal) btn.classList.add('correct');
+                    if (Number(btn.dataset.val) === val)       btn.classList.add('wrong');
+                    if (Number(btn.dataset.val) === correctVal) btn.classList.add('correct');
                 });
-                if(state.step === 3) setTimeout(nextTask, 1500);
-                else {
+                if (currentPhase === 3) {
+                    setTimeout(nextTask, 1500);
+                } else {
                     setTimeout(() => {
                         feedback.textContent = '';
                         feedback.className = 'feedback';
-                        state.step === 1 ? showStep1Answers() : showStep2Answers();
-                    }, 1200);
+                        showPhase(currentPhase); // nochmal versuchen
+                    }, 1400);
                 }
             }
         }
-        
-        function transitionToStep2() {
-            state.step = 2;
-            document.getElementById('instruction').textContent = `Erst ${state.toTen} dazu, dann bleiben...`;
+
+        function goPhase2() {
+            document.getElementById('instruction').textContent = `${toTen} kommen dazu — wie viele bleiben übrig?`;
             document.querySelectorAll('#vorrat .dot').forEach((dot, i) => {
-                if(i < state.toTen) setTimeout(() => dot.classList.add('used'), i * 150);
+                if (i < toTen) setTimeout(() => dot.classList.add('used'), i * 150);
             });
             document.querySelectorAll('#frame .dot:not(.filled)').forEach((dot, i) => {
-                if(i < state.toTen) setTimeout(() => dot.classList.add('move-in'), i * 150);
+                if (i < toTen) setTimeout(() => dot.classList.add('move-in'), i * 150);
             });
             setTimeout(() => {
                 document.getElementById('feedback').textContent = '';
-                showStep2Answers();
-            }, state.toTen * 150 + 600);
+                showPhase(2);
+            }, toTen * 150 + 600);
         }
 
-        function transitionToStep3() {
-            state.step = 3;
-            document.getElementById('instruction').textContent = `10 + ${state.rest} = ?`;
+        function goPhase3() {
+            document.getElementById('instruction').textContent = `10 + ${rest} = ?`;
             document.querySelectorAll('#vorrat .dot.used').forEach(dot => dot.style.display = 'none');
             setTimeout(() => {
                 document.getElementById('feedback').textContent = '';
-                showStep3Answers();
+                showPhase(3);
             }, 800);
         }
 
         function nextTask() {
-            state.current++;
-            if (state.current < state.total) showTask();
-            else showDone();
+            current++;
+            if (current < TOTAL) showTask(); else showDone();
         }
-        
+
         function showDone() {
-            var pct = Math.round((state.correct / state.total) * 100);
-            var msg = (pct === 100) ? 'Perfekt! Du bist ein Zehner-Profi!' : (pct >= 75) ? 'Super! Fast alle richtig!' : 'Gut! Übung macht den Meister!';
-            
-            document.getElementById('score').textContent = `${state.correct}/${state.total}`;
+            var pct = Math.round((taskCorrect / TOTAL) * 100);
+            var msg = pct === 100 ? 'Perfekt! Du bist ein Zehner-Profi!' : pct >= 75 ? 'Super! Fast alle richtig!' : 'Gut! Übung macht den Meister!';
+            document.getElementById('score').textContent = `${taskCorrect}/${TOTAL}`;
             document.getElementById('doneMessage').textContent = msg;
             showScreen('screenDone');
         }
-        
+
         document.getElementById('btnStart').addEventListener('click', startGame);
         document.getElementById('btnAgain').addEventListener('click', () => showScreen('screenStart'));
-        document.getElementById('answers').addEventListener('click', (e) => {
-            if (e.target.classList.contains('ans-btn')) handleAnswer(parseInt(e.target.dataset.val));
+        document.getElementById('answers').addEventListener('click', e => {
+            if (e.target.classList.contains('ans-btn')) handleAnswer(Number(e.target.dataset.val));
         });
-        
+
         load();
     </script>
 </body>
