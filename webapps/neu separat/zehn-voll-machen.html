@@ -284,10 +284,10 @@
 
         function showStep3Answers() {
             var options = [state.result];
-            while (options.length < 4) {
-                var opt = state.result + Math.floor(Math.random() * 7) - 3;
-                if (opt > 10 && opt < 20 && !options.includes(opt)) options.push(opt);
-            }
+            // Feste Ablenkungswerte relativ zum Ergebnis, immer im Bereich 11-19
+            var candidates = [-3, -2, -1, 1, 2, 3].map(d => state.result + d).filter(v => v > 10 && v < 20 && v !== state.result);
+            for (let i = candidates.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [candidates[i], candidates[j]] = [candidates[j], candidates[i]]; }
+            options = options.concat(candidates.slice(0, 3));
             for (let i = options.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [options[i], options[j]] = [options[j], options[i]]; }
             renderButtons(options);
         }
@@ -329,6 +329,7 @@
         }
         
         function transitionToStep2() {
+            state.step = 2;
             document.getElementById('instruction').textContent = `Erst ${state.toTen} dazu, dann bleiben...`;
             document.querySelectorAll('#vorrat .dot').forEach((dot, i) => {
                 if(i < state.toTen) setTimeout(() => dot.classList.add('used'), i * 150);
@@ -343,6 +344,7 @@
         }
 
         function transitionToStep3() {
+            state.step = 3;
             document.getElementById('instruction').textContent = `10 + ${state.rest} = ?`;
             document.querySelectorAll('#vorrat .dot.used').forEach(dot => dot.style.display = 'none');
             setTimeout(() => {
