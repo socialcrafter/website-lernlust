@@ -1,0 +1,933 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lernkarten – Absolutismus, Aufklärung & Schweiz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --secondary: #FF6B9D;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .bg-shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            bottom: 10%;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        .bg-shape:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            background: var(--success);
+            top: 40%;
+            right: 10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-10px, 20px) rotate(-5deg); }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 500px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        header h1 .fa-solid {
+            color: var(--text-primary);
+            margin-right: 10px;
+        }
+
+        .rewards-display {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 12px;
+        }
+
+        .reward-item {
+            background: var(--card-bg);
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            border: 1px solid var(--card-border);
+        }
+
+        .reward-item .fa-star { color: var(--warning); }
+        .reward-item .fa-gem { color: var(--success); }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 20px;
+        }
+
+        /* Progress */
+        .progress-bar {
+            height: 8px;
+            background: var(--card-border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        .progress-text {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        /* Topic badge */
+        .topic-badge {
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .topic-badge span {
+            display: inline-block;
+            background: rgba(108, 99, 255, 0.2);
+            border: 1px solid rgba(108, 99, 255, 0.4);
+            color: var(--primary-light);
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        /* Instruction */
+        .instruction {
+            text-align: center;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+            padding: 10px;
+            background: rgba(255, 230, 109, 0.1);
+            border-radius: 12px;
+            border: 1px solid var(--warning);
+        }
+
+        /* Flashcard */
+        .flashcard-container {
+            perspective: 1000px;
+            margin: 20px 0;
+        }
+
+        .flashcard {
+            background: linear-gradient(135deg, var(--card-bg), rgba(255, 255, 255, 0.05));
+            border: 3px solid var(--card-border);
+            border-radius: 20px;
+            min-height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 25px;
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .flashcard:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .flashcard.revealed {
+            background: linear-gradient(135deg, rgba(78, 205, 196, 0.25), rgba(78, 205, 196, 0.1));
+            border-color: var(--success);
+        }
+
+        .flashcard .answer-text {
+            color: #b8f0eb;
+            font-weight: 600;
+            line-height: 1.7;
+        }
+
+        /* Buttons */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .btn:active { transform: scale(0.98); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .btn-reveal {
+            background: linear-gradient(135deg, var(--secondary), rgba(78, 205, 196, 0.8));
+            color: white;
+        }
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-knew {
+            flex: 1;
+            background: linear-gradient(135deg, var(--success), rgba(149, 225, 163, 0.8));
+            color: white;
+        }
+
+        .btn-didnt {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        /* Screens */
+        .screen { display: none; }
+        .screen.active { display: block; }
+
+        /* Start Screen */
+        .start {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .start-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        .start h2 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.6rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .start p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .topic-select {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .topic-btn {
+            padding: 14px 16px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid var(--card-border);
+            border-radius: 14px;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: 'Nunito', sans-serif;
+        }
+
+        .topic-btn:hover {
+            border-color: var(--secondary);
+            background: rgba(78, 205, 196, 0.1);
+        }
+
+        .topic-btn.selected {
+            border-color: var(--secondary);
+            background: rgba(255, 107, 157, 0.2);
+        }
+
+        .topic-btn .topic-icon {
+            font-size: 1.2rem;
+            width: 28px;
+            text-align: center;
+        }
+
+        .topic-btn .topic-count {
+            margin-left: auto;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            background: rgba(255,255,255,0.08);
+            padding: 2px 10px;
+            border-radius: 50px;
+        }
+
+        .mix-topic-btn {
+            background: linear-gradient(135deg, rgba(255, 230, 109, 0.15), rgba(255, 230, 109, 0.05));
+            border-color: var(--warning);
+            justify-content: center;
+            text-align: center;
+        }
+
+        .mix-topic-btn.selected {
+            background: linear-gradient(135deg, rgba(255, 230, 109, 0.25), rgba(255, 230, 109, 0.1));
+            border-color: var(--warning);
+        }
+
+        /* Done Screen */
+        .done {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        .done-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            color: var(--text-secondary);
+        }
+
+        .done h2 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.8rem;
+            color: var(--text-primary);
+            margin-bottom: 10px;
+        }
+
+        .done p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .score {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .stat { text-align: center; }
+
+        .stat-val {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .stat-val.green { color: var(--success); }
+        .stat-val.red { color: var(--primary); }
+
+        .stat-lbl {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        /* Confetti animation */
+        @keyframes confetti-fall {
+            0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+        }
+
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 100;
+            overflow: hidden;
+        }
+
+        .confetti-piece {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+            animation: confetti-fall 3s ease-out forwards;
+        }
+
+        /* Smooth card transition */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .flashcard.animate-in {
+            animation: fadeInUp 0.35s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-shapes">
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+        <div class="bg-shape"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-clone"></i> Lernkarten</h1>
+            <div class="rewards-display">
+                <div class="reward-item">
+                    <i class="fa-solid fa-star"></i>
+                    <span id="stars">0</span>
+                </div>
+                <div class="reward-item">
+                    <i class="fa-solid fa-gem"></i>
+                    <span id="diamonds">0</span>
+                </div>
+            </div>
+        </header>
+
+        <div class="card">
+            <!-- Start Screen -->
+            <div class="screen active" id="screenStart">
+                <div class="start">
+                    <div class="start-icon"><i class="fa-solid fa-landmark-dome"></i></div>
+                    <h2>Absolutismus, Aufklärung & Schweiz</h2>
+                    <p>Nicht anstrengen – einprägen! Wähle ein Thema oder übe alles gemischt.</p>
+
+                    <div class="topic-select" id="topicSelect">
+                        <button class="topic-btn selected" data-topic="ludwig">
+                            <span class="topic-icon"><i class="fa-solid fa-crown"></i></span>
+                            Ludwig XIV.
+                            <span class="topic-count">3 Karten</span>
+                        </button>
+                        <button class="topic-btn" data-topic="wirtschaft">
+                            <span class="topic-icon"><i class="fa-solid fa-coins"></i></span>
+                            Wirtschaft & Gesellschaft
+                            <span class="topic-count">2 Karten</span>
+                        </button>
+                        <button class="topic-btn" data-topic="aufklaerung">
+                            <span class="topic-icon"><i class="fa-solid fa-lightbulb"></i></span>
+                            Die Aufklärung
+                            <span class="topic-count">2 Karten</span>
+                        </button>
+                        <button class="topic-btn" data-topic="gewaltenteilung">
+                            <span class="topic-icon"><i class="fa-solid fa-scale-balanced"></i></span>
+                            Gewaltenteilung
+                            <span class="topic-count">4 Karten</span>
+                        </button>
+                        <button class="topic-btn" data-topic="menschenrechte">
+                            <span class="topic-icon"><i class="fa-solid fa-hand-fist"></i></span>
+                            Menschenrechte & Malala
+                            <span class="topic-count">2 Karten</span>
+                        </button>
+                        <button class="topic-btn mix-topic-btn" data-topic="mix">
+                            <span class="topic-icon"><i class="fa-solid fa-shuffle"></i></span>
+                            Alles gemischt
+                            <span class="topic-count">13 Karten</span>
+                        </button>
+                    </div>
+
+                    <button class="btn btn-primary" id="btnStart"><i class="fa-solid fa-play"></i> Los geht's!</button>
+                </div>
+            </div>
+
+            <!-- Game Screen -->
+            <div class="screen" id="screenGame">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width: 0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">Karte 1 von 10</div>
+
+                <div class="topic-badge" id="topicBadge"><span>Thema</span></div>
+
+                <div class="instruction"><i class="fa-solid fa-brain"></i> Nicht anstrengen – einprägen!</div>
+
+                <div class="flashcard-container">
+                    <div class="flashcard" id="flashcard">
+                        <span id="cardContent">Frage</span>
+                    </div>
+                </div>
+
+                <div id="preReveal">
+                    <button class="btn btn-reveal" id="btnReveal"><i class="fa-solid fa-eye"></i> Lösung zeigen</button>
+                </div>
+
+                <div id="postReveal" style="display: none;">
+                    <p style="text-align: center; margin-bottom: 10px; color:var(--text-secondary);">Wusstest du es?</p>
+                    <div class="btn-row">
+                        <button class="btn btn-knew" id="btnKnew"><i class="fa-solid fa-check"></i> Ja!</button>
+                        <button class="btn btn-didnt" id="btnDidnt"><i class="fa-solid fa-rotate-right"></i> Nochmal</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Done Screen -->
+            <div class="screen" id="screenDone">
+                <div class="done">
+                    <div class="done-icon"><i class="fa-solid fa-trophy"></i></div>
+                    <h2>Geschafft!</h2>
+                    <div class="score" id="score">8/10</div>
+
+                    <div class="stats-row">
+                        <div class="stat">
+                            <div class="stat-val green" id="knewCount">8</div>
+                            <div class="stat-lbl">Gewusst</div>
+                        </div>
+                        <div class="stat">
+                            <div class="stat-val red" id="didntCount">2</div>
+                            <div class="stat-lbl">Wiederholt</div>
+                        </div>
+                    </div>
+
+                    <p id="doneMessage">Super! Weiter so!</p>
+                    <button class="btn btn-primary" id="btnAgain"><i class="fa-solid fa-rotate-right"></i> Nochmal üben</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === FLASHCARD DATA ===
+        var allCards = [
+            // Thema 1: Ludwig XIV.
+            {
+                topic: "ludwig",
+                topicLabel: "Ludwig XIV.",
+                question: "Was bedeutet der Begriff «Absolutismus»?",
+                answer: "Eine Regierungsform, in der der König «losgelöst» von Gesetzen herrscht. Er allein macht die Gesetze, ist oberster Richter und Befehlshaber der Armee. Er akzeptiert nur Gott als Autorität über sich."
+            },
+            {
+                topic: "ludwig",
+                topicLabel: "Ludwig XIV.",
+                question: "Warum wird Ludwig XIV. «Sonnenkönig» genannt?",
+                answer: "Er wählte die Sonne als Symbol, weil sie das Zentrum ist, um das sich alles dreht. Wie die Sonne Glanz ausstrahlt und Leben gibt, wollte er der strahlende Mittelpunkt Frankreichs sein."
+            },
+            {
+                topic: "ludwig",
+                topicLabel: "Ludwig XIV.",
+                question: "Nenne die «drei Säulen der Macht» im Absolutismus.",
+                answer: "1. Das stehende Heer (ständige Armee)\n2. Die Beamten (führen Befehle im ganzen Land aus)\n3. Die Staatseinnahmen (Steuern für Luxus und Armee)"
+            },
+
+            // Thema 2: Wirtschaft & Gesellschaft
+            {
+                topic: "wirtschaft",
+                topicLabel: "Wirtschaft & Gesellschaft",
+                question: "Was ist das Ziel des «Merkantilismus»?",
+                answer: "Den Reichtum des Staates vergrössern. Man exportierte teure Fertigwaren ins Ausland und erhob hohe Zölle auf Importe, damit möglichst viel Geld im Land blieb."
+            },
+            {
+                topic: "wirtschaft",
+                topicLabel: "Wirtschaft & Gesellschaft",
+                question: "Wie war die «Ständegesellschaft» aufgebaut?",
+                answer: "1. Stand: Geistliche\n2. Stand: Adel\n3. Stand: Bauern und Bürger (98% der Bevölkerung)\n\nWichtig: Nur der 3. Stand zahlte Steuern."
+            },
+
+            // Thema 3: Aufklärung
+            {
+                topic: "aufklaerung",
+                topicLabel: "Die Aufklärung",
+                question: "Was ist das «Zeitalter der Aufklärung»?",
+                answer: "Eine Zeit im 17./18. Jahrhundert, in der die Vernunft wichtig wurde. Man hinterfragte Kirche und König; Menschen sollten eigenständig denken."
+            },
+            {
+                topic: "aufklaerung",
+                topicLabel: "Die Aufklärung",
+                question: "Welche Rechte hat jeder Mensch laut John Locke?",
+                answer: "Das Recht auf Leben, Freiheit und Eigentum. Eine Regierung darf nur herrschen, wenn das Volk zustimmt."
+            },
+
+            // Thema 4: Gewaltenteilung
+            {
+                topic: "gewaltenteilung",
+                topicLabel: "Gewaltenteilung",
+                question: "Was ist die Legislative?",
+                answer: "Die gesetzgebende Gewalt.\nIn der Schweiz: Die Bundesversammlung (Nationalrat und Ständerat)."
+            },
+            {
+                topic: "gewaltenteilung",
+                topicLabel: "Gewaltenteilung",
+                question: "Was ist die Exekutive?",
+                answer: "Die ausführende Gewalt (Regierung).\nIn der Schweiz: Die 7 Bundesräte und die Verwaltung."
+            },
+            {
+                topic: "gewaltenteilung",
+                topicLabel: "Gewaltenteilung",
+                question: "Was ist die Judikative?",
+                answer: "Die richterliche Gewalt (Gerichte). Sie überprüfen, ob Gesetze eingehalten werden."
+            },
+            {
+                topic: "gewaltenteilung",
+                topicLabel: "Gewaltenteilung",
+                question: "Warum ist die Gewaltenteilung so wichtig?",
+                answer: "Um Machtmissbrauch zu verhindern. Die drei Gewalten kontrollieren sich gegenseitig."
+            },
+
+            // Thema 5: Menschenrechte & Malala
+            {
+                topic: "menschenrechte",
+                topicLabel: "Menschenrechte & Malala",
+                question: "Was sind Menschenrechte?",
+                answer: "Rechte, die jedem Menschen von Geburt an zustehen (z.B. Freiheit und Gleichheit). Sie schützen vor Unterdrückung."
+            },
+            {
+                topic: "menschenrechte",
+                topicLabel: "Menschenrechte & Malala",
+                question: "Wer ist Malala Yousafzai?",
+                answer: "Eine Kämpferin für das Recht auf Bildung (besonders für Mädchen). Sie erhielt 2014 den Friedensnobelpreis."
+            }
+        ];
+
+        // === STATE ===
+        var state = {
+            stars: 0,
+            diamonds: 0,
+            selectedTopic: "ludwig",
+            cards: [],
+            current: 0,
+            knew: 0,
+            didnt: 0,
+            total: 0,
+            revealed: false
+        };
+
+        // === STORAGE ===
+        function load() {
+            try {
+                var saved = localStorage.getItem('lernkarten_geschichte');
+                if (saved) {
+                    var data = JSON.parse(saved);
+                    state.stars = data.stars || 0;
+                    state.diamonds = data.diamonds || 0;
+                }
+            } catch (e) {}
+            updateRewards();
+        }
+
+        function save() {
+            try {
+                localStorage.setItem('lernkarten_geschichte', JSON.stringify({
+                    stars: state.stars,
+                    diamonds: state.diamonds
+                }));
+            } catch (e) {}
+        }
+
+        function updateRewards() {
+            document.getElementById('stars').textContent = state.stars;
+            document.getElementById('diamonds').textContent = state.diamonds;
+        }
+
+        function addStar() {
+            state.stars++;
+            if (state.stars >= 50) {
+                state.stars -= 50;
+                state.diamonds++;
+            }
+            updateRewards();
+            save();
+        }
+
+        // === SCREENS ===
+        function showScreen(id) {
+            var screens = document.querySelectorAll('.screen');
+            for (var i = 0; i < screens.length; i++) {
+                screens[i].classList.remove('active');
+            }
+            document.getElementById(id).classList.add('active');
+        }
+
+        // === HELPERS ===
+        function shuffle(arr) {
+            var a = arr.slice();
+            for (var i = a.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+            return a;
+        }
+
+        function formatText(text) {
+            return text.replace(/\n/g, '<br>');
+        }
+
+        // === GAME LOGIC ===
+        function generateCards() {
+            var pool;
+            if (state.selectedTopic === 'mix') {
+                pool = allCards.slice();
+            } else {
+                pool = allCards.filter(function(c) { return c.topic === state.selectedTopic; });
+            }
+            state.cards = shuffle(pool);
+            state.total = state.cards.length;
+        }
+
+        function startGame() {
+            generateCards();
+            state.current = 0;
+            state.knew = 0;
+            state.didnt = 0;
+            state.revealed = false;
+            showScreen('screenGame');
+            showCard();
+        }
+
+        function showCard() {
+            var card = state.cards[state.current];
+            state.revealed = false;
+
+            // Progress
+            var pct = (state.current / state.total) * 100;
+            document.getElementById('progressBar').style.width = pct + '%';
+            document.getElementById('progressText').textContent = 'Karte ' + (state.current + 1) + ' von ' + state.total;
+
+            // Topic badge
+            document.getElementById('topicBadge').innerHTML = '<span><i class="fa-solid fa-tag"></i> ' + card.topicLabel + '</span>';
+
+            // Show question
+            var flashcard = document.getElementById('flashcard');
+            flashcard.classList.remove('revealed');
+            flashcard.classList.remove('animate-in');
+            // Trigger reflow for animation
+            void flashcard.offsetWidth;
+            flashcard.classList.add('animate-in');
+            document.getElementById('cardContent').innerHTML = formatText(card.question);
+
+            // Buttons
+            document.getElementById('preReveal').style.display = 'block';
+            document.getElementById('postReveal').style.display = 'none';
+        }
+
+        function revealCard() {
+            var card = state.cards[state.current];
+            state.revealed = true;
+
+            var flashcard = document.getElementById('flashcard');
+            flashcard.classList.add('revealed');
+            document.getElementById('cardContent').innerHTML = '<div class="answer-text">' + formatText(card.answer) + '</div>';
+
+            document.getElementById('preReveal').style.display = 'none';
+            document.getElementById('postReveal').style.display = 'block';
+        }
+
+        function rateCard(knew) {
+            var card = state.cards[state.current];
+            if (knew) {
+                state.knew++;
+                addStar();
+            } else {
+                state.didnt++;
+                // Re-insert card later in the deck for spaced repetition
+                state.cards.push(card);
+                state.total = state.cards.length;
+            }
+
+            state.current++;
+            if (state.current < state.total) {
+                showCard();
+            } else {
+                showDone();
+            }
+        }
+
+        function showDone() {
+            document.getElementById('progressBar').style.width = '100%';
+
+            var originalTotal = state.knew + state.didnt;
+            document.getElementById('score').textContent = state.knew + '/' + originalTotal;
+            document.getElementById('knewCount').textContent = state.knew;
+            document.getElementById('didntCount').textContent = state.didnt;
+
+            var pct = Math.round((state.knew / originalTotal) * 100);
+            var msg = '';
+            if (pct === 100) {
+                msg = 'Perfekt! Alles im Kopf!';
+                showConfetti();
+            } else if (pct >= 80) {
+                msg = 'Super! Fast alles gewusst!';
+                showConfetti();
+            } else if (pct >= 60) {
+                msg = 'Gut gemacht! Weiter üben!';
+            } else {
+                msg = 'Übung macht den Meister!';
+            }
+            document.getElementById('doneMessage').textContent = msg;
+            showScreen('screenDone');
+        }
+
+        // === CONFETTI ===
+        function showConfetti() {
+            var container = document.createElement('div');
+            container.className = 'confetti';
+            document.body.appendChild(container);
+
+            var colors = ['#6C63FF', '#FF6B9D', '#4ECDC4', '#FFE66D', '#8B85FF'];
+            for (var i = 0; i < 40; i++) {
+                var piece = document.createElement('div');
+                piece.className = 'confetti-piece';
+                piece.style.left = Math.random() * 100 + '%';
+                piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+                piece.style.animationDelay = Math.random() * 1.5 + 's';
+                piece.style.animationDuration = (2 + Math.random() * 2) + 's';
+                piece.style.width = (6 + Math.random() * 8) + 'px';
+                piece.style.height = (6 + Math.random() * 8) + 'px';
+                container.appendChild(piece);
+            }
+
+            setTimeout(function() {
+                container.remove();
+            }, 4000);
+        }
+
+        // === EVENT LISTENERS ===
+        // Topic selection
+        document.getElementById('topicSelect').addEventListener('click', function(e) {
+            var btn = e.target.closest('.topic-btn');
+            if (btn) {
+                var btns = document.querySelectorAll('.topic-btn');
+                for (var i = 0; i < btns.length; i++) {
+                    btns[i].classList.remove('selected');
+                }
+                btn.classList.add('selected');
+                state.selectedTopic = btn.getAttribute('data-topic');
+            }
+        });
+
+        document.getElementById('btnStart').addEventListener('click', startGame);
+        document.getElementById('btnReveal').addEventListener('click', revealCard);
+        document.getElementById('btnKnew').addEventListener('click', function() { rateCard(true); });
+        document.getElementById('btnDidnt').addEventListener('click', function() { rateCard(false); });
+        document.getElementById('btnAgain').addEventListener('click', function() {
+            showScreen('screenStart');
+        });
+
+        // Click on flashcard to reveal
+        document.getElementById('flashcard').addEventListener('click', function() {
+            if (!state.revealed) {
+                revealCard();
+            }
+        });
+
+        // Keyboard support
+        document.addEventListener('keydown', function(e) {
+            if (document.getElementById('screenGame').classList.contains('active')) {
+                if (e.key === ' ' || e.key === 'Enter') {
+                    e.preventDefault();
+                    if (!state.revealed) {
+                        revealCard();
+                    }
+                } else if (state.revealed && (e.key === 'ArrowRight' || e.key === 'j' || e.key === '1')) {
+                    rateCard(true);
+                } else if (state.revealed && (e.key === 'ArrowLeft' || e.key === 'n' || e.key === '2')) {
+                    rateCard(false);
+                }
+            }
+        });
+
+        // === INIT ===
+        load();
+    </script>
+</body>
+
+</html>
