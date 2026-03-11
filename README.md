@@ -20,14 +20,25 @@ Diese Website wurde mit dem **frontend-design-skill** erstellt und folgt bewusst
 - **Hintergründe**: Animierte Blobs mit Blur-Effekt statt flacher Hintergründe
 - **Bewegung**: Orchestrierte Page-Load-Animationen mit gestaffelten Reveals
 
-## 📁 Dateistruktur
+## Dateistruktur
 
 ```
-website lernlust.ch/
-├── index.html          # Hauptseite mit allen Sektionen
-├── styles.css          # Komplettes Design-System
-├── script.js           # Interaktive Funktionen
-└── README.md           # Diese Datei
+website & web apps lernlust/
+├── index.html                     # Hauptseite (4 App-Karten)
+├── lernkarten-generator.html      # Lernkarten-Generator
+├── styles.css                     # Neobrutalism Design-System
+├── script.js                      # Interaktive Funktionen
+├── impressum.html                 # Impressum
+├── datenschutz.html               # Datenschutz
+├── prompts.html                   # Prompts-Seite
+├── vorlage.html                   # HTML-Vorlage für neue Apps
+├── beta apps primarstufe/         # 24 archivierte Beta-Apps
+│   ├── index.html                 # Übersichtsseite
+│   ├── ideenkiste.html            # Methoden & Massnahmen
+│   └── ...                        # Mathe, Deutsch, weitere Fächer
+├── Lehrplan 21/                   # Referenzmaterial (PDFs)
+├── fonts/                         # Lokale Schriften
+└── *.md                           # Dokumentation
 ```
 
 ## 🚀 Schnellstart

@@ -56,16 +56,17 @@ Diese Datei sagt GitHub Pages, dass die Website unter lernlust.ch erreichbar sei
 
 Bearbeite die Dateien lokal in:
 ```
-/Users/artproduction/Documents/Para/Ressources/Obsidian/website lernlust/
+/Users/artproduction/Obsidian/website & web apps lernlust/
 ```
 
-### 2. Änderungen hochladen (3 Befehle)
+### 2. Änderungen hochladen
 
 ```bash
-cd "/Users/artproduction/Documents/Para/Ressources/Obsidian/website lernlust"
-git add .
+cd "/Users/artproduction/Obsidian/website & web apps lernlust"
+git add -A
 git commit -m "Beschreibe deine Änderungen hier"
-git push
+git push github main    # GitHub Pages (Live)
+git push origin main    # GitLab (Mirror)
 ```
 
 ### 3. Fertig!
@@ -105,59 +106,37 @@ Nach 1-2 Minuten sind die Änderungen automatisch auf **https://lernlust.ch** si
 ## Struktur der Website
 
 ```
-website lernlust/
-├── CNAME                       # Domain-Konfiguration für GitHub Pages
-├── DEPLOYMENT.md               # Diese Datei - Deployment-Dokumentation
-├── README.md                   # Projekt-Beschreibung
-├── index.html                  # Hauptseite mit allen App-Links
-├── impressum.html              # Impressum (mit SVG-Email-Schutz)
-├── datenschutz.html            # Datenschutzerklärung
-├── styles.css                  # Design
-├── script.js                   # JavaScript
-├── mathe-blitz.html            # Alte Mathe-App
-├── silbenleser-v2.html         # Alte Lese-App
-├── index-lerncoaching-backup.html  # Backup der alten Lerncoaching-Seite
-├── Gemini_Generated_Image_*.png    # Bilder
-└── webapps/
-    └── neu separat/            # Alle neuen Web-Apps (13 Apps)
-        ├── einmaleins-trainer_1.html
-        ├── karteikarten-1x1.html
-        ├── karteikarten-plus.html
-        ├── lernapp-division_3.html
-        ├── lese-blitz-v1.html
-        ├── lese-blitz-v1_audio/    # Audio-Dateien für Lese-Blitz
-        ├── lese-profi-v2.html
-        ├── lese-profi-v2_audio/    # Audio-Dateien für Lese-Profi
-        ├── mengen-bilder.html
-        ├── rueckwaerts-zur-10.html
-        ├── verliebte-zahlen.html
-        ├── zehn-voll-machen.html
-        └── zehner-trick.html
+website & web apps lernlust/
+├── CNAME                          # Domain-Konfiguration für GitHub Pages
+├── index.html                     # Hauptseite (4 App-Karten)
+├── lernkarten-generator.html      # Lernkarten-Generator
+├── styles.css                     # Neobrutalism Design-System
+├── script.js                      # JavaScript
+├── impressum.html                 # Impressum (SVG-Email-Schutz)
+├── datenschutz.html               # Datenschutzerklärung
+├── prompts.html                   # Prompts-Seite
+├── vorlage.html                   # HTML-Vorlage für neue Apps
+├── beta apps primarstufe/         # Archivierte Beta-Apps (24 Apps)
+│   ├── index.html                 # Übersichtsseite aller Beta-Apps
+│   ├── ideenkiste.html            # Methoden & Massnahmen
+│   ├── lese-blitz-v1_audio/       # Audio für Lese-Blitz
+│   └── lese-profi-v2_audio/       # Audio für Lese-Profi
+├── Lehrplan 21/                   # Referenzmaterial (PDFs)
+└── fonts/                         # Lokale Schriften
 ```
 
-**Alle 13 Apps auf der Hauptseite verlinkt:**
-1. Einmaleins-Abenteuer (mathe-blitz.html)
-2. Silbenleser (silbenleser-v2.html)
-3. Lese-Blitz
-4. Verliebte Zahlen
-5. Zehn voll machen
-6. Zehner-Trick
-7. Lese-Profi
-8. Karteikarten 1x1
-9. Karteikarten Plus
-10. Einmaleins-Trainer
-11. Division üben
-12. Mengen-Bilder
-13. Rückwärts zur 10
+**Auf der Hauptseite verlinkt (4 Karten):**
+1. Lernkarten-Generator (`lernkarten-generator.html`)
+2. Verliebte Zahlen (Beispiel, `beta apps primarstufe/verliebte-zahlen.html`)
+3. Ideenkiste (Methoden & Massnahmen, `beta apps primarstufe/ideenkiste.html`)
+4. Beta Apps Primarstufe (Link zur Übersichtsseite mit allen 24 Apps)
 
 ## URLs der Web-Apps
 
-Alle Apps sind erreichbar unter:
-- https://lernlust.ch/webapps/neu%20separat/[dateiname].html
-
-Beispiele:
-- https://lernlust.ch/webapps/neu%20separat/lese-blitz-v1.html
-- https://lernlust.ch/webapps/neu%20separat/karteikarten-1x1.html
+- Hauptseite: https://lernlust.ch
+- Lernkarten-Generator: https://lernlust.ch/lernkarten-generator.html
+- Beta-Apps Übersicht: https://lernlust.ch/beta%20apps%20primarstufe/
+- Einzelne Beta-App: https://lernlust.ch/beta%20apps%20primarstufe/[dateiname].html
 
 ## GitHub Repository
 
@@ -214,10 +193,14 @@ Die echte Website läuft komplett über GitHub Pages!
 - **7. Dezember 2025**: Lerncoaching-Link entfernt
 - **7. Dezember 2025**: Impressum & Datenschutz hinzugefügt
 - **7. Dezember 2025**: 4 fehlende Apps hinzugefügt (Einmaleins-Trainer, Division, Mengen-Bilder, Rückwärts zur 10)
+- **11. März 2026**: Web-Apps in "beta apps primarstufe" archiviert, Übersichtsseite erstellt
+- **11. März 2026**: Ideenkiste (Schule · Methoden & Massnahmen) hinzugefügt
+- **11. März 2026**: Hauptseite aufgeräumt: nur Lernkarten-Generator, Verliebte Zahlen, Ideenkiste + Beta-Link
+- **11. März 2026**: Autor-Info ergänzt (Sek Binningen), GitLab-Mirror hinzugefügt
 
 ---
 
 **Erstellt am**: 7. Dezember 2025
-**Letzte Aktualisierung**: 7. Dezember 2025
+**Letzte Aktualisierung**: 11. März 2026
 **Deployment Methode**: GitHub Pages mit Custom Domain
 **Autor**: Mario Robles
