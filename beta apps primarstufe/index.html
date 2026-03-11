@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Apps Primarstufe – Lernlust</title>
+    <link rel="stylesheet" href="../styles.css">
+    <style>
+        .beta-header {
+            padding: var(--space-lg) 0 var(--space-md);
+            text-align: center;
+        }
+        .beta-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: var(--space-xs);
+        }
+        .beta-header p {
+            font-size: 1.1rem;
+            color: #555;
+            margin-bottom: var(--space-md);
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: var(--space-md);
+            font-weight: bold;
+            text-decoration: none;
+            color: var(--color-primary);
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .app-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: var(--space-sm);
+            padding: 0 var(--space-sm) var(--space-lg);
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .app-card {
+            background: var(--color-surface);
+            border: var(--border-thick);
+            box-shadow: var(--shadow-small);
+            padding: var(--space-sm);
+            transition: var(--transition);
+        }
+        .app-card:hover {
+            box-shadow: var(--shadow-brutal);
+            transform: translate(-2px, -2px);
+        }
+        .app-card h3 {
+            margin-bottom: 0.3rem;
+        }
+        .app-card .tag {
+            font-size: 0.8rem;
+            color: var(--color-primary);
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        .app-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0.8rem;
+        }
+        .app-card a.btn {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: var(--color-primary);
+            color: #fff;
+            border: var(--border-thin);
+            font-weight: bold;
+            text-decoration: none;
+            box-shadow: var(--shadow-small);
+            transition: var(--transition);
+        }
+        .app-card a.btn:hover {
+            box-shadow: none;
+            transform: translate(4px, 4px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="beta-header">
+            <a href="../index.html" class="back-link">&larr; Zurück zur Hauptseite</a>
+            <h1>Beta Apps Primarstufe</h1>
+            <p>Lern-Apps im Beta-Stadium – zum Ausprobieren und Testen</p>
+        </div>
+
+        <div class="app-grid">
+            <div class="app-card">
+                <h3>Mathe-Förderplan</h3>
+                <span class="tag">Mathematik · Zyklus 1–2</span>
+                <p>Übersicht und Leitfaden für die mathematische Förderung nach Lehrplan 21.</p>
+                <a href="mathe-foerderplan.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Einmaleins-Abenteuer</h3>
+                <span class="tag">Mathematik · Zyklus 1–2</span>
+                <p>Spielerisch das kleine Einmaleins lernen mit visuellen Hilfen und Belohnungen.</p>
+                <a href="mathe-blitz.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Einmaleins-Trainer</h3>
+                <span class="tag">Mathematik · Zyklus 1–2</span>
+                <p>Intensives Training des kleinen Einmaleins mit sofortigem Feedback.</p>
+                <a href="einmaleins-trainer_1.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>1x1 Blitz Challenge</h3>
+                <span class="tag">Mathematik · Zyklus 2</span>
+                <p>Das kleine Einmaleins im Tempo-Training meistern.</p>
+                <a href="1x1-blitz-challenge.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Division üben</h3>
+                <span class="tag">Mathematik · Zyklus 2</span>
+                <p>Divisionsaufgaben verstehen und trainieren mit visuellen Hilfen.</p>
+                <a href="lernapp-division_3.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Karteikarten 1x1</h3>
+                <span class="tag">Mathematik · Zyklus 1–2</span>
+                <p>Das kleine Einmaleins mit digitalen Karteikarten trainieren.</p>
+                <a href="karteikarten-1x1.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Karteikarten Plus</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Plus- und Minusaufgaben im Zahlenraum 100 üben.</p>
+                <a href="karteikarten-plus.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Verliebte Zahlen</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Die Zahlenpaare, die zusammen 10 ergeben, spielerisch lernen.</p>
+                <a href="verliebte-zahlen.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Zehn voll machen</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Rechnen bis 10 und den Zehnerübergang meistern.</p>
+                <a href="zehn-voll-machen.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Zehner-Trick</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Der Zehnertrick als Rechenstrategie für Plus- und Minusaufgaben.</p>
+                <a href="zehner-trick.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Zehner-Brücke Blitz</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Schnelles Training für den Zehnerübergang.</p>
+                <a href="zehner-bruecke-blitz.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Zehner-Paare Blitz</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Blitzschnell Zehnerpaare erkennen und automatisieren.</p>
+                <a href="zehner-paare-blitz-v2.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Rückwärts zur 10</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Rückwärts zählen und Minusaufgaben im Zahlenraum 10 meistern.</p>
+                <a href="rueckwaerts-zur-10.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Mengen-Bilder</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Mengen erfassen und Zahlen mit Bildern verknüpfen.</p>
+                <a href="mengen-bilder.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Zahlen-Baumeister</h3>
+                <span class="tag">Mathematik · Zyklus 1</span>
+                <p>Zahlen bauen und zerlegen im Zahlenraum 100.</p>
+                <a href="zahlen-baumeister.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Zahlenstrahl Explorer</h3>
+                <span class="tag">Mathematik · Zyklus 1–2</span>
+                <p>Den Zahlenstrahl interaktiv erkunden und Zahlen richtig einordnen.</p>
+                <a href="zahlenstrahl-explorer_1.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Zahlenstrahl Trainer</h3>
+                <span class="tag">Mathematik · Zyklus 1–2</span>
+                <p>Zahlen auf dem Zahlenstrahl finden und das Zahlenverständnis vertiefen.</p>
+                <a href="zahlenstrahl-trainer_3.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Silbenleser</h3>
+                <span class="tag">Deutsch · Zyklus 1</span>
+                <p>Silben lesen und Leseflüssigkeit trainieren.</p>
+                <a href="silbenleser-v2.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Lese-Blitz</h3>
+                <span class="tag">Deutsch · Zyklus 1</span>
+                <p>Schnelles Erkennen und Lesen von Wörtern.</p>
+                <a href="lese-blitz-v1.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Lese-Profi</h3>
+                <span class="tag">Deutsch · Zyklus 2</span>
+                <p>Für fortgeschrittene Leser, die ihre Geschwindigkeit und ihr Verständnis verbessern wollen.</p>
+                <a href="lese-profi-v2.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Lese-Fluss</h3>
+                <span class="tag">Deutsch · Zyklus 1–2</span>
+                <p>Buchseite fotografieren, Text automatisch erkennen und Wort für Wort vorlesen lassen.</p>
+                <a href="lese-fluss.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Lernkarten Absolutismus</h3>
+                <span class="tag">Geschichte · Zyklus 3</span>
+                <p>Lernkarten zum Thema Absolutismus.</p>
+                <a href="lernkarten-Absolutismus.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Français Blitz</h3>
+                <span class="tag">Französisch · Zyklus 2–3</span>
+                <p>Französisch-Vokabeln im Blitz-Modus trainieren.</p>
+                <a href="francais-blitz.html" class="btn">Öffnen</a>
+            </div>
+
+            <div class="app-card">
+                <h3>Ideenkiste</h3>
+                <span class="tag">Schule · Methoden & Massnahmen</span>
+                <p>Ideensammlung für sozialpädagogische Massnahmen in der Schule und methodische Anpassungen für herausfordernde Klassen.</p>
+                <a href="ideenkiste.html" class="btn">Öffnen</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

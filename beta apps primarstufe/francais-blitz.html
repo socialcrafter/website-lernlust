@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Francais-Blitz — Lernlust</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary:   #FF6B6B;
+      --secondary: #4ECDC4;
+      --accent:    #FFE66D;
+      --success:   #95E1A3;
+      --danger:    #FF8B94;
+      --purple:    #C3A6FF;
+      --bg-light:  #FFF9F0;
+      --bg-card:   #FFFFFF;
+      --text-dark: #2D3436;
+      --text-muted:#636E72;
+      --shadow:       0 8px 32px rgba(0,0,0,0.10);
+      --shadow-hover: 0 12px 48px rgba(0,0,0,0.15);
+      --radius:    24px;
+      --radius-sm: 16px;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-light);
+      min-height: 100vh;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px 16px 60px;
+      position: relative; overflow-x: hidden;
+    }
+    .bg-shapes { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+    .bg-shape { position: absolute; border-radius: 50%; animation: float 18s ease-in-out infinite; }
+    .bg-shape:nth-child(1) { width: 400px; height: 400px; top: -100px; right: -80px; background: radial-gradient(circle, rgba(255,107,107,0.15), transparent 70%); }
+    .bg-shape:nth-child(2) { width: 350px; height: 350px; bottom: 10%; left: -100px; background: radial-gradient(circle, rgba(78,205,196,0.15), transparent 70%); animation-delay: -7s; }
+    .bg-shape:nth-child(3) { width: 300px; height: 300px; top: 40%; right: 10%; background: radial-gradient(circle, rgba(255,230,109,0.18), transparent 70%); animation-delay: -13s; }
+    @keyframes float {
+      0%,100% { transform: translate(0,0) scale(1); }
+      33% { transform: translate(20px,-25px) scale(1.04); }
+      66% { transform: translate(-15px,15px) scale(0.97); }
+    }
+    .container { width: 100%; max-width: 480px; position: relative; z-index: 1; display: flex; flex-direction: column; gap: 16px; }
+    .header { text-align: center; padding: 20px 0 8px; }
+    .header h1 { font-family: 'Fredoka', cursive; font-size: 2rem; font-weight: 700; color: var(--text-dark); margin-bottom: 4px; }
+    .header .subtitle { font-size: 0.9rem; color: var(--text-muted); }
+    .score-bar { display: flex; justify-content: center; gap: 12px; margin-top: 10px; }
+    .score-chip { display: flex; align-items: center; gap: 6px; background: var(--bg-card); padding: 6px 16px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; box-shadow: var(--shadow); }
+    .card { background: var(--bg-card); border-radius: var(--radius); padding: 28px 24px; box-shadow: var(--shadow); }
+    .task-label { font-size: 0.82rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 14px; }
+
+    /* Illustration area */
+    .illustration-area {
+      display: flex; flex-direction: column; align-items: center; gap: 12px;
+      margin-bottom: 16px;
+    }
+    .illustration-area svg { max-width: 280px; width: 100%; height: auto; }
+    .german-label {
+      font-family: 'Fredoka', cursive; font-size: 1.6rem; font-weight: 600;
+      color: var(--text-dark); text-align: center; line-height: 1.3;
+    }
+    .german-label small {
+      display: block; font-size: 0.85rem; color: var(--text-muted);
+      font-family: 'Nunito', sans-serif; font-weight: 600; margin-top: 4px;
+    }
+
+    /* Speak button */
+    .btn-speak {
+      background: var(--purple); color: white;
+      width: 52px; height: 52px; border-radius: 50%; font-size: 1.3rem;
+      padding: 0; box-shadow: 0 4px 16px rgba(195,166,255,0.5);
+      display: inline-flex; align-items: center; justify-content: center;
+      border: none; cursor: pointer; transition: all 0.2s ease;
+    }
+    .btn-speak:hover { transform: scale(1.1); }
+    .btn-speak:active { transform: scale(0.95); }
+    .btn-speak.loading { opacity: 0.5; pointer-events: none; }
+
+    /* Answer buttons */
+    .answer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 16px; }
+    .answer-btn {
+      font-family: 'Fredoka', cursive; font-size: 1.15rem; font-weight: 600;
+      padding: 16px 10px; border-radius: var(--radius-sm); border: none;
+      cursor: pointer; background: #f8f9fa; color: var(--text-dark);
+      transition: all 0.2s ease; box-shadow: 0 3px 10px rgba(0,0,0,0.06);
+      line-height: 1.25; display: flex; align-items: center; justify-content: center;
+      gap: 8px; min-height: 70px;
+    }
+    .answer-btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: var(--shadow-hover); background: #f0f0f0; }
+    .answer-btn.correct { background: var(--success); color: #1a5c2a; }
+    .answer-btn.wrong { background: var(--danger); color: #8b0000; }
+    .answer-btn:disabled { cursor: not-allowed; opacity: 0.7; }
+
+    .feedback { text-align: center; padding: 14px; border-radius: var(--radius-sm); font-weight: 700; font-size: 1.05rem; margin-top: 14px; display: none; }
+    .feedback.correct { background: #e6fff0; color: #1a6b35; display: block; }
+    .feedback.wrong { background: #fff0f0; color: #9b2020; display: block; }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 28px; border-radius: 50px; border: none; cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 1rem; transition: all 0.2s ease; text-decoration: none; }
+    .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 16px rgba(255,107,107,0.4); }
+    .btn-primary:hover { transform: translateY(-2px); }
+    .btn-secondary { background: var(--secondary); color: white; box-shadow: 0 4px 16px rgba(78,205,196,0.4); }
+    .btn-ghost { background: #f0f0f0; color: var(--text-dark); }
+    .btn-ghost:hover { background: #e4e4e4; }
+    .btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+    .btn-full { width: 100%; }
+    .btn-lg { padding: 18px 36px; font-size: 1.1rem; }
+
+    .progress-bar { background: #e9ecef; border-radius: 50px; height: 10px; overflow: hidden; }
+    .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 50px; transition: width 0.5s ease; }
+
+    .complete-screen { text-align: center; padding: 20px 0; }
+    .complete-emoji { font-size: 5rem; display: block; margin-bottom: 16px; animation: pop 0.5s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes pop { from { transform: scale(0) rotate(-15deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+    .complete-title { font-family: 'Fredoka', cursive; font-size: 2.4rem; color: var(--text-dark); margin-bottom: 8px; }
+    .complete-sub { color: var(--text-muted); margin-bottom: 24px; }
+    .stars-row { display: flex; justify-content: center; gap: 10px; margin-bottom: 24px; }
+    .star { font-size: 2.4rem; opacity: 0; animation: starPop 0.4s ease forwards; }
+    .star:nth-child(1) { animation-delay: 0.2s; }
+    .star:nth-child(2) { animation-delay: 0.4s; }
+    .star:nth-child(3) { animation-delay: 0.6s; }
+    @keyframes starPop { from { opacity: 0; transform: scale(0) rotate(-20deg); } to { opacity: 1; transform: scale(1) rotate(0); } }
+
+    /* Mode selection */
+    .mode-grid { display: flex; flex-direction: column; gap: 12px; }
+    .mode-btn { display: flex; align-items: center; gap: 16px; background: var(--bg-card); border: 3px solid transparent; border-radius: var(--radius-sm); padding: 20px; cursor: pointer; transition: all 0.2s ease; box-shadow: 0 3px 10px rgba(0,0,0,0.06); text-align: left; }
+    .mode-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--primary); }
+    .mode-icon { font-size: 2rem; width: 56px; height: 56px; display: flex; align-items: center; justify-content: center; border-radius: 16px; flex-shrink: 0; }
+    .mode-title { font-family: 'Fredoka', cursive; font-size: 1.15rem; font-weight: 600; color: var(--text-dark); }
+    .mode-desc { font-size: 0.82rem; color: var(--text-muted); margin-top: 2px; }
+
+    .theme-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .theme-chip { padding: 10px 20px; border-radius: 50px; border: 3px solid #e0e0e0; background: white; font-family: 'Fredoka', cursive; font-size: 1rem; font-weight: 600; cursor: pointer; transition: all 0.2s ease; color: var(--text-dark); }
+    .theme-chip:hover { border-color: var(--secondary); transform: translateY(-2px); }
+    .theme-chip.active { border-color: var(--secondary); background: var(--secondary); color: white; }
+
+    .tts-status { text-align: center; font-size: 0.78rem; color: var(--text-muted); padding: 6px; }
+    .tts-status.error { color: var(--primary); }
+
+    @media (max-width: 400px) {
+      .card { padding: 20px 16px; }
+      .german-label { font-size: 1.3rem; }
+      .answer-btn { font-size: 1rem; padding: 14px 8px; min-height: 60px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-shapes"><div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div></div>
+
+  <div class="container">
+
+    <div class="header">
+      <h1>Francais-Blitz</h1>
+      <p class="subtitle">Praepositionen & Moebel</p>
+      <div class="score-bar">
+        <div class="score-chip"><span>&#11088;</span><span id="score">0</span></div>
+        <div class="score-chip"><span>&#128293;</span><span id="streak">0</span></div>
+      </div>
+    </div>
+
+    <!-- ════════════ MENU ═════════════════════════════════ -->
+    <div id="screen-menu">
+      <div class="card">
+        <div class="task-label">Thema waehlen</div>
+        <div class="theme-chips" id="theme-chips"></div>
+      </div>
+      <div class="card" style="margin-top:16px;">
+        <div class="task-label">Modus waehlen</div>
+        <div class="mode-grid">
+          <button class="mode-btn" onclick="selectMode('picture')">
+            <div class="mode-icon" style="background:#f0e6ff;">&#128444;</div>
+            <div>
+              <div class="mode-title">Bild-Blitz</div>
+              <div class="mode-desc">Sieh das Bild + Deutsch — waehle das franzoesische Wort</div>
+            </div>
+          </button>
+          <button class="mode-btn" onclick="selectMode('listen')">
+            <div class="mode-icon" style="background:#e6fff0;">&#128266;</div>
+            <div>
+              <div class="mode-title">Hoer-Blitz</div>
+              <div class="mode-desc">Hoere Franzoesisch — waehle die deutsche Bedeutung</div>
+            </div>
+          </button>
+          <button class="mode-btn" onclick="selectMode('translate')">
+            <div class="mode-icon" style="background:#fff0e6;">&#128221;</div>
+            <div>
+              <div class="mode-title">Uebersetzungs-Blitz</div>
+              <div class="mode-desc">Deutsch wird gezeigt — finde das franzoesische Wort</div>
+            </div>
+          </button>
+        </div>
+      </div>
+      <div class="tts-status" id="tts-status">Piper TTS wird geprueft...</div>
+    </div>
+
+    <!-- ════════════ TASK ═════════════════════════════════ -->
+    <div id="screen-task" style="display:none;">
+      <div class="progress-bar" style="margin-bottom:4px;">
+        <div class="progress-fill" id="progress" style="width:0%;"></div>
+      </div>
+      <p style="text-align:right;font-size:0.82rem;color:var(--text-muted);" id="progress-label">1 / 8</p>
+      <div class="card">
+        <div class="task-label" id="task-label">Aufgabe</div>
+
+        <div class="illustration-area" id="illustration-area"></div>
+
+        <div class="answer-grid" id="answer-grid">
+          <button class="answer-btn"></button>
+          <button class="answer-btn"></button>
+          <button class="answer-btn"></button>
+          <button class="answer-btn"></button>
+        </div>
+        <div class="feedback" id="feedback"></div>
+        <button class="btn btn-primary btn-full btn-lg" id="btn-next" style="margin-top:20px;display:none;" onclick="nextTask()">
+          Weiter <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+      <button class="btn btn-ghost btn-full" style="margin-top:8px;" onclick="backToMenu()">
+        <i class="fa-solid fa-arrow-left"></i> Zurueck
+      </button>
+    </div>
+
+    <!-- ════════════ COMPLETE ═════════════════════════════ -->
+    <div id="screen-complete" style="display:none;">
+      <div class="card">
+        <div class="complete-screen">
+          <span class="complete-emoji">&#127942;</span>
+          <div class="complete-title">Tres bien!</div>
+          <p class="complete-sub" id="result-text"></p>
+          <div class="stars-row" id="stars-row"></div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <button class="btn btn-primary btn-lg btn-full" onclick="restart()"><i class="fa-solid fa-rotate-right"></i> Nochmal</button>
+            <button class="btn btn-ghost btn-full" onclick="backToMenu()"><i class="fa-solid fa-arrow-left"></i> Menue</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+  // ══════════════════════════════════════════════════════════════
+  // PIPER TTS
+  // ══════════════════════════════════════════════════════════════
+  const PIPER_URL = 'http://localhost:5111/tts';
+  let ttsReady = false;
+  let currentAudio = null;
+
+  async function checkTTS() {
+    const el = document.getElementById('tts-status');
+    try {
+      const res = await fetch(PIPER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: 'test', speed: 1 })
+      });
+      if (res.ok) {
+        ttsReady = true;
+        el.textContent = 'Piper TTS bereit';
+      } else {
+        el.textContent = 'Piper TTS Fehler (Status ' + res.status + ')';
+        el.className = 'tts-status error';
+      }
+    } catch(e) {
+      el.innerHTML = 'Piper TTS nicht erreichbar. Starte: <code>source ~/piper-env/bin/activate && python3 ~/piper-server.py</code>';
+      el.className = 'tts-status error';
+    }
+  }
+  checkTTS();
+
+  async function speak(text) {
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+    if (!ttsReady) return;
+    try {
+      const res = await fetch(PIPER_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text, speed: 0.85 })
+      });
+      if (!res.ok) return;
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      currentAudio = new Audio(url);
+      currentAudio.play();
+    } catch(e) { console.error('TTS error:', e); }
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // SVG ILLUSTRATIONS
+  // ══════════════════════════════════════════════════════════════
+  const SVGS = {
+    table: `<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="30" y="70" width="180" height="12" rx="3" fill="#b8860b" stroke="#8B6914" stroke-width="2"/>
+      <rect x="42" y="82" width="8" height="70" rx="2" fill="#b8860b" stroke="#8B6914" stroke-width="1.5"/>
+      <rect x="190" y="82" width="8" height="70" rx="2" fill="#b8860b" stroke="#8B6914" stroke-width="1.5"/>
+      <text x="120" y="170" text-anchor="middle" font-family="Fredoka" font-size="14" fill="#636E72">la table</text>
+    </svg>`,
+
+    etagere: `<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="50" y="20" width="140" height="130" rx="3" fill="none" stroke="#8B6914" stroke-width="2"/>
+      <rect x="50" y="20" width="140" height="8" fill="#b8860b" stroke="#8B6914" stroke-width="1.5"/>
+      <rect x="50" y="55" width="140" height="6" fill="#deb887" stroke="#8B6914" stroke-width="1"/>
+      <rect x="50" y="90" width="140" height="6" fill="#deb887" stroke="#8B6914" stroke-width="1"/>
+      <rect x="50" y="125" width="140" height="6" fill="#deb887" stroke="#8B6914" stroke-width="1"/>
+      <text x="120" y="170" text-anchor="middle" font-family="Fredoka" font-size="14" fill="#636E72">l'etagere</text>
+    </svg>`,
+
+    armoire: `<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="55" y="15" width="130" height="140" rx="4" fill="#deb887" stroke="#8B6914" stroke-width="2.5"/>
+      <line x1="120" y1="15" x2="120" y2="155" stroke="#8B6914" stroke-width="2"/>
+      <circle cx="112" cy="85" r="3" fill="#8B6914"/>
+      <circle cx="128" cy="85" r="3" fill="#8B6914"/>
+      <rect x="55" y="155" width="130" height="6" rx="2" fill="#b8860b" stroke="#8B6914" stroke-width="1.5"/>
+      <text x="120" y="175" text-anchor="middle" font-family="Fredoka" font-size="14" fill="#636E72">l'armoire</text>
+    </svg>`,
+
+    ecran: `<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="50" y="20" width="140" height="95" rx="6" fill="#2d3436" stroke="#1a1a1a" stroke-width="2.5"/>
+      <rect x="56" y="26" width="128" height="83" rx="3" fill="#4a6fa5"/>
+      <rect x="105" y="115" width="30" height="25" fill="#555" stroke="#444" stroke-width="1.5"/>
+      <rect x="85" y="140" width="70" height="6" rx="3" fill="#555" stroke="#444" stroke-width="1.5"/>
+      <text x="120" y="170" text-anchor="middle" font-family="Fredoka" font-size="14" fill="#636E72">l'ecran</text>
+    </svg>`,
+
+    fauteuil: `<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <ellipse cx="120" cy="95" rx="55" ry="35" fill="#636E72" stroke="#444" stroke-width="2"/>
+      <ellipse cx="120" cy="80" rx="40" ry="25" fill="#777" stroke="#444" stroke-width="1.5"/>
+      <rect x="75" y="55" width="90" height="8" rx="4" fill="#555" stroke="#444" stroke-width="1.5"/>
+      <rect x="70" y="30" width="12" height="35" rx="4" fill="#636E72" stroke="#444" stroke-width="1.5"/>
+      <rect x="158" y="30" width="12" height="35" rx="4" fill="#636E72" stroke="#444" stroke-width="1.5"/>
+      <circle cx="90" cy="130" r="6" fill="#444"/>
+      <circle cx="150" cy="130" r="6" fill="#444"/>
+      <text x="120" y="170" text-anchor="middle" font-family="Fredoka" font-size="14" fill="#636E72">le fauteuil</text>
+    </svg>`,
+
+    plante: `<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="90" y="110" width="60" height="45" rx="4" fill="#c0392b" stroke="#962d22" stroke-width="2"/>
+      <ellipse cx="120" cy="95" rx="35" ry="20" fill="#27ae60"/>
+      <ellipse cx="105" cy="80" rx="18" ry="22" fill="#2ecc71"/>
+      <ellipse cx="135" cy="78" rx="16" ry="24" fill="#27ae60"/>
+      <ellipse cx="120" cy="65" rx="12" ry="20" fill="#2ecc71"/>
+      <line x1="120" y1="110" x2="120" y2="85" stroke="#8B6914" stroke-width="3"/>
+      <text x="120" y="172" text-anchor="middle" font-family="Fredoka" font-size="14" fill="#636E72">la plante</text>
+    </svg>`,
+
+    chaise: `<svg viewBox="0 0 240 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="85" y="60" width="70" height="8" rx="2" fill="#b8860b" stroke="#8B6914" stroke-width="2"/>
+      <rect x="85" y="68" width="8" height="75" rx="2" fill="#b8860b" stroke="#8B6914" stroke-width="1.5"/>
+      <rect x="147" y="68" width="8" height="75" rx="2" fill="#b8860b" stroke="#8B6914" stroke-width="1.5"/>
+      <rect x="85" y="15" width="8" height="50" rx="2" fill="#b8860b" stroke="#8B6914" stroke-width="1.5"/>
+      <rect x="147" y="50" width="8" height="15" rx="2" fill="#b8860b" stroke="#8B6914" stroke-width="1.5"/>
+      <rect x="85" y="12" width="70" height="10" rx="3" fill="#deb887" stroke="#8B6914" stroke-width="1.5"/>
+      <text x="120" y="170" text-anchor="middle" font-family="Fredoka" font-size="14" fill="#636E72">la chaise</text>
+    </svg>`
+  };
+
+
+  function buildIllustration(furniture) {
+    return SVGS[furniture] || '';
+  }
+
+  // ══════════════════════════════════════════════════════════════
+  // VOCABULARY DATA — Arbeitsblatt S.48 (N. Hamla)
+  // ══════════════════════════════════════════════════════════════
+  const THEMES = {
+    moebel: {
+      label: 'Moebel',
+      words: [
+        { fr: 'la table',    de: 'der Tisch',      furniture: 'table',    pos: 'sur' },
+        { fr: "l'etagere",   de: 'das Regal',      furniture: 'etagere',  pos: 'sur' },
+        { fr: "l'armoire",   de: 'der Schrank',    furniture: 'armoire',  pos: 'dans' },
+        { fr: "l'ecran",     de: 'der Bildschirm', furniture: 'ecran',    pos: 'sur' },
+        { fr: 'le fauteuil', de: 'der Sessel',     furniture: 'fauteuil', pos: 'sur' },
+        { fr: 'la plante',   de: 'die Pflanze',    furniture: 'plante',   pos: 'sur' },
+        { fr: 'la chaise',   de: 'der Stuhl',      furniture: 'chaise',   pos: 'milieu' },
+      ]
+    },
+    praepositionen: {
+      label: 'Praepositionen',
+      words: [
+        { fr: 'sur',          de: 'auf',              furniture: 'table',   pos: 'sur' },
+        { fr: 'sous',         de: 'unter',            furniture: 'table',   pos: 'sous' },
+        { fr: 'devant',       de: 'vor',              furniture: 'table',   pos: 'devant' },
+        { fr: 'derriere',     de: 'hinter',           furniture: 'table',   pos: 'derriere' },
+        { fr: 'dans',         de: 'in / drin',        furniture: 'armoire', pos: 'dans' },
+        { fr: 'a droite de',  de: 'rechts von',       furniture: 'table',   pos: 'droite' },
+        { fr: 'a gauche de',  de: 'links von',        furniture: 'table',   pos: 'gauche' },
+        { fr: 'au milieu de', de: 'in der Mitte von', furniture: 'table',   pos: 'milieu' },
+        { fr: 'au dessus de', de: 'oberhalb von',     furniture: 'etagere', pos: 'dessus' },
+        { fr: 'contre',       de: 'an / gegen',       furniture: 'armoire', pos: 'contre' },
+        { fr: 'par terre',    de: 'auf dem Boden',    furniture: 'chaise',  pos: 'parterre' },
+      ]
+    },
+    table: {
+      label: 'La table',
+      words: [
+        { fr: 'derriere la table',     de: 'hinter dem Tisch',         furniture: 'table', pos: 'derriere' },
+        { fr: 'sous la table',         de: 'unter dem Tisch',          furniture: 'table', pos: 'sous' },
+        { fr: 'a droite de la table',  de: 'rechts vom Tisch',         furniture: 'table', pos: 'droite' },
+        { fr: 'devant la table',       de: 'vor dem Tisch',            furniture: 'table', pos: 'devant' },
+        { fr: 'a gauche de la table',  de: 'links vom Tisch',          furniture: 'table', pos: 'gauche' },
+        { fr: 'au milieu de la table', de: 'in der Mitte des Tisches', furniture: 'table', pos: 'milieu' },
+        { fr: 'sur la table',          de: 'auf dem Tisch',            furniture: 'table', pos: 'sur' },
+      ]
+    },
+    etagere: {
+      label: "L'etagere",
+      words: [
+        { fr: "sur l'etagere",          de: 'auf dem Regal',        furniture: 'etagere', pos: 'sur' },
+        { fr: "a droite de l'etagere",  de: 'rechts vom Regal',     furniture: 'etagere', pos: 'droite' },
+        { fr: "au dessus de l'etagere", de: 'oberhalb des Regals',  furniture: 'etagere', pos: 'dessus' },
+        { fr: "devant l'etagere",       de: 'vor dem Regal',        furniture: 'etagere', pos: 'devant' },
+        { fr: "sous l'etagere",         de: 'unter dem Regal',      furniture: 'etagere', pos: 'sous' },
+      ]
+    },
+    armoire: {
+      label: "L'armoire",
+      words: [
+        { fr: "sous l'armoire",        de: 'unter dem Schrank',       furniture: 'armoire', pos: 'sous' },
+        { fr: "dans l'armoire",        de: 'im Schrank',             furniture: 'armoire', pos: 'dans' },
+        { fr: "a droite de l'armoire", de: 'rechts vom Schrank',     furniture: 'armoire', pos: 'droite' },
+        { fr: "a gauche de l'armoire", de: 'links vom Schrank',      furniture: 'armoire', pos: 'gauche' },
+        { fr: "contre l'armoire",      de: 'am Schrank angelehnt',   furniture: 'armoire', pos: 'contre' },
+        { fr: "sur l'armoire",         de: 'auf dem Schrank',        furniture: 'armoire', pos: 'sur' },
+      ]
+    },
+    weitere: {
+      label: 'Ecran & Co.',
+      words: [
+        { fr: "au dessus de l'ecran",         de: 'oberhalb des Bildschirms',    furniture: 'ecran',    pos: 'dessus' },
+        { fr: "sur l'ecran",                  de: 'auf dem Bildschirm',          furniture: 'ecran',    pos: 'sur' },
+        { fr: "sous l'ecran",                 de: 'unter dem Bildschirm',        furniture: 'ecran',    pos: 'sous' },
+        { fr: "a droite de l'ecran",          de: 'rechts vom Bildschirm',       furniture: 'ecran',    pos: 'droite' },
+        { fr: 'sur le fauteuil',              de: 'auf dem Sessel',              furniture: 'fauteuil', pos: 'sur' },
+        { fr: 'derriere le fauteuil',         de: 'hinter dem Sessel',           furniture: 'fauteuil', pos: 'derriere' },
+        { fr: 'a droite du fauteuil',         de: 'rechts vom Sessel',           furniture: 'fauteuil', pos: 'droite' },
+        { fr: 'devant le fauteuil, par terre',de: 'vor dem Sessel, am Boden',    furniture: 'fauteuil', pos: 'parterre' },
+        { fr: 'sur la plante',                de: 'auf der Pflanze',             furniture: 'plante',   pos: 'sur' },
+        { fr: 'sous la plante',               de: 'unter der Pflanze',           furniture: 'plante',   pos: 'sous' },
+        { fr: 'a gauche de la plante',        de: 'links von der Pflanze',       furniture: 'plante',   pos: 'gauche' },
+        { fr: 'a droite de la plante',        de: 'rechts von der Pflanze',      furniture: 'plante',   pos: 'droite' },
+        { fr: 'au milieu de la chaise',       de: 'in der Mitte des Stuhls',     furniture: 'chaise',   pos: 'milieu' },
+        { fr: 'au dessus de la chaise',       de: 'oberhalb des Stuhls',         furniture: 'chaise',   pos: 'dessus' },
+        { fr: 'sous la chaise',               de: 'unter dem Stuhl',             furniture: 'chaise',   pos: 'sous' },
+        { fr: 'devant la chaise, par terre',  de: 'vor dem Stuhl, am Boden',     furniture: 'chaise',   pos: 'parterre' },
+      ]
+    }
+  };
+
+  // ── State ─────────────────────────────────────────────────
+  let currentMode  = null;
+  let currentTheme = 'table';
+  let tasks = [], taskIndex = 0, score = 0, streak = 0, answered = false;
+  const TASKS_PER_ROUND = 8;
+
+  // ── Theme chips ───────────────────────────────────────────
+  function renderThemeChips() {
+    const c = document.getElementById('theme-chips');
+    c.innerHTML = '';
+    for (const [key, theme] of Object.entries(THEMES)) {
+      const chip = document.createElement('button');
+      chip.className = 'theme-chip' + (key === currentTheme ? ' active' : '');
+      chip.textContent = theme.label;
+      chip.onclick = () => {
+        currentTheme = key;
+        document.querySelectorAll('.theme-chip').forEach(x => x.classList.remove('active'));
+        chip.classList.add('active');
+      };
+      c.appendChild(chip);
+    }
+  }
+
+  // ── Start mode ────────────────────────────────────────────
+  function selectMode(mode) {
+    currentMode = mode;
+    taskIndex = 0; score = 0; streak = 0; answered = false;
+    document.getElementById('score').textContent = 0;
+    document.getElementById('streak').textContent = 0;
+
+    const themeWords = THEMES[currentTheme].words;
+    const pool = shuffle([...themeWords]);
+    const roundSize = Math.min(TASKS_PER_ROUND, pool.length);
+    const selected = pool.slice(0, roundSize);
+
+    tasks = selected.map(word => {
+      const sameTheme = themeWords.filter(w => w.fr !== word.fr);
+      const otherWords = getAllWords().filter(w => w.fr !== word.fr && !sameTheme.find(s => s.fr === w.fr));
+      const wrongPool = [...shuffle(sameTheme), ...shuffle(otherWords)];
+      return { word, wrong: wrongPool.slice(0, 3) };
+    });
+
+    document.getElementById('screen-menu').style.display = 'none';
+    document.getElementById('screen-task').style.display = 'block';
+    document.getElementById('screen-complete').style.display = 'none';
+    showTask();
+  }
+
+  function getAllWords() {
+    let all = [];
+    for (const theme of Object.values(THEMES)) all = all.concat(theme.words);
+    return all;
+  }
+
+  // ── Show task ─────────────────────────────────────────────
+  function showTask() {
+    if (taskIndex >= tasks.length) { showComplete(); return; }
+    answered = false;
+    const t = tasks[taskIndex];
+
+    document.getElementById('progress').style.width = `${(taskIndex / tasks.length) * 100}%`;
+    document.getElementById('progress-label').textContent = `${taskIndex + 1} / ${tasks.length}`;
+    document.getElementById('feedback').className = 'feedback';
+    document.getElementById('btn-next').style.display = 'none';
+
+    const area = document.getElementById('illustration-area');
+    const label = document.getElementById('task-label');
+
+    if (currentMode === 'picture') {
+      // BILD-MODUS: SVG + roter Punkt + deutscher Text → franz. Antworten
+      label.textContent = 'Wie sagt man das auf Franzoesisch?';
+      area.innerHTML = buildIllustration(t.word.furniture)
+        + `<div class="german-label">${t.word.de}</div>`;
+
+      const options = shuffle([
+        { text: t.word.fr, correct: true },
+        ...t.wrong.map(w => ({ text: w.fr, correct: false }))
+      ]);
+      renderAnswers(options, true);
+
+    } else if (currentMode === 'listen') {
+      // HOER-MODUS: SVG + Lautsprecher → deutsche Antworten
+      label.textContent = 'Hoere und waehle die Bedeutung';
+      area.innerHTML = buildIllustration(t.word.furniture)
+        + `<button class="btn-speak" onclick="speakCurrentWord()"><i class="fa-solid fa-volume-high"></i></button>`;
+      setTimeout(() => speak(t.word.fr), 500);
+
+      const options = shuffle([
+        { text: t.word.de, correct: true },
+        ...t.wrong.map(w => ({ text: w.de, correct: false }))
+      ]);
+      renderAnswers(options, false);
+
+    } else if (currentMode === 'translate') {
+      // UEBERSETZUNGS-MODUS: SVG + deutscher Text → franz. Antworten
+      label.textContent = 'Wie heisst das auf Franzoesisch?';
+      area.innerHTML = buildIllustration(t.word.furniture)
+        + `<div class="german-label">${t.word.de}</div>`;
+
+      const options = shuffle([
+        { text: t.word.fr, correct: true },
+        ...t.wrong.map(w => ({ text: w.fr, correct: false }))
+      ]);
+      renderAnswers(options, true);
+    }
+  }
+
+  function speakCurrentWord() {
+    if (taskIndex < tasks.length) speak(tasks[taskIndex].word.fr);
+  }
+
+  function renderAnswers(options, addSpeakIcon) {
+    const btns = document.querySelectorAll('#answer-grid .answer-btn');
+    btns.forEach((btn, i) => {
+      btn.innerHTML = addSpeakIcon
+        ? `<i class="fa-solid fa-volume-high" style="font-size:0.8em;opacity:0.4;"></i> ${options[i].text}`
+        : options[i].text;
+      btn.className = 'answer-btn';
+      btn.disabled = false;
+      btn.onclick = () => checkAnswer(btn, options[i].correct, options[i].text, addSpeakIcon);
+    });
+  }
+
+  // ── Check answer ──────────────────────────────────────────
+  function checkAnswer(btn, isCorrect, text, isFrench) {
+    if (answered) return;
+    answered = true;
+    const fb = document.getElementById('feedback');
+    const t = tasks[taskIndex];
+
+    // Play the French text
+    if (isFrench && isCorrect) {
+      setTimeout(() => speak(text), 200);
+    } else {
+      setTimeout(() => speak(t.word.fr), 500);
+    }
+
+    if (isCorrect) {
+      btn.classList.add('correct');
+      score++; streak++;
+      fb.textContent = 'Richtig! ' + t.word.fr + ' = ' + t.word.de;
+      fb.className = 'feedback correct';
+    } else {
+      btn.classList.add('wrong');
+      streak = 0;
+      const correctText = (currentMode === 'listen') ? t.word.de : t.word.fr;
+      document.querySelectorAll('.answer-btn').forEach(b => {
+        if (b.textContent.trim() === correctText || b.textContent.includes(correctText)) b.classList.add('correct');
+      });
+      fb.textContent = t.word.fr + ' = ' + t.word.de;
+      fb.className = 'feedback wrong';
+    }
+
+    document.querySelectorAll('.answer-btn').forEach(b => b.disabled = true);
+    document.getElementById('score').textContent = score;
+    document.getElementById('streak').textContent = streak;
+
+    setTimeout(() => {
+      document.getElementById('btn-next').style.display = 'block';
+    }, 1500);
+  }
+
+  function nextTask() { taskIndex++; showTask(); }
+
+  function showComplete() {
+    document.getElementById('screen-task').style.display = 'none';
+    document.getElementById('screen-complete').style.display = 'block';
+    const pct = Math.round((score / tasks.length) * 100);
+    const sc = pct >= 90 ? 3 : pct >= 60 ? 2 : pct >= 30 ? 1 : 0;
+    document.getElementById('result-text').textContent = `${score} von ${tasks.length} richtig (${pct}%)`;
+    const row = document.getElementById('stars-row');
+    row.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+      const s = document.createElement('span');
+      s.className = 'star';
+      s.innerHTML = i < sc ? '&#11088;' : '&#9734;';
+      row.appendChild(s);
+    }
+    const key = `francais-blitz-${currentTheme}-${currentMode}`;
+    const prev = parseInt(localStorage.getItem(key) || '0');
+    if (score > prev) localStorage.setItem(key, score);
+  }
+
+  function restart() { selectMode(currentMode); }
+
+  function backToMenu() {
+    document.getElementById('screen-menu').style.display = 'block';
+    document.getElementById('screen-task').style.display = 'none';
+    document.getElementById('screen-complete').style.display = 'none';
+    if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  }
+
+  function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  renderThemeChips();
+</script>
+</body>
+</html>

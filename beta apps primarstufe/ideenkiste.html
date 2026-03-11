@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Ideenkiste – Sozialpädagogische Interventionen</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-warm: #0f1119;
+  --bg-card: #1a1d2e;
+  --bg-card-hover: #212540;
+  --text-primary: #e8eaf0;
+  --text-muted: #8b90a8;
+  --accent-teal: #00d2a8;
+  --accent-teal-light: #55efc4;
+  --accent-blue: #74b9ff;
+  --accent-purple: #a29bfe;
+  --accent-warm: #fdcb6e;
+  --accent-orange: #e17055;
+  --accent-red: #d63031;
+  --accent-dark: #e8eaf0;
+  --grenz-from: #e17055;
+  --grenz-to: #d63031;
+  --hilfe-from: #74b9ff;
+  --hilfe-to: #0984e3;
+  --ueber-from: #a29bfe;
+  --ueber-to: #6c5ce7;
+  --shadow-soft: 0 8px 32px rgba(0,0,0,0.3);
+  --shadow-lift: 0 12px 40px rgba(0,0,0,0.45);
+  --radius: 24px;
+  --radius-sm: 16px;
+  --radius-xs: 12px;
+  --border-subtle: 1px solid rgba(255,255,255,0.06);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+  font-family: 'Lexend', sans-serif;
+  background: var(--bg-warm);
+  background-image: radial-gradient(at 20% 20%, rgba(0,210,168,0.07) 0%, transparent 50%),
+                     radial-gradient(at 80% 80%, rgba(162,155,254,0.07) 0%, transparent 50%);
+  background-attachment: fixed;
+  min-height: 100dvh;
+  color: var(--text-primary);
+  padding-bottom: 80px;
+}
+
+/* HEADER */
+.app-header {
+  padding: 24px 20px 16px;
+  text-align: center;
+}
+.app-logo {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.app-logo span {
+  background: linear-gradient(135deg, var(--accent-teal), var(--accent-blue));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.app-subtitle {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 300;
+  margin-top: 4px;
+}
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: rgba(15,17,25,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  border-top: 1px solid rgba(255,255,255,0.08);
+  z-index: 100;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.nav-btn {
+  flex: 1;
+  border: none;
+  background: none;
+  padding: 10px 4px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  cursor: pointer;
+  color: var(--text-muted);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+.nav-btn.active { color: var(--accent-teal); }
+.nav-icon {
+  width: 28px; height: 28px;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-icon svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+/* SCREENS */
+.screen { display: none; padding: 0 20px 20px; max-width: 500px; margin: 0 auto; animation: fadeIn 0.3s ease; }
+.screen.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* START SCREEN */
+.start-section { margin-bottom: 24px; }
+.start-section h2 { font-size: 0.75rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px; padding-left: 4px; }
+
+.teil-card {
+  background: var(--bg-card);
+  border: var(--border-subtle);
+  border-radius: var(--radius);
+  padding: 22px;
+  box-shadow: var(--shadow-soft);
+  cursor: pointer;
+  transition: all 0.25s;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.teil-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lift); background: var(--bg-card-hover); }
+.teil-card:active { transform: scale(0.98); }
+.teil-icon {
+  width: 52px; height: 52px;
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: white;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.teil-icon.t1 { background: linear-gradient(135deg, var(--accent-warm), #f0932b); }
+.teil-icon.t2 { background: linear-gradient(135deg, var(--grenz-from), var(--grenz-to)); }
+.teil-icon.t3 { background: linear-gradient(135deg, var(--hilfe-from), var(--hilfe-to)); }
+.teil-icon.tu { background: linear-gradient(135deg, var(--ueber-from), var(--ueber-to)); }
+.teil-info h3 { font-size: 1rem; font-weight: 600; margin-bottom: 3px; }
+.teil-info p { font-size: 0.8rem; color: var(--text-muted); font-weight: 300; line-height: 1.4; }
+.teil-arrow { color: var(--text-muted); font-size: 1.2rem; margin-left: auto; opacity: 0.4; }
+
+/* TEIL SCREEN (Dossier-Struktur) */
+.teil-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+.teil-header .teil-icon { width: 44px; height: 44px; font-size: 0.95rem; }
+.teil-header h2 { font-size: 1.2rem; font-weight: 700; }
+.teil-header-sub { font-size: 0.8rem; color: var(--text-muted); font-weight: 300; }
+
+.back-link {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-weight: 400;
+  margin-bottom: 16px;
+  display: inline-block;
+  transition: color 0.2s;
+}
+.back-link:hover { color: var(--text-primary); }
+
+/* SEARCH */
+.search-bar {
+  background: var(--bg-card);
+  border: var(--border-subtle);
+  border-radius: var(--radius-xs);
+  padding: 12px 16px;
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.search-bar svg { width: 18px; height: 18px; stroke: var(--text-muted); fill: none; stroke-width: 2; flex-shrink: 0; }
+.search-bar input {
+  border: none;
+  outline: none;
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.9rem;
+  width: 100%;
+  background: transparent;
+  color: var(--text-primary);
+}
+.search-bar input::placeholder { color: #5a5e7a; }
+
+/* FILTER CHIPS */
+.filter-row { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.chip {
+  padding: 7px 14px;
+  border-radius: 20px;
+  border: 1.5px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.04);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  color: var(--text-muted);
+}
+.chip.active { background: var(--accent-teal); color: #0f1119; border-color: var(--accent-teal); }
+.chip.stufe1.active { background: var(--accent-teal); border-color: var(--accent-teal); color: #0f1119; }
+.chip.stufe2.active { background: var(--accent-warm); border-color: var(--accent-warm); color: #0f1119; }
+.chip.stufe3.active { background: var(--accent-orange); border-color: var(--accent-orange); color: white; }
+.chip.stufe4.active { background: var(--accent-red); border-color: var(--accent-red); color: white; }
+.chip.stufe5.active { background: #e8eaf0; border-color: #e8eaf0; color: #0f1119; }
+
+/* MASSNAHMEN CARDS */
+.m-card {
+  background: var(--bg-card);
+  border: var(--border-subtle);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 10px;
+  overflow: hidden;
+  transition: all 0.2s;
+}
+.m-card-header {
+  padding: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+.m-card-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 7px;
+}
+.m-card-dot.grenz { background: linear-gradient(135deg, var(--grenz-from), var(--grenz-to)); }
+.m-card-dot.hilfe { background: linear-gradient(135deg, var(--hilfe-from), var(--hilfe-to)); }
+.m-card-dot.ueber { background: linear-gradient(135deg, var(--ueber-from), var(--ueber-to)); }
+.m-card-body { flex: 1; }
+.m-card-title { font-size: 0.92rem; font-weight: 600; margin-bottom: 4px; }
+.m-card-short { font-size: 0.78rem; color: var(--text-muted); font-weight: 300; line-height: 1.5; }
+.m-card-meta { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.m-meta-tag {
+  font-size: 0.62rem;
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-weight: 500;
+  background: rgba(255,255,255,0.07);
+  color: var(--text-muted);
+}
+.m-meta-tag.grenz { background: rgba(225,112,85,0.15); color: #e17055; }
+.m-meta-tag.hilfe { background: rgba(116,185,255,0.15); color: #74b9ff; }
+
+.m-card-toggle {
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  transition: transform 0.3s;
+  flex-shrink: 0;
+  margin-top: 4px;
+  opacity: 0.4;
+}
+.m-card.open .m-card-toggle { transform: rotate(180deg); }
+
+.m-card-fav {
+  background: none; border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  opacity: 0.2;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  margin-top: 2px;
+  padding: 4px;
+  color: var(--accent-warm);
+}
+.m-card-fav.active { opacity: 1; }
+
+.m-card-detail {
+  display: none;
+  padding: 0 16px 16px;
+}
+.m-card.open .m-card-detail { display: block; }
+.detail-block { margin-top: 14px; }
+.detail-block h4 {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.detail-block p { font-size: 0.82rem; line-height: 1.7; font-weight: 300; }
+.detail-block ul { padding-left: 16px; }
+.detail-block li { font-size: 0.82rem; line-height: 1.6; font-weight: 300; margin-bottom: 3px; }
+.praxis-box {
+  background: rgba(253,203,110,0.06);
+  border-radius: var(--radius-xs);
+  padding: 14px;
+  margin-top: 10px;
+  border-left: 3px solid var(--accent-warm);
+}
+.praxis-label { font-size: 0.68rem; font-weight: 600; color: var(--accent-warm); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+
+/* RESULTS COUNT */
+.results-info { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 10px; font-weight: 300; }
+
+/* RANDOM BUTTON */
+.random-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  width: 100%; padding: 14px;
+  background: linear-gradient(135deg, var(--accent-warm), #f0932b);
+  color: white; border: none;
+  border-radius: var(--radius-sm);
+  font-family: 'Lexend', sans-serif;
+  font-size: 0.9rem; font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(253,203,110,0.4);
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+.random-btn:active { transform: scale(0.97); }
+.random-btn svg { width: 18px; height: 18px; stroke: white; fill: none; stroke-width: 2; }
+
+/* FAV SECTION */
+.fav-bar {
+  background: rgba(253,203,110,0.08);
+  border: 1px solid rgba(253,203,110,0.15);
+  border-radius: var(--radius-xs);
+  padding: 12px 14px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+.fav-bar .fav-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-warm); }
+
+/* WISSEN CARDS */
+.wissen-card {
+  background: var(--bg-card);
+  border: var(--border-subtle);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
+  margin-bottom: 10px;
+  overflow: hidden;
+}
+.wissen-header {
+  padding: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.wissen-dot {
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 0.8rem;
+  color: white;
+}
+.wissen-title { font-weight: 600; font-size: 0.9rem; flex: 1; }
+.wissen-toggle { font-size: 0.7rem; color: var(--text-muted); transition: transform 0.3s; opacity: 0.4; }
+.wissen-card.open .wissen-toggle { transform: rotate(180deg); }
+.wissen-content {
+  display: none;
+  padding: 0 18px 18px;
+  font-size: 0.82rem;
+  line-height: 1.7;
+  font-weight: 300;
+  color: var(--text-muted);
+}
+.wissen-card.open .wissen-content { display: block; }
+.wissen-content p { margin-bottom: 10px; }
+.wissen-content strong { font-weight: 600; color: var(--text-primary); }
+
+/* SECTION HEADERS */
+.section-head {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 18px 0 10px;
+  padding-left: 2px;
+}
+.section-sub {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 300;
+  margin: -6px 0 12px;
+  padding-left: 2px;
+}
+
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="app-logo">Ideen<span>kiste</span></div>
+  <div class="app-subtitle">Sozialpädagogische Interventionen gestalten</div>
+</div>
+
+<!-- SCREEN: START -->
+<div id="screen-start" class="screen active">
+  <div class="start-section">
+    <h2>Werkzeuge nach Dossier</h2>
+    <div class="teil-card" onclick="showTeil('teil1')">
+      <div class="teil-icon t1">T1</div>
+      <div class="teil-info"><h3>Einschätzen</h3><p>Situation analysieren, Verhalten vs. Handlung, Systembeobachtung</p></div>
+      <div class="teil-arrow">›</div>
+    </div>
+    <div class="teil-card" onclick="showTeil('teil2')">
+      <div class="teil-icon t2">T2</div>
+      <div class="teil-info"><h3>Grenzen setzen</h3><p>Stufe 1–5: Vom nonverbalen Signal bis zum Systemschutz</p></div>
+      <div class="teil-arrow">›</div>
+    </div>
+    <div class="teil-card" onclick="showTeil('teil3')">
+      <div class="teil-icon t3">T3</div>
+      <div class="teil-info"><h3>Helfen</h3><p>Bindung, Verhaltensänderung, Alarm reduzieren, Prävention</p></div>
+      <div class="teil-arrow">›</div>
+    </div>
+    <div class="teil-card" onclick="showTeil('ueber')">
+      <div class="teil-icon tu">+</div>
+      <div class="teil-info"><h3>Übergreifendes</h3><p>Deeskalation, Führung, Didaktische Reflexion, Methodische Ansätze</p></div>
+      <div class="teil-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN: TEIL (dynamisch gefüllt) -->
+<div id="screen-teil" class="screen">
+  <div class="back-link" onclick="showScreen('screen-start')">‹ Zurück</div>
+  <div id="teil-content"></div>
+</div>
+
+<!-- SCREEN: ALLE (Ideenkiste) -->
+<div id="screen-alle" class="screen">
+  <div class="search-bar">
+    <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search-input" placeholder="Massnahme suchen..." oninput="filterAll()">
+  </div>
+  <div class="filter-row" id="kat-filter">
+    <div class="chip active" data-f="alle" onclick="setKat('alle')">Alle</div>
+    <div class="chip" data-f="grenzsetzend" onclick="setKat('grenzsetzend')">Grenzsetzend</div>
+    <div class="chip" data-f="helfend" onclick="setKat('helfend')">Helfend</div>
+    <div class="chip" data-f="uebergreifend" onclick="setKat('uebergreifend')">Übergreifend</div>
+  </div>
+  <div class="filter-row" id="stufe-filter">
+    <div class="chip active" data-s="alle" onclick="setStufe('alle')">Alle Stufen</div>
+    <div class="chip stufe1" data-s="1" onclick="setStufe('1')">Stufe 1</div>
+    <div class="chip stufe2" data-s="2" onclick="setStufe('2')">Stufe 2</div>
+    <div class="chip stufe3" data-s="3" onclick="setStufe('3')">Stufe 3</div>
+    <div class="chip stufe4" data-s="4" onclick="setStufe('4')">Stufe 4</div>
+    <div class="chip stufe5" data-s="5" onclick="setStufe('5')">Stufe 5</div>
+  </div>
+  <button class="random-btn" onclick="showRandom()">
+    <svg viewBox="0 0 24 24"><path d="M16 3h5v5M4 20L21 3M21 16v5h-5M15 15l6 6M4 4l5 5"/></svg>
+    Zufällige Inspiration
+  </button>
+  <div id="fav-bar" class="fav-bar hidden"><div class="fav-dot"></div><span id="fav-text">0 gemerkt</span></div>
+  <div class="results-info" id="results-info"></div>
+  <div id="all-cards"></div>
+</div>
+
+<!-- SCREEN: WISSEN -->
+<div id="screen-wissen" class="screen">
+  <div class="teil-header" style="margin-bottom:18px;">
+    <div class="teil-icon" style="background:linear-gradient(135deg,#a29bfe,#6c5ce7);width:44px;height:44px;font-size:0.8rem;">W</div>
+    <div><h2>Wissensbox</h2><div class="teil-header-sub">Hintergrundwissen kompakt</div></div>
+  </div>
+  <div id="wissen-list"></div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <button class="nav-btn active" data-screen="screen-start" onclick="showScreen('screen-start')">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>Start
+  </button>
+  <button class="nav-btn" data-screen="screen-alle" onclick="showScreen('screen-alle')">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg></span>Alle
+  </button>
+  <button class="nav-btn" data-screen="screen-wissen" onclick="showScreen('screen-wissen')">
+    <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span>Wissen
+  </button>
+</div>
+
+<script>
+// =============================================
+// DATA
+// =============================================
+const M = [
+  // TEIL 1 – EINSCHÄTZEN
+  {id:"vh-check",t:"Verhalten vs. Handlung unterscheiden",kat:"uebergreifend",teil:"teil1",stufe:0,
+   kurz:"Systematisch prüfen, ob impulsives Verhalten oder eine bewusste Handlung vorliegt. Dies bestimmt die richtige Intervention.",
+   details:"Checkliste: 1) Körpersprache vor dem Vorfall – angespannt oder entspannt? 2) Währenddessen – emotional oder kontrolliert? 3) Danach – Reue oder Gleichgültigkeit? 4) Wirken Sanktionen? 5) Muster – äussere Auslöser oder kalkuliert?",
+   tipps:["Körpersprache genau beobachten","Reue vs. Gleichgültigkeit danach prüfen","Wirkung bisheriger Sanktionen analysieren","Im Zweifelsfall: als Verhalten behandeln"],
+   beispiel:"Ein Kind schubst ein anderes. Die LP beobachtet: vorher angespannt, weint danach – Verhalten (impulsiv). Anderes Kind: entspannt, lacht danach – Handlung (bewusst)."},
+
+  {id:"systembeobachtung",t:"Systembeobachtung durchführen",kat:"uebergreifend",teil:"teil1",stufe:0,
+   kurz:"Eine externe Person beobachtet systematisch die Klassendynamik nach definierten Kriterien.",
+   details:"Eine aussenstehende Person (SSA, SHP, Kollegin) beobachtet die Klasse: Befinden der Kinder, Kontaktradius, Energie, Konflikte, Interaktionen mit LP. Dies gibt oft überraschende Einblicke.",
+   tipps:["Klare Beobachtungskriterien definieren","Externe Person einladen","Befinden, Kontakt, Energie beobachten","Gemeinsam auswerten"],
+   beispiel:"Die SSA beobachtet und stellt fest: Die zweite LP kommt zu spät, begrüsst die Kinder nicht persönlich – weniger Bindung, mehr Störungen."},
+
+  // TEIL 2 – GRENZEN SETZEN – Stufe 1
+  {id:"nonverbale-ansprache",t:"Nonverbale Ansprache",kat:"grenzsetzend",teil:"teil2",stufe:1,
+   kurz:"Über 90% unserer Kommunikation ist nonverbal. Mimik, Gestik und Präsenz wirken oft stärker als Worte.",
+   details:"Blickkontakt, Mimik, Gestik, Körperhaltung und räumliche Nähe. Oft reicht es, Präsenz zu zeigen und mit einem ruhigen Blick die Aufmerksamkeit einzufordern.",
+   tipps:["Ruhiger, bestimmter Blickkontakt","Nähe zum Kind herstellen (hingehen)","Offene, aufrechte Körperhaltung","Warten statt sofort verbal reagieren"],
+   beispiel:"Die LP stellt sich ruhig neben das schwatzende Kind und wartet. Allein die Präsenz reicht – das Kind merkt es und hört auf."},
+
+  {id:"aufmerksamkeit-steuern",t:"Aufmerksamkeit gezielt steuern",kat:"grenzsetzend",teil:"teil2",stufe:1,
+   kurz:"Gewünschtes Verhalten bekommt Aufmerksamkeit – unerwünschtes wird nicht beachtet.",
+   details:"Was Aufmerksamkeit bekommt, wird verstärkt. Lob und positive Zuwendung bei erwünschtem Verhalten ist wirksamer als Ermahnung bei Störungen.",
+   tipps:["Kinder, die gut arbeiten, explizit loben","Kleine Störungen ignorieren","Positive Beispiele benennen"],
+   beispiel:"Statt «Peter, sitz jetzt hin!» sagt die LP: «Es sitzen schon fast alle Kinder am Platz.»"},
+
+  {id:"ignorieren",t:"Gezieltes Ignorieren",kat:"grenzsetzend",teil:"teil2",stufe:1,
+   kurz:"Gezieltes Nicht-Reagieren auf aufmerksamkeitssuchendes Verhalten. Nur bei leichten Störungen.",
+   details:"Funktioniert nur bei aufmerksamkeitssuchendem Verhalten. Nicht bei Gewalt oder wenn andere beeinträchtigt werden. Sofort positiv reagieren, wenn das Kind erwünschtes Verhalten zeigt.",
+   tipps:["Nur bei Verhalten, nie bei Handlungen","Sofort loben bei positivem Verhalten","Nicht bei Gewalt oder Mobbing"],
+   beispiel:"Ein Kind macht lustige Geräusche. Die LP ignoriert konsequent, lobt aber sofort, als das Kind ruhig mitarbeitet."},
+
+  {id:"alarmreduzierte-sprache",t:"Alarmreduzierte Sprache",kat:"grenzsetzend",teil:"teil2",stufe:1,
+   kurz:"Formulierungen wählen, die den Alarm nicht erhöhen. Positiv statt negativ, ruhig statt laut.",
+   details:"Alarmierte Kinder können nicht kooperieren. Jede Ansprache, die Alarm erhöht, ist kontraproduktiv. Positiv formulieren, Ich-Botschaften, ruhige Stimme.",
+   tipps:["Positiv formulieren statt negativ","Ich-Botschaften verwenden","Ruhige, tiefe Stimme","Keine Blossstellung vor der Klasse"],
+   beispiel:"Statt «Hör endlich auf zu schwatzen!» besser: «Ich brauche jetzt die Aufmerksamkeit von allen.»"},
+
+  {id:"regeln",t:"Regeln wirksam festlegen",kat:"grenzsetzend",teil:"teil2",stufe:1,
+   kurz:"Wenige, klare Regeln, die konsequent eingehalten werden. Keine Grauzonen.",
+   details:"Positiv formuliert, wenige, klar. Die LP muss dahinterstehen und konsequent handeln. Grauzonen erzeugen Unsicherheit.",
+   tipps:["Maximal 5 Klassenregeln","Positiv formulieren","Gemeinsam erarbeiten","Konsequent, keine Grauzonen"],
+   beispiel:"Die Klasse erarbeitet 4 Regeln. Sichtbar aufgehängt, regelmässig reflektiert."},
+
+  // TEIL 2 – Stufe 2
+  {id:"defekte-schallplatte",t:"Defekte Schallplatte",kat:"grenzsetzend",teil:"teil2",stufe:2,
+   kurz:"Zwei Botschaften abwechselnd wiederholen: «Ich schätze dich» und «Die Regel gilt». Nicht diskutieren.",
+   details:"Das Kind versucht, in eine Diskussion zu verwickeln. Die LP wiederholt ruhig die zwei Botschaften, ohne sich auf Argumente einzulassen. Deeskalative Körpersprache dabei.",
+   tipps:["Ruhig und bestimmt bleiben","Nicht auf Provokationen eingehen","Maximum 3–4 Wiederholungen, dann nächste Stufe"],
+   beispiel:"«Ich verstehe dich. Und: Die Handys bleiben im Rucksack.» – «Aber die anderen...» – «Ich mag dich. Und: Die Handys bleiben im Rucksack.»"},
+
+  {id:"deeskalative-koerpersprache",t:"Deeskalative Körpersprache",kat:"grenzsetzend",teil:"teil2",stufe:2,
+   kurz:"Bewusst die eigene Körpersprache einsetzen, um die Situation zu beruhigen.",
+   details:"Hände sichtbar und offen, seitliche Position (nicht frontal), leicht gesenkte Stimme, ruhige Bewegungen. Auf Augenhöhe gehen.",
+   tipps:["Hände offen und sichtbar","Seitlich stehen, nicht frontal","Auf Augenhöhe gehen","Stimme senken, langsamer sprechen"],
+   beispiel:"Ein aufgebrachtes Kind steht auf. Die LP geht seitlich hin, kniet sich herunter, Hände offen, spricht ruhig."},
+
+  {id:"wertschaetzend-grenze",t:"Wertschätzende Ansprache mit klarer Grenze",kat:"grenzsetzend",teil:"teil2",stufe:2,
+   kurz:"Bindung vor Weisung: Erst Kontakt aufnehmen, dann die Anweisung geben.",
+   details:"Erst Name sagen, Blickkontakt, Lächeln wenn möglich – dann die Anweisung. Das Kind ist empfänglicher, wenn es sich gesehen fühlt.",
+   tipps:["Erst Name, Blickkontakt","Gefühl benennen","Dann klare Anweisung","Bindung vor Weisung"],
+   beispiel:"«Leon, ich sehe, du bist genervt. (Pause) Bitte setz dich jetzt hin.»"},
+
+  // TEIL 2 – Stufe 3
+  {id:"konfrontative-koerpersprache",t:"Konfrontative Körpersprache",kat:"grenzsetzend",teil:"teil2",stufe:3,
+   kurz:"Klare, entschlossene Haltung. Nur wenn tiefere Stufen nicht gewirkt haben.",
+   details:"Frontale Position, aufrechte Haltung, fester Blick, Stopp-Geste. Nie aggressiv, aber sehr bestimmt.",
+   tipps:["Frontal und aufrecht","Fester, ruhiger Blick","Stopp-Geste bei Bedarf","Nie aggressiv"],
+   beispiel:"Kind schlägt ein anderes. LP stellt sich frontal dazwischen, Stopp-Geste: «Stopp. Sofort.»"},
+
+  {id:"deutliche-ansprache",t:"Kurze, deutliche verbale Ansprache",kat:"grenzsetzend",teil:"teil2",stufe:3,
+   kurz:"Maximal 3–5 Worte. Klar, bestimmt, ohne Erklärung. Erklärungen kommen später.",
+   details:"In der Eskalation: extrem kurze Ansprache. Das Überlebenshirn kann keine langen Sätze verarbeiten.",
+   tipps:["Maximal 5 Worte","Keine Erklärungen","Bestimmt, nicht laut","Erklärungen kommen später"],
+   beispiel:"«Stopp. Hände runter.» – Nicht: «Du weisst genau, dass wir hier nicht schlagen, weil...»"},
+
+  {id:"beharrliches-schweigen",t:"Beharrliches Schweigen",kat:"grenzsetzend",teil:"teil2",stufe:3,
+   kurz:"Ruhig stehen bleiben und warten. Die Stille ist unangenehm – die Kinder regulieren sich oft selbst.",
+   details:"Schweigen kann extrem wirksam sein. Präsenz und Blickkontakt beibehalten. Funktioniert besonders gut mit guter Bindung.",
+   tipps:["Aufrecht stehen, Blick halten","Geduld","Klasse die Situation lösen lassen"],
+   beispiel:"Laut nach der Pause. Die LP steht vorne, schaut ruhig in die Runde. Nach 30 Sekunden wird es ruhig."},
+
+  // TEIL 2 – Stufe 4
+  {id:"sanktionen",t:"Sanktionen gezielt wählen",kat:"grenzsetzend",teil:"teil2",stufe:4,
+   kurz:"Logischer Bezug zum Vorfall. Nie im Affekt. Immer mit helfenden Massnahmen kombinieren.",
+   details:"Nur bei Handlungen oder wenn alle Stufen nicht gewirkt haben. Nie im Affekt verhängen. Immer kombinieren mit helfenden Werkzeugen.",
+   tipps:["Logischer Bezug zum Vorfall","Nie im Affekt","Kind nicht bloss stellen","Mit helfenden Massnahmen kombinieren"],
+   beispiel:"Kind hat geschlagen. Logische Folge: überlegt sich Wiedergutmachung (Brief, Dienst)."},
+
+  {id:"wiedergutmachung",t:"Wiedergutmachung statt Strafe",kat:"grenzsetzend",teil:"teil2",stufe:4,
+   kurz:"Das Kind repariert aktiv den Schaden – statt eine Strafe abzusitzen.",
+   details:"Wiedergutmachung aktiviert andere Hirnbereiche als Strafe. Das Kind versetzt sich in den anderen hinein und tut aktiv etwas. Wirksamer als Strafe.",
+   tipps:["Kind selber Ideen entwickeln lassen","Muss zum Vorfall passen","Aufrichtig, nicht erzwungen"],
+   beispiel:"Kind hat ein Bild zerrissen. Es bastelt ein neues, schöneres als Entschuldigung."},
+
+  {id:"weggabelung",t:"Weggabelung anbieten",kat:"grenzsetzend",teil:"teil2",stufe:4,
+   kurz:"Zwei akzeptable Optionen geben. Nie in die Enge treiben.",
+   details:"Zwei Optionen geben dem Kind Kontrolle und Autonomie, was den Widerstand reduziert. Beide Optionen müssen für die LP akzeptabel sein.",
+   tipps:["Beide Optionen akzeptabel","Ruhig formulieren","Kind nachdenken lassen","Nie in die Enge treiben"],
+   beispiel:"«Du kannst die Aufgabe hier oder im Flur fertig machen. Was ist dir lieber?»"},
+
+  // TEIL 2 – Stufe 5
+  {id:"system-schuetzen",t:"System schützen",kat:"grenzsetzend",teil:"teil2",stufe:5,
+   kurz:"Wenn das Kind oder die Klasse geschützt werden muss. Bindungsbrücke aufrechterhalten.",
+   details:"In extremen Situationen: Kind aus der Situation nehmen, Unterstützung holen. Die Bindung so weit wie möglich aufrechterhalten.",
+   tipps:["Sicherheit geht vor","Kurze Begründung","Nicht als Strafe formulieren","Bindungsbrücke erhalten"],
+   beispiel:"«Ich habe dich nicht gerne hinausgeschickt – du bist mir wichtig. Komm, wir suchen eine Lösung.»"},
+
+  // TEIL 3 – HELFEN: Verhaltensänderung
+  {id:"denken-richtung",t:"Denken Richtung Gelingen",kat:"helfend",teil:"teil3",sub:"Verhaltensänderung begleiten",stufe:0,
+   kurz:"Fokus auf Gelingen statt Misserfolg. Bei Erfolg nachfragen: «Wie hast du das geschafft?»",
+   details:"Nicht bei Misserfolg intervenieren, sondern bei Erfolg. «Wie ist dir das gelungen?» Vorhandene Ressourcen bewusst machen und Strategien erarbeiten.",
+   tipps:["Bei Erfolg fragen: «Wie hast du das geschafft?»","Ressourcen sichtbar machen","Auch bei Rückschlag: Blick Richtung Gelingen"],
+   beispiel:"Kind hat einen Vormittag nicht reingerufen. LP: «Super! Wie hast du das geschafft?» Kind: «Ich habe mich zusammengerissen.» LP: «Wie genau?»"},
+
+  {id:"bilder-des-erfolges",t:"Bilder des Erfolges",kat:"helfend",teil:"teil3",sub:"Verhaltensänderung begleiten",stufe:0,
+   kurz:"Erfolgsmomente fotografieren oder festhalten. Visuelle Erinnerungshilfen, die positive Gefühle reaktivieren.",
+   details:"Das Hirn speichert Bilder besonders gut – zusammen mit positiven Gefühlen. Später darauf zurückkommen.",
+   tipps:["Erfolgsmomente fotografieren","Sichtbar aufhängen","Regelmässig darauf zurückkommen"],
+   beispiel:"Klasse hat eine tolle Gruppenarbeit gemacht. LP fotografiert und hängt die Bilder auf."},
+
+  {id:"ressourcenmodell",t:"Erinnerungshilfen (Ressourcenmodell)",kat:"helfend",teil:"teil3",sub:"Verhaltensänderung begleiten",stufe:0,
+   kurz:"Möglichst viele Erinnerungshilfen im Alltag schaffen: Bilder, Schlüsselanhänger, Kraftfiguren.",
+   details:"Nach dem Zürcher Ressourcenmodell von Maja Storch: Was erinnert im Alltag am besten an die gewünschte Fähigkeit? Bilder, Farben, Musik, ein Codewort.",
+   tipps:["Kind wählt eigene Erinnerungshilfe","Überall sichtbar platzieren","Verknüpfung mit positivem Gefühl","Kraftfigur wählen lassen"],
+   beispiel:"Ein Erstklässler wählt Tim und Struppi als Kraftfigur für «sich beherrschen». Struppi-Bilder an Platz, Etui, Ranzen."},
+
+  {id:"ideenboerse",t:"Ideenbörse",kat:"helfend",teil:"teil3",sub:"Verhaltensänderung begleiten",stufe:0,
+   kurz:"Vom Problemmodus in den Lösungsmodus. Brainstorming, dann prüfen und Kind wählt aus.",
+   details:"Alle Ideen sammeln ohne Bewertung, dann Umsetzbarkeit prüfen. Kind wählt selber. Regelmässig Fortschritt besprechen.",
+   tipps:["Alle Ideen sammeln ohne Bewertung","Umsetzbarkeit prüfen","Kind wählt selber","Regelmässig besprechen"],
+   beispiel:"Kind hat Konflikte in der Pause. 8 Ideen gesammelt. Kind wählt: «Ich gehe in die Bibliothek, wenn es mir zu viel wird.»"},
+
+  {id:"ich-schaffs",t:"Methode «ich schaff's!»",kat:"helfend",teil:"teil3",sub:"Verhaltensänderung begleiten",stufe:0,
+   kurz:"15-Schritte-Programm von Ben Furman: Probleme in Fähigkeiten verwandeln und lösungsfokussiert üben.",
+   details:"Kernidee: Jedes Problem wird zur Fähigkeit. «Er stört immer» wird zu «Er übt, die Hand aufzustrecken». 15 Schritte: Problem umformulieren, Kraftfigur, Helfer, üben, feiern.",
+   tipps:["Problem in Fähigkeit umformulieren","Kind benennt die Fähigkeit","Kraftfigur und Helfer bestimmen","Erfolg feiern"],
+   beispiel:"Kind stört → «Ich übe Hand-aufstrecken.» Kraftfigur: Batman. Name der Fähigkeit: «Hand-Held»."},
+
+  {id:"denkblockaden",t:"Denkblockaden überwinden",kat:"helfend",teil:"teil3",sub:"Verhaltensänderung begleiten",stufe:0,
+   kurz:"Negative Glaubenssätze umtrainieren: 30x in die positive Richtung denken, bei jedem Satz einen Ball in den Korb.",
+   details:"Das Selbstbild bestimmt das Verhalten. «Ich kann nicht stillsitzen» wird zur selbsterfüllenden Prophezeiung. Training: 30x den positiven Gedanken, jeweils mit einer Handlung (Ball in Korb).",
+   tipps:["30x positiven Gedanken aussprechen","Bei jedem Gedanken Handlung (Ball in Korb)","Verschiedene Perspektiven einbeziehen","Regelmässig wiederholen"],
+   beispiel:"«Was passiert, wenn du ruhig bist?» – 30 Antworten sammeln, je Ball in den Korb."},
+
+  // TEIL 3 – HELFEN: Bindung
+  {id:"bindung-lp-kind",t:"Bindung Lehrperson–Kind fördern",kat:"helfend",teil:"teil3",sub:"Bindung fördern",stufe:0,
+   kurz:"Der Motor jeder Verhaltensänderung. In die Beziehung investieren, besonders bei herausfordernden Kindern.",
+   details:"Kinder folgen aus Bindung, nicht aus Angst. Verhaltensauffällige Kinder haben oft enormen Bindungshunger. Es lohnt sich, in die Beziehung zu investieren.",
+   tipps:["Interesse am Kind zeigen","Positiven Blick pflegen","Auch die «schwierigen» Kinder mögen","1:1-Momente schaffen"],
+   beispiel:"LP nimmt sich morgens 2 Minuten für ein Gespräch mit einem herausfordernden Kind. Nach 3 Wochen: weniger Störungen."},
+
+  {id:"banking-time",t:"Banking Time / Quality Time",kat:"helfend",teil:"teil3",sub:"Bindung fördern",stufe:0,
+   kurz:"Regelmässige, verbindliche Zeit nur mit dem Kind – ohne Bewertung. Kind bestimmt Aktivität.",
+   details:"Wissenschaftlich evaluiert: 10–15 Min nur für ein Kind, Kind wählt Aktivität, LP ist präsent und bewertet nicht. Stärkt Bindung, reduziert auffälliges Verhalten signifikant.",
+   tipps:["Verbindlich und regelmässig","Kind wählt Aktivität","Keine Bewertung","Voll präsent sein"],
+   beispiel:"Jeden Dienstag/Donnerstag Pause: 10 Min mit Liam. Er wählt Lego. LP baut mit, fragt nur nach."},
+
+  {id:"smiley-heft",t:"Kontaktheft / Smiley-Heft",kat:"helfend",teil:"teil3",sub:"Bindung fördern",stufe:0,
+   kurz:"Täglich etwas Positives ins Heft schreiben. Kind bringt es nach Hause – stärkt alle drei Bindungsebenen.",
+   details:"Dreifache Wirkung: Kind bekommt positive Botschaft (LP–Kind), bringt Positives nach Hause (Kind–Eltern), Eltern erhalten positive Infos (Eltern–LP).",
+   tipps:["Wirklich täglich Positives schreiben","Auch kleine Erfolge","Eltern einbeziehen"],
+   beispiel:"LP beginnt das Heft. Kind nennt es «Supercoolheft». Nach 2 Wochen: «Es sitzt jetzt neben mir, schaut mich nicht mehr böse an.»"},
+
+  {id:"bindungsbotschaften",t:"Bindungsbotschaften senden",kat:"helfend",teil:"teil3",sub:"Bindung fördern",stufe:0,
+   kurz:"Nonverbale Signale: Lächeln, Nicken, Blickkontakt, persönliche Begrüssung.",
+   details:"Im Schulzimmer sind nonverbale Bindungsbotschaften zentral. Sie signalisieren: Du gehörst dazu, ich mag dich.",
+   tipps:["Jedes Kind morgens begrüssen","Bewusst lächeln, nicken","Blickkontakt suchen","Persönliches Interesse zeigen"],
+   beispiel:"LP begrüsst jedes Kind mit Namen und Blickkontakt. Kind das oft stört bekommt extra warmen Blick."},
+
+  {id:"bindung-vor-weisung",t:"Bindung vor Weisung",kat:"helfend",teil:"teil3",sub:"Bindung fördern",stufe:0,
+   kurz:"Erst Kontakt herstellen, dann Anweisung. Name sagen, Blickkontakt, dann erst die Botschaft.",
+   details:"Bevor ein Kind eine Anweisung annehmen kann, muss es in Kontakt sein. Wenn möglich Lächeln oder Zustimmung vor der Weisung.",
+   tipps:["Erst Name sagen","Näher gehen, Blickkontakt","Gefühl benennen","Dann Anweisung"],
+   beispiel:"Statt quer durchs Zimmer rufen: LP geht zu Max, sagt seinen Namen, Blickkontakt, lächelt: «Max, bitte räum auf.»"},
+
+  {id:"beziehungssamen",t:"Beziehungssamen säen",kat:"helfend",teil:"teil3",sub:"Bindung fördern",stufe:0,
+   kurz:"Einen Moment am Tag nur über Positives sprechen. Was lief gut? Was hat gefreut?",
+   details:"Fest im Tagesablauf verankern. Nur Positives, kein «Aber». Kurz und regelmässig.",
+   tipps:["Fest verankern im Ablauf","Nur Positives, kein Aber","Auch als Klassenritual möglich"],
+   beispiel:"Freitag 5 Min: «Was war dein bester Moment?» LP teilt ihren besten Moment mit."},
+
+  // TEIL 3 – HELFEN: Alarm reduzieren
+  {id:"alarm-reduzieren",t:"Alarm reduzieren",kat:"helfend",teil:"teil3",sub:"Problemen den Nährboden entziehen",stufe:0,
+   kurz:"Je weniger Alarm, desto besser können Kinder lernen und kooperieren. Viele kleine Massnahmen helfen.",
+   details:"Alarm aktiviert das Überlebenshirn. Es gibt viele Massnahmen: Lösungsorientiert sprechen, keine Strichlisten, Level senken, keine Gegeneinander-Spiele, klare Führung, Staffelung, Rhythmisierung, Sog statt Druck.",
+   tipps:["Lösungsorientiert statt problemfokussiert","Keine Strichlisten/Belohnungssysteme","Keine Gegeneinander-Spiele im Sport","Klare Führung, keine Grauzonen","Staffelung und Rhythmisierung","Sog statt Druck","Trennende Sanktionen überbrücken"],
+   beispiel:"LP ersetzt im Sport alle Gegeneinander-Spiele durch Kooperationsspiele. Alarm sinkt, weniger Konflikte."},
+
+  {id:"level-senken",t:"Gelingen fördern – Level senken",kat:"helfend",teil:"teil3",sub:"Problemen den Nährboden entziehen",stufe:0,
+   kurz:"Wenn die Klasse überfordert ist: Kürzere Sequenzen, mehr Frontalunterricht, mehr Struktur, mehr Nähe zur LP.",
+   details:"Viele Kinder sind mit modernen Unterrichtsformen überfordert, weil die psychische Reife fehlt. Level senken: kürzere Arbeitssequenzen, mehr frontale Elemente, mehr Nähe, klarere Strukturen. Arbeitsform an Reife anpassen.",
+   tipps:["Kürzere Arbeitssequenzen","Mehr frontale Elemente wenn nötig","Gruppenarbeit reduzieren","Mehr Struktur und Vorhersehbarkeit","Psychische Reife einschätzen","Schrittweise steigern"],
+   beispiel:"Klasse chaotisch bei Gruppenarbeit. LP wechselt auf Frontalunterricht mit kurzen Übungsphasen. Klasse wird ruhiger."},
+
+  {id:"positive-fokussierung",t:"Positive Fokussierung",kat:"helfend",teil:"teil3",sub:"Problemen den Nährboden entziehen",stufe:0,
+   kurz:"Bewusst trainieren, die positiven Momente wahrzunehmen. Verändert die eigene Wahrnehmung.",
+   details:"Unser Hirn bestätigt bestehendes Bild. Negative Sicht führt zu selektiver Wahrnehmung. Täglich aufschreiben, was positiv war.",
+   tipps:["Täglich positive Momente notieren","Klassenrat nur mit positivem Inhalt","Eigenen Fokus bewusst trainieren"],
+   beispiel:"LP schreibt jeden Abend 3 Dinge auf, die das «schwierige» Kind gut gemacht hat. Nach 2 Wochen verändert sich die Wahrnehmung."},
+
+  {id:"umfokussieren",t:"Positiven Fokus auf das Kind",kat:"helfend",teil:"teil3",sub:"Problemen den Nährboden entziehen",stufe:0,
+   kurz:"Bewusst die positiven Seiten des herausfordernden Kindes suchen. Verändert das eigene Bild.",
+   details:"Wenn wir gestresst sind, sehen wir nur Negatives. Gezielt umfokussieren: Wann fiel das Kind positiv auf? Video kann helfen.",
+   tipps:["Täglich positive Momente notieren","Video-Beobachtung kann helfen","Verschiedene Interpretationen suchen"],
+   beispiel:"LP filmt Sportunterricht. Beim Anschauen: Der «störende» Junge wollte Bindungsbotschaften senden – nicht stören."},
+
+  // TEIL 3 – HELFEN: Soziale Fertigkeiten / Team
+  {id:"klasse-team",t:"Klasse zusammenschweissen",kat:"helfend",teil:"teil3",sub:"Soziale Fertigkeiten trainieren",stufe:0,
+   kurz:"Gemeinsame Erlebnisse und gezielte Zweiergruppen bauen positives Gemeinschaftsgefühl auf.",
+   details:"Zwei Wege: 1) Erlebnisse als Klasse (Ausflüge, Spiele, Projekte). 2) Erlebnisse zu zweit: LP teilt gezielt Paare ein. Freispiel zu zweit ist besonders wirksam.",
+   tipps:["Gemeinsame Erlebnisse planen","Highlights fotografieren","Zweiergruppen einteilen","Freiheit bei Spielwahl geben"],
+   beispiel:"Zwei Kinder die sich nicht mögen als Paar: 20 Min freies Spiel. Nach 3x: «Die ist gar nicht so blöd.»"},
+
+  {id:"soziale-fertigkeiten",t:"Soziale Fertigkeiten trainieren (Prävention)",kat:"helfend",teil:"teil3",sub:"Soziale Fertigkeiten trainieren",stufe:0,
+   kurz:"Gezielte Übungen in der Situation, nicht darüber reden. Die Methode ist entscheidend.",
+   details:"Gute Übungen trainieren genau die Hirnregionen, die in der Situation aktiv sind. Kampfspiele lösen gezielt Erregung aus – das Kind lernt, dabei Regeln einzuhalten.",
+   tipps:["In der Situation üben, nicht am Tisch","Kampfspiele gezielt einsetzen","Kurze Reflexionen danach","Themen: Grenzen, Konflikte, Deeskalation, Team"],
+   beispiel:"Sumo-Ringen mit klaren Regeln. Kinder üben, bei Erregung die Regeln einzuhalten und auf «Stopp» aufzuhören."},
+
+  // TEIL 3 – HELFEN: Eltern
+  {id:"eltern-kontakt",t:"Beziehung Eltern–Lehrperson stärken",kat:"helfend",teil:"teil3",sub:"Dreiecksbeziehung stärken",stufe:0,
+   kurz:"In Kontakt bleiben, proaktiv informieren. Positives betonen. Wer zuerst informiert, hat Vorteile.",
+   details:"Eltern machen sich immer ein Bild. Je intensiver der Austausch, desto realistischer. Tipp: Informieren bevor das Kind nach Hause kommt.",
+   tipps:["In Kontakt bleiben","Proaktiv informieren","Positives betonen","Kontaktheft als Instrument"],
+   beispiel:"LP ruft Mutter an bevor Kind nach Hause kommt: «Es gab einen Vorfall.» Mutter ist dankbar."},
+
+  {id:"eltern-kind-bindung",t:"Bindung Eltern–Kind fördern",kat:"helfend",teil:"teil3",sub:"Dreiecksbeziehung stärken",stufe:0,
+   kurz:"Eltern anregen, regelmässig Quality Time einzuplanen – Kind wählt Aktivität.",
+   details:"Eltern stärken Bindung durch fixen Zeitraum: Kind wählt Aktivität, Eltern sind präsent, keine Bewertung.",
+   tipps:["Regelmässiger, fixer Zeitraum","Kind wählt Aktivität","Keine Bewertung"],
+   beispiel:"LP empfiehlt Eltern: «20 Minuten am Abend nur mit Ihrem Kind spielen. Es wählt das Spiel.»"},
+
+  // TEIL 3 – Grundbedürfnisse
+  {id:"grundbeduerfnisse",t:"Grundbedürfnisse befriedigen",kat:"helfend",teil:"teil3",sub:"Grundbedürfnisse",stufe:0,
+   kurz:"Jeder Mensch möchte dazugehören und etwas bewirken. Wenn das fehlt, entsteht Widerstand.",
+   details:"Zwei zentrale Bedürfnisse: 1) Dazugehören – Ablehnung alarmiert das Hirn. 2) Etwas bewirken – Kinder brauchen das Gefühl, gebraucht zu werden.",
+   tipps:["Fühlt sich das Kind zugehörig?","Aufgaben geben, die wichtig sind","Autonomie ermöglichen"],
+   beispiel:"Kind stört ständig. LP: «Fühlt es sich zugehörig?» Gibt ihm Klassenhelferdienst. Störungen nehmen ab."},
+
+  // ÜBERGREIFEND
+  {id:"sogwirkung",t:"Sogwirkung statt Druck",kat:"uebergreifend",teil:"ueber",stufe:0,
+   kurz:"Sog erzeugen: Wer mitmacht, ist Teil von etwas Gutem. Wer nicht, verpasst etwas.",
+   details:"Einfach starten mit den Bereiten. Kein Schimpfen, kein Nachrufen. Wer verpasst, erlebt natürliche Konsequenz.",
+   tipps:["Einfach starten mit den Bereiten","Kein Schimpfen","Natürliche Konsequenz"],
+   beispiel:"Sport: LP pfeift, beginnt sofort mit 15 Kindern. Die 5 Trödler kommen schnell nach."},
+
+  {id:"fuehrungsstatus",t:"Führungsstatus aufbauen",kat:"uebergreifend",teil:"ueber",stufe:0,
+   kurz:"Persönliche Autorität durch Beziehung, Kompetenz, Fairness und Klarheit.",
+   details:"Amtsautorität funktioniert nicht mehr. Es braucht persönliche Autorität: «Diese Person meint es gut mit mir UND sie weiss, wo es langgeht.»",
+   tipps:["Bindung ist die Basis","Klar und konsequent","Fair und transparent","Auch Fehler eingestehen"],
+   beispiel:"Eine LP mit guter Beziehung kann die Klasse mit einem Blick zur Ruhe bringen."},
+
+  {id:"deeskalation",t:"Deeskalation – 5 Werkzeuge",kat:"uebergreifend",teil:"ueber",stufe:0,
+   kurz:"Status senken, Ort wechseln, Zeitpunkt verschieben, Zeit geben, Person wechseln.",
+   details:"Deeskalation ist keine Schwäche. Fünf Möglichkeiten: 1) Status senken (leiser, kleiner). 2) Ort wechseln. 3) Zeitpunkt verschieben. 4) Zeit geben. 5) Person wechseln.",
+   tipps:["Leiser werden, Haltung öffnen","Ort wechseln: «Komm, wir gehen raus»","«Darüber reden wir morgen in Ruhe»","Person wechseln wenn nötig"],
+   beispiel:"Kind eskaliert. LP: «Wir sind beide aufgewühlt. Morgen in Ruhe.» Kind beruhigt sich."},
+
+  {id:"gewaltfreier-widerstand",t:"Gewaltfreier Widerstand",kat:"uebergreifend",teil:"ueber",stufe:0,
+   kurz:"Nach Haim Omer: Präsenz zeigen, ohne Gewalt und ohne Unterwerfung. «Ich gebe dich nicht auf.»",
+   details:"Ich akzeptiere dein Verhalten nicht, aber ich gebe dich nicht auf. Team und Eltern einbeziehen. Geduld.",
+   tipps:["Präsenz zeigen","Nicht eskalieren, nicht aufgeben","Team und Eltern einbeziehen","Geduld"],
+   beispiel:"Kind verweigert seit Wochen. LP, Eltern und SSA entwickeln gemeinsam einen Plan der starken Präsenz."},
+
+  {id:"arbeit-levels",t:"Arbeit mit Levels",kat:"uebergreifend",teil:"ueber",stufe:0,
+   kurz:"Was passt zur psychischen Reife der Klasse? Arbeitsform und Methode an die Kinder anpassen.",
+   details:"Jede Arbeitsform hat ein Level. Passt es zur Reife? Wenn nicht: Level senken. Frontalunterricht für unreife Kinder, Gruppenarbeit erst bei genügender Sozialkompetenz.",
+   tipps:["Psychische Reife einschätzen","Arbeitsform anpassen","Lieber zu wenig als zu viel fordern","Schrittweise steigern"],
+   beispiel:"Werkstattunterricht überfordert die Klasse. LP wechselt auf geführte Einzelarbeit. Wenn das klappt, schrittweise Partnerarbeit."},
+
+  {id:"80-20",t:"80-zu-20-Regel",kat:"uebergreifend",teil:"ueber",stufe:0,
+   kurz:"20% der Kinder brauchen 80% der Energie. Das ist nicht unfair – es ist nötig.",
+   details:"Viele Kinder sind bindungsmässig gesättigt. Andere haben eine enorme Lücke. Es ist völlig in Ordnung, dort mehr zu investieren.",
+   tipps:["Akzeptieren dass es ungleich ist","Die 80% sind gesättigt","Die 20% haben eine Lücke","Kein schlechtes Gewissen"],
+   beispiel:"LP realisiert: 80% der Energie geht in 4 Kinder. Das ist nicht unfair – es ist nötig."},
+
+  {id:"bruecken-lp",t:"Brücken zu anderen Lehrpersonen",kat:"uebergreifend",teil:"ueber",stufe:0,
+   kurz:"Klasse positiv auf andere Lehrpersonen einstimmen. Verhalten bei allen LP thematisieren.",
+   details:"Klassenlehrperson kann aktiv Brücken bauen: Klasse positiv einstimmen, Interesse am Fach zeigen, Verhalten bei allen LP zum Thema machen.",
+   tipps:["Positiv einstimmen","Interesse am Stoff zeigen","Wegschauen heisst gutheissen"],
+   beispiel:"Vor Musik: «Frau Müller hat ein tolles Projekt. Ich erwarte, dass ihr euch genauso verhält wie bei mir.»"},
+
+  // DIDAKTISCHE REFLEXION FÜR LEHRPERSONEN
+  {id:"frontalunterricht",t:"Frontalunterricht rehabilitieren",kat:"uebergreifend",teil:"ueber",sub:"Didaktische Reflexion",stufe:0,
+   kurz:"Frontalunterricht ist nicht «schlecht» – er ist die wirksamste Unterrichtsform für herausfordernde Klassen. Hattie-Effektstärke d=0.59.",
+   details:"Vorteile von Frontalunterricht in herausfordernden Klassen: 1) Maximale Steuerung – LP behält die Kontrolle über Tempo, Inhalt und Verhalten. 2) Weniger Alarm – klare Struktur reduziert Unsicherheit bei den Kindern. 3) Weniger Überforderung – Kinder mit geringer Sozialkompetenz müssen nicht in Gruppen funktionieren. 4) Beziehungsarbeit – LP hat die Aufmerksamkeit aller und kann gezielt Bindungsbotschaften senden. 5) Sofortiges Feedback – LP erkennt Verständnisprobleme sofort. 6) Gleichmässiges Lerntempo – kein Auseinanderdriften. 7) Sicherheit für unsichere Kinder – sie wissen genau, was kommt.",
+   tipps:["Nicht als Dauermethode, aber als bewusste Wahl","Besonders wirksam bei: neuen Klassen, nach Ferien, bei Unruhe","Kurze Sequenzen (10–15 Min) mit aktiven Elementen","CFU einbauen (Ampelkarten, Think-Pair-Share)","Schrittweise öffnen wenn die Klasse stabilisiert ist","Frontalunterricht ≠ Monolog – es geht um geführten Unterricht"],
+   beispiel:"Klasse nach den Herbstferien komplett aufgelöst. LP stellt auf geführten Frontalunterricht um: 10 Min Input, 5 Min Einzelarbeit, 5 Min Besprechung. Nach 2 Wochen: Klasse stabilisiert, erste Partnerarbeit möglich."},
+
+  {id:"methoden-mythen",t:"Methoden-Mythen hinterfragen",kat:"uebergreifend",teil:"ueber",sub:"Didaktische Reflexion",stufe:0,
+   kurz:"«Offener Unterricht ist immer besser» – stimmt das? In herausfordernden Klassen oft nicht. Evidenz statt Ideologie.",
+   details:"Verbreitete Mythen: 1) «Kinder lernen am besten selbstgesteuert» – Stimmt nur bei psychisch reifen, gut gebundenen Kindern mit Vorwissen. 2) «Frontalunterricht ist veraltet» – Die Forschung (Hattie, Rosenshine) zeigt das Gegenteil. 3) «Gruppenarbeit fördert Sozialkompetenz» – Nur wenn die Sozialkompetenz schon vorhanden ist, sonst eskaliert es. 4) «Lehrpersonen sollen Lernbegleiter sein» – In herausfordernden Klassen braucht es Führung, nicht Begleitung.",
+   tipps:["Evidenz statt Bauchgefühl","Methode an die Klasse anpassen, nicht umgekehrt","Offener Unterricht als Ziel, nicht als Startpunkt","Mut haben, «klassisch» zu unterrichten wenn es nötig ist","Sich nicht schuldig fühlen bei Frontalunterricht"],
+   beispiel:"30 Minuten geführter Unterricht lief super – alle waren dabei. Dann kam eine offene Gruppenarbeit zu viert. Innerhalb von 5 Minuten: Chaos. Die LP reflektiert: «Die Klasse kann Frontalunterricht, aber Gruppenarbeit überfordert sie noch. Nächstes Mal: Partnerarbeit als Zwischenschritt.»"},
+
+  {id:"methodenwahl-reflexion",t:"Reflexionsfragen zur Methodenwahl",kat:"uebergreifend",teil:"ueber",sub:"Didaktische Reflexion",stufe:0,
+   kurz:"Sechs Fragen, die Lehrpersonen sich vor jeder Methodenwahl stellen sollten.",
+   details:"Bevor Sie eine Methode wählen, fragen Sie sich: 1) Passt die Arbeitsform zur psychischen Reife meiner Klasse? 2) Können die Kinder das sozial, was die Methode verlangt? 3) Haben die Kinder genug Vorwissen für selbstgesteuertes Arbeiten? 4) Wie hoch ist das Alarmniveau gerade – braucht es mehr oder weniger Struktur? 5) Kann ich bei dieser Methode die Übersicht behalten? 6) Was passiert mit den 3–4 herausfordernden Kindern bei dieser Methode?",
+   tipps:["Ehrlich antworten, nicht ideologisch","Bei Zweifel: mehr Struktur","Die Antworten regelmässig überprüfen","Die Klasse verändert sich – die Methode auch"],
+   beispiel:"LP plant Werkstattunterricht. Reflexion: «Liam und Sara können nicht 20 Min selbstständig arbeiten. Ich mache stattdessen 3 kurze Stationen mit LP-geführter Hauptstation.»"},
+
+  {id:"unterrichtsform-reife",t:"Unterrichtsform an Reife anpassen",kat:"uebergreifend",teil:"ueber",sub:"Didaktische Reflexion",stufe:0,
+   kurz:"Jede Unterrichtsform hat ein «Reifelevel». Passt die Methode nicht zur Klasse, entsteht Chaos – nicht Lernen.",
+   details:"Reifelevel der Unterrichtsformen (von wenig bis viel Reife nötig): 1) Geführter Frontalunterricht – minimale Eigensteuerung nötig. 2) Einzelarbeit mit klarem Auftrag – etwas mehr Selbststeuerung. 3) Partnerarbeit – braucht Kooperationsfähigkeit. 4) Gruppenarbeit – braucht Sozialkompetenz und Selbststeuerung. 5) Werkstatt/Lernlandschaft – braucht hohe Eigenverantwortung. 6) Projektunterricht – braucht maximale Selbststeuerung und Motivation. Herausfordernde Klassen starten bei 1 und arbeiten sich schrittweise hoch.",
+   tipps:["Ehrlich einschätzen: Wo steht meine Klasse?","Lieber eine Stufe zu tief als zu hoch","Schrittweise steigern – nie springen","Bei Rückfall: eine Stufe zurück","Nicht alle Kinder müssen gleiche Form haben"],
+   beispiel:"Klasse schafft Einzelarbeit gut, aber Partnerarbeit eskaliert. LP bleibt bei Einzelarbeit, übt gezielt Kooperation in kurzen 5-Min-Einheiten. Nach 4 Wochen: Partnerarbeit klappt."},
+
+  {id:"selbstfuersorge-lp",t:"Selbstfürsorge und Haltung",kat:"uebergreifend",teil:"ueber",sub:"Didaktische Reflexion",stufe:0,
+   kurz:"Herausfordernde Klassen kosten enorm viel Energie. Sie dürfen sich schützen – und Sie dürfen um Hilfe bitten.",
+   details:"Wichtige Haltungsfragen: 1) «Gut genug» ist gut genug – Perfektionismus führt zum Burnout. 2) Es ist keine Schwäche, Hilfe zu holen – es ist professionell. 3) Ein schwieriges Kind ist kein persönliches Versagen. 4) Sie müssen nicht alles alleine lösen – SSA, SHP, SL einbeziehen. 5) Pausen und Entlastung sind kein Luxus, sondern Notwendigkeit. 6) Ihr Wohlbefinden beeinflusst direkt das Klassenklima.",
+   tipps:["Regelmässig Entlastung einfordern","Intervision/Supervision nutzen","Nicht alles persönlich nehmen","Team einbeziehen","Eigene Grenzen ernst nehmen und kommunizieren","Erfolge bewusst wahrnehmen – auch kleine"],
+   beispiel:"LP merkt: Sonntagabend Bauchweh. Spricht mit SL: «Ich brauche Unterstützung in der Klasse.» SL organisiert SSA-Einsatz. LP: «Ich hätte viel früher fragen sollen.»"},
+
+  // METHODISCHE ANSÄTZE – Integratives Handlungsmodell
+  {id:"cognitive-load",t:"Cognitive Load Theory (CLT)",kat:"uebergreifend",teil:"ueber",sub:"Methodische Ansätze",stufe:0,
+   kurz:"Die begrenzte Kapazität des Arbeitsgedächtnisses schützen. Segmentierung, Modellierung, Reduktion von Ablenkung.",
+   details:"Um Lernen zu ermöglichen, muss die begrenzte Kapazität des Arbeitsgedächtnisses geschützt werden. Drei Prinzipien: 1) Segmentierung (Chunking) – komplexe Themen in kleinstmögliche Lernschritte zerlegen. 2) Modellierung (Worked Examples) – vollständig gelöste Beispiele zeigen, «Lautes Denken» nutzen. 3) Reduktion von Extraneous Load – alles Ablenkende entfernen (unübersichtliche Arbeitsblätter, unnötige Dekoration, Lärm).",
+   tipps:["Komplexe Themen in kleine Schritte zerlegen (Chunking)","Gelöste Beispiele zeigen statt Rätsel stellen","Lautes Denken: eigene Denkprozesse sichtbar machen","Ablenkungen minimieren: ordentliches Zimmer, klare Materialien","Besonders wichtig für Kinder mit ADHS oder ESE-Bedarf"],
+   beispiel:"LP zeigt Schritt für Schritt, wie eine Textaufgabe gelöst wird, und denkt dabei laut: «Zuerst suche ich die wichtigen Zahlen...» Danach lösen die Kinder ein ähnliches Beispiel."},
+
+  {id:"direkte-instruktion",t:"Direkte Instruktion (DI)",kat:"uebergreifend",teil:"ueber",sub:"Methodische Ansätze",stufe:0,
+   kurz:"Eine der wirksamsten Methoden (Hattie d=0.59). Klares Phasenmodell: Ziel, Input, Prüfung, Üben, Fading.",
+   details:"Die Direkte Instruktion folgt einem klaren Phasenmodell: 1) Zieltransparenz – exakt sagen, was gelernt wird. 2) Input & Modellierung – kurze Lehrerphase (max. 15 Min). 3) Checking for Understanding (CFU) – von allen ein Signal erhalten. 4) Guided Practice – LP gibt sofortiges Feedback. 5) Independent Practice & Fading – erst bei sicherer Basis Rückzug und freiere Formen.",
+   tipps:["Lernziel klar kommunizieren","Lehrerphase max. 15 Minuten","Verständnis bei ALLEN prüfen (CFU)","Angeleitetes Üben mit sofortigem Feedback","Erst bei sicherer Basis: selbstständiges Arbeiten"],
+   beispiel:"LP sagt: «Heute lernt ihr, wie man Brüche addiert. Am Ende könnt ihr 5 Aufgaben richtig lösen.» → Zeigt 2 Beispiele → CFU mit Ampelkarten → Geführtes Üben → Einzelarbeit."},
+
+  {id:"cfu-mikromethoden",t:"Mikromethoden zur Verständnisprüfung (CFU)",kat:"uebergreifend",teil:"ueber",sub:"Methodische Ansätze",stufe:0,
+   kurz:"Nie fragen «Habt ihr verstanden?» – stattdessen: Ampelsystem, Think-Pair-Share, Exit Slips.",
+   details:"Drei bewährte Methoden: 1) Response Cards / Ampelsystem – jedes Kind zeigt gleichzeitig eine Karte (Grün/Gelb/Rot). 2) Think-Pair-Share – 1 Min Ruhe (Think), Austausch mit Nachbar (Pair), dann Plenum (Share). 3) Exit Slips – letzte 3 Minuten: «Was war am wichtigsten?» oder «Was habe ich nicht verstanden?»",
+   tipps:["Ampelkarten: alle zeigen gleichzeitig → Überblick in Sekunden","Think-Pair-Share nimmt sozialen Druck","Exit Slips = Eintrittskarte für die nächste Stunde","Nie auf «Habt ihr verstanden?» verlassen"],
+   beispiel:"LP stellt eine Verständnisfrage. Alle Kinder halten Ampelkarte hoch: 18x Grün, 4x Gelb, 2x Rot. LP weiss sofort: nochmal erklären für die 6."},
+
+  {id:"proaktives-cm",t:"Proaktives Classroom Management",kat:"uebergreifend",teil:"ueber",sub:"Methodische Ansätze",stufe:0,
+   kurz:"LP als aktiver Coach: Erwartungssicherheit, Narrating Positive Behavior, Door Greeting.",
+   details:"In herausfordernden Klassen ist die LP kein «Lernbegleiter» im Hintergrund, sondern ein aktiver Coach. Drei Kernelemente: 1) Erwartungssicherheit – Regeln nicht diskutieren, sondern trainieren wie eine sportliche Übung. 2) Narrating Positive Behavior – gewünschtes Verhalten laut beschreiben. 3) Door Greeting – jeden namentlich an der Tür begrüssen.",
+   tipps:["Regeln aktiv trainieren, nicht nur besprechen","Wenn Reingehen nicht klappt: wiederholen bis es sitzt","Positives Verhalten laut beschreiben statt Störer rügen","Jeden Schüler namentlich an der Tür begrüssen"],
+   beispiel:"LP an der Tür: «Guten Morgen, Liam! Guten Morgen, Sara!» Dann im Zimmer: «Ich sehe, dass Lukas und Sarah schon ihr Buch aufgeschlagen haben – super.»"},
+
+  {id:"resilienz-lp",t:"Resilienz-Haltung für Lehrpersonen",kat:"uebergreifend",teil:"ueber",sub:"Methodische Ansätze",stufe:0,
+   kurz:"Sich selbst schützen: Satisficing statt Perfektionismus, Kollaboration statt Einzelkampf.",
+   details:"Unterricht in schwierigen Klassen ist Schwerstarbeit. Zwei Strategien: 1) Satisficing – akzeptieren, dass eine Stunde «gut genug» vorbereitet ist. Perfektionismus führt zum Burnout. 2) Kollaboration – Unterstützung im Team suchen. Ein schwieriger Schüler ist eine systemische Herausforderung, kein persönliches Versagen.",
+   tipps:["«Gut genug» akzeptieren in Belastungsphasen","Team einbeziehen – kein Einzelkampf","Schwieriger Schüler = systemische Herausforderung","Eigene Grenzen ernst nehmen"],
+   beispiel:"LP realisiert: Jede Stunde perfekt vorbereiten ist unmöglich. Reduziert Vorbereitungszeit, sucht Unterstützung bei KLP und SSA. Belastung sinkt merklich."},
+
+  {id:"struktur-vor-oeffnung",t:"Struktur vor Öffnung (Scaffolding & Fading)",kat:"uebergreifend",teil:"ueber",sub:"Methodische Ansätze",stufe:0,
+   kurz:"Maximale Struktur zuerst. Erst wenn die Klasse stabilisiert ist, schrittweise öffnen.",
+   details:"Beginne mit maximaler Struktur: enge Führung, klare Routinen, Direkte Instruktion. Erst wenn die Klasse sozial stabilisiert ist und fachliche Erfolgserlebnisse hat, wird das Gerüst (Scaffolding) langsam abgebaut (Fading) und der Unterricht für freiere Lernformen geöffnet.",
+   tipps:["Enge Führung und klare Routinen als Startpunkt","Direkte Instruktion als Basis","Erst bei sozialer Stabilität öffnen","Schrittweise freiere Formen einführen","Rückschritte erlaubt: bei Rückfall wieder mehr Struktur"],
+   beispiel:"Neue, chaotische Klasse: LP startet mit Frontalunterricht, klaren Ritualen, kurzen Sequenzen. Nach 6 Wochen: erste Partnerarbeit. Nach 3 Monaten: Werkstatt möglich."}
+];
+
+// WISSEN
+const W = [
+  {t:"Überlebenshirn vs. intelligentes Hirn",col:"#00b894",
+   html:`<p>Unser Hirn hat vereinfacht zwei Systeme: Das <strong>Überlebenshirn</strong> reagiert schnell, emotional und automatisch – Kampf, Flucht, Erstarren. Das <strong>intelligente Hirn</strong> kann planen, reflektieren und Impulse kontrollieren.</p><p>Wenn ein Kind alarmiert ist, übernimmt das Überlebenshirn. Es kann dann <strong>nicht logisch denken, nicht kooperieren und nicht lernen</strong>. Jede Massnahme, die Alarm erhöht (Schimpfen, Drohen), verschlimmert die Situation.</p><p><strong>Grundregel:</strong> Erst den Alarm senken, dann erziehen.</p>`},
+  {t:"Verhalten vs. Handlung",col:"#fdcb6e",
+   html:`<p><strong>Verhalten</strong> ist impulsiv – das Kind kann nicht anders. Es zeigt danach Reue. Sanktionen wirken kaum.</p><p><strong>Handlung</strong> ist bewusst und kalkuliert. Keine Reue. Konsequenzen können abgeschätzt werden. Sanktionen können wirken.</p><p><strong>Warum so wichtig?</strong> Verhalten braucht Hilfe (helfende Werkzeuge). Handlung braucht Grenzen (grenzsetzende Werkzeuge). Falsche Zuordnung führt zu wirkungslosen Interventionen.</p>`},
+  {t:"Bindung ist der Motor",col:"#e17055",
+   html:`<p>Kinder folgen aus <strong>Bindung</strong>, nicht aus Angst. Gebundene Kinder sind einfacher zu führen – egal welchen Stil man nutzt.</p><p>Gerade verhaltensauffällige Kinder haben oft <strong>enormen Bindungshunger</strong>. Es lohnt sich, in die Beziehung zu investieren – auch wenn es schwer fällt.</p><p><strong>Drei Ebenen:</strong> Lehrperson–Kind, Eltern–Kind, Eltern–Lehrperson. Alle drei beeinflussen sich gegenseitig.</p>`},
+  {t:"Führung durch persönliche Autorität",col:"#6c5ce7",
+   html:`<p>Amtsautorität funktioniert nicht mehr. Heute braucht es <strong>persönliche Autorität</strong>: echtes Interesse, Fairness, Klarheit, Kompetenz und Beziehung.</p><p>Die Kinder müssen spüren: <strong>«Diese Person meint es gut mit mir UND sie weiss, wo es langgeht.»</strong></p>`},
+  {t:"Das Thermometer-Modell (5 Stufen)",col:"#e17055",
+   html:`<p><strong style="color:#00b894">Stufe 1</strong> – Leicht (~90% der Fälle): Nonverbale Mittel, Aufmerksamkeit steuern.</p><p><strong style="color:#fdcb6e">Stufe 2</strong> – Mittel: Defekte Schallplatte, deeskalative Körpersprache.</p><p><strong style="color:#e17055">Stufe 3</strong> – Schwer: Konfrontative Körpersprache, kurze Ansage.</p><p><strong style="color:#d63031">Stufe 4</strong> – Sehr schwer: Sanktionen, Wiedergutmachung.</p><p><strong style="color:#e8eaf0">Stufe 5</strong> – System schützen: Notfallmassnahmen.</p><p>Immer auf der <strong>tiefsten wirksamen Stufe</strong> intervenieren. Grenzsetzende Werkzeuge immer mit helfenden kombinieren.</p>`},
+  {t:"Grundbedürfnisse: Dazugehören und Bewirken",col:"#74b9ff",
+   html:`<p><strong>Dazugehören:</strong> Wenn ein Kind sich abgelehnt fühlt, ist das Hirn alarmiert und das Verhalten wird ungünstig.</p><p><strong>Etwas bewirken:</strong> Wird das nicht befriedigt, lebt es sich auf asoziale Art aus. Kinder brauchen das Gefühl, gebraucht zu werden.</p><p><strong>Fragen Sie sich:</strong> Fühlt sich das Kind zugehörig? Hat es Möglichkeiten, etwas Positives zu bewirken?</p>`},
+  {t:"80-zu-20 – Warum es okay ist",col:"#a29bfe",
+   html:`<p>20% der Kinder brauchen 80% Ihrer Energie – und das ist <strong>völlig in Ordnung</strong>.</p><p>Viele Kinder sind bindungsmässig gesättigt. Andere haben eine enorme Lücke. Es ist nicht unfair, dort zu investieren – es ist <strong>nötig</strong>.</p>`},
+  {t:"Warum Frontalunterricht wirkt",col:"#fdcb6e",
+   html:`<p>Frontalunterricht hat einen schlechten Ruf – zu Unrecht. In herausfordernden Klassen ist er oft die <strong>wirksamste und sicherste Unterrichtsform</strong>.</p><p><strong>Die Vorteile im Überblick:</strong></p><p>1. <strong>Maximale Steuerung</strong> – Sie behalten Tempo, Inhalt und Verhalten in der Hand.</p><p>2. <strong>Weniger Alarm</strong> – Klare Struktur gibt unsicheren Kindern Halt.</p><p>3. <strong>Beziehungsarbeit</strong> – Sie haben die Aufmerksamkeit aller und können gezielt Bindungsbotschaften senden.</p><p>4. <strong>Sofortiges Feedback</strong> – Sie sehen sofort, wer nicht versteht.</p><p>5. <strong>Schutz für schwache Kinder</strong> – Kein Ausgeliefertsein in Gruppen, in denen sie sozial überfordert sind.</p><p><strong>Wichtig:</strong> Frontalunterricht bedeutet nicht Monolog. Es geht um <strong>geführten, interaktiven Unterricht</strong> mit CFU, kurzen Übungsphasen und klarer Struktur. Öffnung kommt dann, wenn die Klasse bereit ist.</p>`},
+  {t:"Integratives Handlungsmodell",col:"#00d2a8",
+   html:`<p>Dieses Modell ist ein wissenschaftlich fundierter Gegenentwurf zur unreflektierten Öffnung von Unterricht in herausfordernden Klassen. <strong>Struktur ist keine Einschränkung, sondern Voraussetzung für Freiheit und Lernen.</strong></p><p>Das Fundament: <strong>Cognitive Load Theory</strong> – das Arbeitsgedächtnis schützen durch Segmentierung, Modellierung und Reduktion von Ablenkung.</p><p>Die Methode: <strong>Direkte Instruktion</strong> (Hattie d=0.59) mit klarem Phasenmodell: Zieltransparenz, Input, Verständnisprüfung (CFU), angeleitetes Üben, dann erst Fading.</p><p>Das Prinzip: <strong>Scaffolding & Fading</strong> – maximale Struktur zuerst, schrittweise öffnen wenn die Klasse stabilisiert ist.</p>`}
+];
+
+// STATE
+let favs = JSON.parse(localStorage.getItem('ik-favs')||'[]');
+let katF = 'alle', stufeF = 'alle';
+
+// TEIL-Unterstrukturen
+const teilConfig = {
+  teil1: {label:"Teil 1",name:"Einschätzen",icon:"t1",desc:"Die Situation richtig einschätzen und analysieren"},
+  teil2: {label:"Teil 2",name:"Grenzen setzen",icon:"t2",desc:"Vom nonverbalen Signal bis zum Systemschutz (Stufe 1–5)",
+    subs:[{s:1,label:"Stufe 1 – Leichte Verstösse"},{s:2,label:"Stufe 2 – Mittelschwere Verstösse"},{s:3,label:"Stufe 3 – Schwere Verstösse"},{s:4,label:"Stufe 4 – Sehr schwere Verstösse"},{s:5,label:"Stufe 5 – System schützen"}]},
+  teil3: {label:"Teil 3",name:"Helfen",icon:"t3",desc:"Verhaltensänderung, Bindung, Alarm reduzieren, Prävention"},
+  ueber: {label:"",name:"Übergreifendes",icon:"tu",desc:"Deeskalation, Führung, Didaktische Reflexion, Methodische Ansätze"}
+};
+
+// =============================================
+// NAV
+// =============================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));
+  if(id==='screen-alle') renderAll();
+  window.scrollTo(0,0);
+}
+
+// =============================================
+// TEIL
+// =============================================
+function showTeil(teil) {
+  const cfg = teilConfig[teil];
+  const items = M.filter(m=>m.teil===teil);
+  let html = `<div class="teil-header"><div class="teil-icon ${cfg.icon}">${cfg.label.replace('Teil ','T')}</div><div><h2>${cfg.name}</h2><div class="teil-header-sub">${cfg.desc}</div></div></div>`;
+
+  if(cfg.subs) {
+    cfg.subs.forEach(sub=>{
+      const subItems = items.filter(m=>m.stufe===sub.s);
+      if(subItems.length) {
+        html += `<div class="section-head">${sub.label}</div>`;
+        html += subItems.map(m=>cardHTML(m)).join('');
+      }
+    });
+  } else {
+    const subs = [...new Set(items.map(m=>m.sub).filter(Boolean))];
+    if(subs.length) {
+      subs.forEach(sub=>{
+        html += `<div class="section-head">${sub}</div>`;
+        html += items.filter(m=>m.sub===sub).map(m=>cardHTML(m)).join('');
+      });
+      const noSub = items.filter(m=>!m.sub);
+      if(noSub.length) html += noSub.map(m=>cardHTML(m)).join('');
+    } else {
+      html += items.map(m=>cardHTML(m)).join('');
+    }
+  }
+
+  document.getElementById('teil-content').innerHTML = html;
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('screen-teil').classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  window.scrollTo(0,0);
+}
+
+// =============================================
+// CARDS
+// =============================================
+function cardHTML(m) {
+  const dotClass = m.kat==='grenzsetzend'?'grenz':m.kat==='helfend'?'hilfe':'ueber';
+  const isFav = favs.includes(m.id);
+  const stufeTag = m.stufe>0 ? `<span class="m-meta-tag">Stufe ${m.stufe}</span>` : '';
+  return `<div class="m-card" id="c-${m.id}">
+    <div class="m-card-header" onclick="toggleC('${m.id}')">
+      <div class="m-card-dot ${dotClass}"></div>
+      <div class="m-card-body">
+        <div class="m-card-title">${m.t}</div>
+        <div class="m-card-short">${m.kurz}</div>
+        <div class="m-card-meta">${stufeTag}</div>
+      </div>
+      <button class="m-card-fav ${isFav?'active':''}" onclick="event.stopPropagation();toggleFav('${m.id}')">&#9733;</button>
+      <span class="m-card-toggle">&#9660;</span>
+    </div>
+    <div class="m-card-detail">
+      <div class="detail-block"><h4>Details</h4><p>${m.details}</p></div>
+      ${m.tipps?`<div class="detail-block"><h4>Praxis-Tipps</h4><ul>${m.tipps.map(t=>'<li>'+t+'</li>').join('')}</ul></div>`:''}
+      ${m.beispiel?`<div class="praxis-box"><div class="praxis-label">Praxisbeispiel</div><p style="font-size:0.82rem;line-height:1.6;font-weight:300;">${m.beispiel}</p></div>`:''}
+    </div>
+  </div>`;
+}
+
+function toggleC(id) { document.getElementById('c-'+id).classList.toggle('open'); }
+
+function toggleFav(id) {
+  if(favs.includes(id)) favs=favs.filter(f=>f!==id); else favs.push(id);
+  localStorage.setItem('ik-favs',JSON.stringify(favs));
+  const btn = document.querySelector(`#c-${id} .m-card-fav`);
+  if(btn) btn.classList.toggle('active', favs.includes(id));
+  updateFav();
+}
+
+function updateFav() {
+  const bar = document.getElementById('fav-bar');
+  const txt = document.getElementById('fav-text');
+  if(favs.length) { bar.classList.remove('hidden'); txt.textContent=favs.length+' gemerkt'; }
+  else bar.classList.add('hidden');
+}
+
+// =============================================
+// ALLE (filtered)
+// =============================================
+function renderAll() {
+  const q = document.getElementById('search-input').value.toLowerCase();
+  let filtered = M.filter(m=>{
+    if(katF!=='alle' && m.kat!==katF) return false;
+    if(stufeF!=='alle' && m.stufe!==parseInt(stufeF) && m.stufe!==0) return false;
+    if(q) { const h=(m.t+' '+m.kurz+' '+m.details+' '+(m.tipps||[]).join(' ')).toLowerCase(); if(!h.includes(q)) return false; }
+    return true;
+  });
+  document.getElementById('results-info').textContent = filtered.length+' von '+M.length+' Massnahmen';
+  document.getElementById('all-cards').innerHTML = filtered.map(m=>cardHTML(m)).join('');
+  updateFav();
+}
+
+function filterAll() { renderAll(); }
+function setKat(v) { katF=v; document.querySelectorAll('#kat-filter .chip').forEach(c=>c.classList.toggle('active',c.dataset.f===v)); renderAll(); }
+function setStufe(v) { stufeF=v; document.querySelectorAll('#stufe-filter .chip').forEach(c=>c.classList.toggle('active',c.dataset.s===v)); renderAll(); }
+
+function showRandom() {
+  showScreen('screen-alle');
+  katF='alle'; stufeF='alle';
+  document.getElementById('search-input').value='';
+  document.querySelectorAll('#kat-filter .chip').forEach(c=>c.classList.toggle('active',c.dataset.f==='alle'));
+  document.querySelectorAll('#stufe-filter .chip').forEach(c=>c.classList.toggle('active',c.dataset.s==='alle'));
+  renderAll();
+  const m = M[Math.floor(Math.random()*M.length)];
+  setTimeout(()=>{
+    const el=document.getElementById('c-'+m.id);
+    if(el){el.classList.add('open');el.scrollIntoView({behavior:'smooth',block:'center'});el.style.boxShadow='0 0 0 3px var(--accent-warm)';setTimeout(()=>el.style.boxShadow='',2500);}
+  },150);
+}
+
+// =============================================
+// WISSEN
+// =============================================
+function initWissen() {
+  document.getElementById('wissen-list').innerHTML = W.map((w,i)=>
+    `<div class="wissen-card" id="w-${i}">
+      <div class="wissen-header" onclick="document.getElementById('w-${i}').classList.toggle('open')">
+        <div class="wissen-dot" style="background:linear-gradient(135deg,${w.col},${w.col}dd)">W</div>
+        <div class="wissen-title">${w.t}</div>
+        <span class="wissen-toggle">&#9660;</span>
+      </div>
+      <div class="wissen-content">${w.html}</div>
+    </div>`
+  ).join('');
+}
+
+initWissen();
+</script>
+</body>
+</html>

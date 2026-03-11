@@ -1,5 +1,11 @@
 # Lernlust Website
 
+#Projekt #Lernlust #Website #Design #Lerncoaching
+
+**Kategorie:** [[Projekte]] | **Status:** Aktiv | **Domain:** lernlust.ch
+
+---
+
 Eine moderne, spielerische Website für individuelles Lerncoaching und maßgeschneiderte Lern-Apps für Kinder ab der Mittelstufe.
 
 ## 🎨 Design-Philosophie

@@ -1,5 +1,9 @@
 # Lernlust.ch - Deployment Dokumentation
 
+#Projekt #Lernlust #Deployment #GitHubPages
+
+---
+
 ## Setup Übersicht
 
 Die Website **lernlust.ch** wird über **GitHub Pages** gehostet und automatisch deployed.

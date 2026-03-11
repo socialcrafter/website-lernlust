@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einmaleins-Abenteuer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --secondary: #FF6B9D;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .bg-shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: var(--primary);
+            top: -100px;
+            right: -100px;
+            animation-delay: 0s;
+        }
+
+        .bg-shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            background: var(--secondary);
+            bottom: 10%;
+            left: -50px;
+            animation-delay: -5s;
+        }
+
+        .bg-shape:nth-child(3) {
+            width: 150px;
+            height: 150px;
+            background: var(--success);
+            top: 40%;
+            right: 10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+
+            50% {
+                transform: translate(-10px, 20px) rotate(-5deg);
+            }
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2.5rem;
+        }
+
+        .header h1 .fa-star {
+            color: var(--warning);
+            vertical-align: middle;
+            font-size: 2rem;
+            margin-right: 5px;
+        }
+
+        .stars-display {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.2rem;
+            background: var(--card-bg);
+            padding: 12px 24px;
+            border-radius: 50px;
+            margin-top: 15px;
+            border: 1px solid var(--card-border);
+        }
+
+        .stars-display .fa-star {
+            color: var(--warning);
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .nav-tab {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1rem;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+            color: var(--text-secondary);
+            border: 1px solid var(--card-border);
+        }
+
+        .nav-tab:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-tab.active {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            padding: 30px;
+            border: 1px solid var(--card-border);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .reihen-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(70px, 1fr));
+            gap: 12px;
+        }
+
+        .reihen-btn {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.3rem;
+            padding: 15px;
+            border: 2px solid var(--card-border);
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: var(--card-bg);
+            color: var(--text-primary);
+        }
+
+        .reihen-btn:hover {
+            border-color: var(--primary-light);
+            transform: scale(1.05);
+        }
+
+        .reihen-btn.selected {
+            border-color: var(--secondary);
+            background: var(--secondary);
+            color: white;
+        }
+
+        .reihen-btn.mastered {
+            background: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .exercise-area {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .question-display {
+            font-family: 'Nunito', sans-serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            margin-bottom: 20px;
+            min-height: 80px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .question-display .operator {
+            color: var(--secondary);
+        }
+
+        .question-display .equals {
+            color: var(--text-secondary);
+        }
+
+        .answer-input {
+            font-family: 'Nunito', sans-serif;
+            font-size: 2.5rem;
+            width: 150px;
+            text-align: center;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 3px solid var(--card-border);
+            border-radius: 16px;
+            color: var(--text-primary);
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .answer-input:focus {
+            border-color: var(--primary-light);
+            box-shadow: 0 0 30px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn {
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.2rem;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            color: white;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.4);
+        }
+
+        .btn-hint {
+            background: linear-gradient(135deg, var(--warning), #f9ca24);
+            color: var(--text-dark);
+            font-size: 1rem;
+            padding: 10px 25px;
+            margin-top: 15px;
+        }
+
+        .times-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px;
+        }
+
+        .times-table td {
+            text-align: center;
+            padding: 12px;
+            font-family: 'Nunito', sans-serif;
+            font-size: 1.1rem;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .times-table td.header {
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .times-table td.result {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-secondary);
+            cursor: pointer;
+        }
+
+        .times-table td.result:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+        <header class="header">
+            <h1><i class="fa-solid fa-star"></i> Einmaleins-Abenteuer</h1>
+            <div class="stars-display">
+                <i class="fa-solid fa-star"></i>
+                <span id="totalStars">0</span> Sterne gesammelt
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="ueben"><i class="fa-solid fa-bullseye"></i> Üben</button>
+            <button class="nav-tab" data-section="tabelle"><i class="fa-solid fa-table-cells"></i> Tabelle</button>
+            <button class="nav-tab" data-section="einstellungen"><i class="fa-solid fa-gear"></i> Einstellungen</button>
+        </nav>
+
+        <!-- Übungs-Bereich -->
+        <section id="ueben" class="section active">
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-book"></i> Wähle deine Reihe</h3>
+                <div class="reihen-grid" id="reihenGrid"></div>
+            </div>
+
+            <div class="card" id="exerciseCard" style="display: none;">
+                <div id="progressText" style="text-align:center; color: var(--text-secondary); margin-bottom: 10px;">
+                    Aufgabe 1 von 10</div>
+                <div
+                    style="width:100%; background: var(--card-bg); border-radius:10px; height:12px; margin-bottom: 20px;">
+                    <div id="progressFill"
+                        style="width:0%; height:100%; border-radius:10px; background: linear-gradient(90deg, var(--secondary), var(--success)); transition: width 0.5s ease;">
+                    </div>
+                </div>
+
+                <div class="exercise-area">
+                    <div class="question-display" id="questionDisplay">
+                        <span id="num1">3</span>
+                        <span class="operator">×</span>
+                        <span id="num2">4</span>
+                        <span class="equals">=</span>
+                        <span>?</span>
+                    </div>
+
+
+                    <div class="answer-section">
+                        <input type="number" class="answer-input" id="answerInput" placeholder="?" autocomplete="off">
+                        <div>
+                            <button class="btn btn-primary" id="checkBtn" style="margin-top:20px;"><i
+                                    class="fa-solid fa-check"></i> Prüfen</button>
+                        </div>
+                    </div>
+                    <div class="feedback" id="feedback" style="display:none;"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tabellen-Bereich -->
+        <section id="tabelle" class="section">
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-table-list"></i> Die Einmaleins-Tabelle</h3>
+                <div style="overflow-x: auto;">
+                    <table class="times-table" id="timesTable"></table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Einstellungen -->
+        <section id="einstellungen" class="section">
+            <div class="card">
+                <h3 class="card-title"><i class="fa-solid fa-sliders"></i> Einstellungen</h3>
+                <button class="btn btn-primary" id="resetBtn" style="background: var(--secondary);"><i
+                        class="fa-solid fa-trash"></i> Fortschritt zurücksetzen</button>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        let state = {
+            currentReihe: null,
+            currentQuestion: 0,
+            totalQuestions: 10,
+            totalStars: 0,
+            masteredReihen: [],
+            num1: 0,
+            num2: 0,
+            questions: []
+        };
+
+
+
+        function loadState() {
+            const saved = localStorage.getItem('einmaleinsState_dark');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                state.totalStars = parsed.totalStars || 0;
+                state.masteredReihen = parsed.masteredReihen || [];
+            }
+            updateStarsDisplay();
+        }
+
+        function saveState() {
+            localStorage.setItem('einmaleinsState_dark', JSON.stringify({
+                totalStars: state.totalStars,
+                masteredReihen: state.masteredReihen
+            }));
+        }
+
+        function init() {
+            loadState();
+            createReihenGrid();
+            createTimesTable();
+            setupEventListeners();
+        }
+
+        function createReihenGrid() {
+            const grid = document.getElementById('reihenGrid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 10; i++) {
+                const btn = document.createElement('button');
+                btn.className = 'reihen-btn';
+                btn.textContent = i;
+                btn.dataset.reihe = i;
+                if (state.masteredReihen.includes(i)) {
+                    btn.classList.add('mastered');
+                }
+                btn.addEventListener('click', () => selectReihe(i));
+                grid.appendChild(btn);
+            }
+        }
+
+        function selectReihe(reihe) {
+            document.querySelectorAll('.reihen-btn').forEach(btn => {
+                btn.classList.remove('selected');
+                if (parseInt(btn.dataset.reihe) === reihe) btn.classList.add('selected');
+            });
+            state.currentReihe = reihe;
+            state.currentQuestion = 0;
+            state.correctInRound = 0;
+            generateQuestions();
+            document.getElementById('exerciseCard').style.display = 'block';
+            nextQuestion();
+        }
+
+        function generateQuestions() {
+            state.questions = [];
+            for (let i = 1; i <= 10; i++) {
+                state.questions.push({ num1: state.currentReihe, num2: i });
+            }
+            // Shuffle
+            for (let i = state.questions.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [state.questions[i], state.questions[j]] = [state.questions[j], state.questions[i]];
+            }
+        }
+
+        function nextQuestion() {
+            if (state.currentQuestion >= state.questions.length) {
+                endRound();
+                return;
+            }
+            const q = state.questions[state.currentQuestion];
+            state.num1 = q.num1;
+            state.num2 = q.num2;
+
+            document.getElementById('num1').textContent = state.num1;
+            document.getElementById('num2').textContent = state.num2;
+            const answerInput = document.getElementById('answerInput');
+            answerInput.value = '';
+            answerInput.className = 'answer-input';
+            document.getElementById('feedback').style.display = 'none';
+
+            updateProgress();
+            setTimeout(() => answerInput.focus(), 100);
+        }
+
+        function checkAnswer() {
+            const input = document.getElementById('answerInput');
+            if (input.disabled) return;
+            const userAnswer = parseInt(input.value);
+            const correctAnswer = state.num1 * state.num2;
+            const feedback = document.getElementById('feedback');
+
+            if (isNaN(userAnswer)) return;
+            input.disabled = true;
+
+            if (userAnswer === correctAnswer) {
+                input.classList.add('correct');
+                state.correctInRound++;
+                state.totalStars++;
+                updateStarsDisplay();
+                saveState();
+                state.currentQuestion++;
+                setTimeout(() => {
+                    input.disabled = false;
+                    nextQuestion();
+                }, 1000);
+            } else {
+                input.classList.add('wrong');
+                setTimeout(() => {
+                    input.classList.remove('wrong');
+                    input.value = '';
+                    input.disabled = false;
+                    input.focus();
+                }, 1000);
+            }
+        }
+
+        function updateProgress() {
+            const progress = (state.currentQuestion / state.questions.length) * 100;
+            document.getElementById('progressFill').style.width = `${progress}%`;
+            document.getElementById('progressText').textContent = `Aufgabe ${state.currentQuestion + 1} von ${state.questions.length}`;
+        }
+
+        function updateStarsDisplay() {
+            document.getElementById('totalStars').textContent = state.totalStars;
+        }
+
+        function endRound() {
+            alert(`Runde beendet! Du hast ${state.correctInRound} von ${state.questions.length} richtig.`);
+            if (state.correctInRound / state.questions.length >= 0.9 && !state.masteredReihen.includes(state.currentReihe)) {
+                state.masteredReihen.push(state.currentReihe);
+                saveState();
+                createReihenGrid();
+            }
+            document.getElementById('exerciseCard').style.display = 'none';
+        }
+
+        function createTimesTable() {
+            const table = document.getElementById('timesTable');
+            table.innerHTML = '';
+            const headerRow = document.createElement('tr');
+            headerRow.innerHTML = '<td class="header">×</td>';
+            for (let i = 1; i <= 10; i++) headerRow.innerHTML += `<td class="header">${i}</td>`;
+            table.appendChild(headerRow);
+            for (let i = 1; i <= 10; i++) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td class="header">${i}</td>`;
+                for (let j = 1; j <= 10; j++) {
+                    row.innerHTML += `<td class="result">${i * j}</td>`;
+                }
+                table.appendChild(row);
+            }
+        }
+
+        function setupEventListeners() {
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    tab.classList.add('active');
+                    document.getElementById(tab.dataset.section).classList.add('active');
+                });
+            });
+            document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+            document.getElementById('answerInput').addEventListener('keypress', e => e.key === 'Enter' && checkAnswer());
+            document.getElementById('resetBtn').addEventListener('click', () => {
+                if (confirm('Wirklich alles löschen?')) {
+                    localStorage.removeItem('einmaleinsState_dark');
+                    state.totalStars = 0;
+                    state.masteredReihen = [];
+                    updateStarsDisplay();
+                    createReihenGrid();
+                }
+            });
+        }
+        init();
+    </script>
+</body>
+
+</html>

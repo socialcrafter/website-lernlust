@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>10 voll machen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6C63FF;
+            --primary-light: #8B85FF;
+            --secondary: #FF6B9D;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-shape { position: absolute; border-radius: 50%; opacity: 0.1; animation: float 20s infinite ease-in-out; }
+        .bg-shape:nth-child(1) { width: 300px; height: 300px; background: var(--primary); top: -100px; right: -100px; }
+        .bg-shape:nth-child(2) { width: 200px; height: 200px; background: var(--secondary); bottom: 10%; left: -50px; animation-delay: -5s; }
+        .bg-shape:nth-child(3) { width: 150px; height: 150px; background: var(--success); top: 40%; right: 10%; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translate(0, 0) rotate(0deg); } 50% { transform: translate(-10px, 20px) rotate(-5deg); } }
+
+        .container { position: relative; z-index: 1; max-width: 450px; margin: 0 auto; width: 100%; }
+        
+        header { text-align: center; padding: 20px; margin-bottom: 20px; }
+        header h1 { font-weight: 800; font-size: 2.5rem; color: var(--text-primary); margin-bottom: 10px; }
+        header h1 .fa-solid { color: var(--primary-light); margin-right: 10px; }
+
+        .rewards-display { display: flex; justify-content: center; gap: 15px; margin-top: 12px; }
+        .reward-item { background: var(--card-bg); padding: 8px 16px; border-radius: 50px; font-weight: 600; display: flex; align-items: center; gap: 6px; border: 1px solid var(--card-border); }
+        .reward-item .fa-star { color: var(--warning); }
+        .reward-item .fa-gem { color: var(--success); }
+
+        .card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 24px; padding: 30px; border: 1px solid var(--card-border); }
+        
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .start, .done { text-align: center; padding: 20px 0; }
+        .start-icon, .done-icon { font-size: 4rem; margin-bottom: 15px; color: var(--primary); }
+        .start h2, .done h2 { font-size: 1.8rem; color: var(--text-primary); margin-bottom: 10px; }
+        .start p, .done p { color: var(--text-secondary); margin-bottom: 20px; line-height: 1.6; }
+
+        .example-box { background: rgba(0,0,0,0.2); padding: 20px; border-radius: 16px; margin-bottom: 25px; text-align: left; }
+        .example-title { font-weight: 600; color: var(--text-primary); margin-bottom: 12px; text-align: center; }
+        .example-step { font-size: 1.1rem; margin: 8px 0; padding: 8px 12px; background: var(--card-bg); border-radius: 8px; border-left: 3px solid var(--primary-light); }
+        .example-step .red { color: #fca5a5; font-weight: 700; }
+        .example-step .teal { color: #99f6e4; font-weight: 700; }
+        .example-step .green { color: #86efac; font-weight: 700; }
+        
+        .btn { width: 100%; padding: 16px; font-size: 1.1rem; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
+        .btn:active { transform: scale(0.98); }
+
+        .progress-bar { height: 8px; background: var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.3s; }
+        .progress-text { text-align: center; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 20px; }
+        
+        .task-display { text-align: center; font-size: 2.5rem; font-weight: 800; margin: 15px 0; color: var(--text-primary); }
+        .task-display .num-a { color: var(--primary); }
+        .task-display .num-b { color: var(--secondary); }
+
+        .visual-container { display: flex; justify-content: center; gap: 15px; margin: 20px 0; align-items: flex-start; }
+        .visual-box { text-align: center; }
+        .visual-label { font-size: 0.8rem; color: var(--text-secondary); margin-bottom: 6px; }
+
+        .frame { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; padding: 10px; background: rgba(0,0,0,0.2); border: 2px solid var(--card-border); border-radius: 12px; }
+        .dot { width: 28px; height: 28px; border-radius: 50%; background: var(--card-border); transition: all 0.3s; }
+        .dot.filled { background: linear-gradient(135deg, var(--primary), var(--primary-light)); }
+        .dot.move-in { background: linear-gradient(135deg, var(--secondary), #31a198); animation: popIn 0.3s ease; }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        
+        .vorrat { display: flex; flex-wrap: wrap; gap: 5px; padding: 10px; background: rgba(0,0,0,0.2); border: 2px solid var(--card-border); border-radius: 12px; min-width: 60px; min-height: 80px; justify-content: center; align-content: flex-start; }
+        .vorrat .dot { background: linear-gradient(135deg, var(--success), #31a198); }
+        .vorrat .dot.used { opacity: 0; transform: scale(0); }
+        
+        .instruction { text-align: center; font-size: 1.1rem; color: var(--text-secondary); margin: 15px 0; padding: 12px; background: rgba(0,0,0,0.15); border-radius: 12px; }
+        
+        .answers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .ans-btn { padding: 14px 10px; font-size: 1.3rem; font-weight: 700; border: 1px solid var(--card-border); border-radius: 12px; background: var(--card-bg); color: white; cursor: pointer; transition: all 0.2s; }
+        .ans-btn:hover { transform: translateY(-2px); border-color: var(--secondary); }
+        .ans-btn.correct { background: linear-gradient(135deg, var(--success), #31a198); }
+        .ans-btn.wrong { background: linear-gradient(135deg, var(--primary), #ee5a5a); animation: shake 0.4s; }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+        
+        .feedback { text-align: center; font-size: 1.2rem; font-weight: 700; margin-top: 15px; min-height: 30px; }
+        .feedback.correct { color: var(--success); }
+        .feedback.wrong { color: var(--primary); }
+        
+        .score { font-size: 2.5rem; font-weight: 700; color: var(--primary); margin-bottom: 25px; }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes"><div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div></div>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fa-solid fa-arrow-up-10"></i> 10 voll machen</h1>
+            <div class="rewards-display">
+                <div class="reward-item"><i class="fa-solid fa-star"></i> <span id="stars">0</span></div>
+                <div class="reward-item"><i class="fa-solid fa-gem"></i> <span id="diamonds">0</span></div>
+            </div>
+        </header>
+        
+        <div class="card">
+            <div class="screen active" id="screenStart">
+                <div class="start">
+                    <div class="start-icon"><i class="fa-solid fa-person-chalkboard"></i></div>
+                    <h2>Die 10 voll machen</h2>
+                    <p>Bei großen Plusaufgaben: Erst die 10 voll machen, dann den Rest dazu!</p>
+                    <div class="example-box">
+                        <div class="example-title">Beispiel: 8 + 5</div>
+                        <div class="example-step">1. <span class="red">8</span> + <span class="teal">2</span> = <span class="green">10</span> (10 voll!)</div>
+                        <div class="example-step">2. Von 5 bleiben noch <span class="teal">3</span> übrig</div>
+                        <div class="example-step">3. <span class="green">10</span> + <span class="teal">3</span> = <span class="green">13</span> <i class="fa-solid fa-check" style="color: var(--success);"></i></div>
+                    </div>
+                    <button class="btn btn-primary" id="btnStart"><i class="fa-solid fa-play"></i> Los geht's!</button>
+                </div>
+            </div>
+            
+            <div class="screen" id="screenGame">
+                <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+                <div class="progress-text" id="progressText">Aufgabe 1 von 8</div>
+                <div class="task-display">
+                    <span class="num-a" id="numA">8</span> + <span class="num-b" id="numB">5</span> = ?
+                </div>
+                <div class="visual-container">
+                    <div class="visual-box">
+                        <div class="visual-label">10er-Feld</div>
+                        <div class="frame" id="frame"></div>
+                    </div>
+                    <div class="visual-box">
+                        <div class="visual-label">Vorrat</div>
+                        <div class="vorrat" id="vorrat"></div>
+                    </div>
+                </div>
+                <div class="instruction" id="instruction">Wie viele fehlen bis zur 10?</div>
+                <div class="answers" id="answers"></div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+            
+            <div class="screen" id="screenDone">
+                <div class="done">
+                    <div class="done-icon"><i class="fa-solid fa-trophy"></i></div>
+                    <h2>Super gemacht!</h2>
+                    <div class="score" id="score">8/8</div>
+                    <p id="doneMessage">Du kannst die 10 voll machen!</p>
+                    <button class="btn btn-primary" id="btnAgain"><i class="fa-solid fa-rotate-right"></i> Nochmal spielen</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var stars = 0, diamonds = 0;
+        var tasks = [], current = 0, taskCorrect = 0;
+        var TOTAL = 8;
+        // Aufgaben-Werte der aktuellen Frage
+        var numA, numB, toTen, rest, result;
+        // Was ist gerade die richtige Antwort? Wird direkt beim Anzeigen der Buttons gesetzt.
+        var currentPhase = 1; // 1=toTen, 2=rest, 3=result
+        var waiting = false;  // Klicks sperren während Animation
+
+        function load() {
+            try {
+                var d = JSON.parse(localStorage.getItem('zehnvoll_dark') || '{}');
+                stars = d.stars || 0; diamonds = d.diamonds || 0;
+            } catch(e) {}
+            updateRewards();
+        }
+        function save() { localStorage.setItem('zehnvoll_dark', JSON.stringify({stars, diamonds})); }
+        function updateRewards() {
+            document.getElementById('stars').textContent = stars;
+            document.getElementById('diamonds').textContent = diamonds;
+        }
+        function addStar() {
+            stars++; if (stars >= 100) { stars -= 100; diamonds++; }
+            updateRewards(); save();
+        }
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+        function shuffle(arr) {
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1)); [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        function generateTasks() {
+            var base = [
+                {a:8,b:5},{a:7,b:6},{a:9,b:4},{a:6,b:7},
+                {a:8,b:4},{a:7,b:5},{a:9,b:3},{a:6,b:5},{a:8,b:6},{a:7,b:4}
+            ];
+            tasks = shuffle(base).slice(0, TOTAL);
+        }
+
+        function startGame() {
+            generateTasks(); current = 0; taskCorrect = 0;
+            showScreen('screenGame'); showTask();
+        }
+
+        function showTask() {
+            var t = tasks[current];
+            numA = t.a; numB = t.b;
+            toTen  = 10 - numA;
+            rest   = numB - toTen;
+            result = numA + numB;
+
+            document.getElementById('progressBar').style.width = (current / TOTAL) * 100 + '%';
+            document.getElementById('progressText').textContent = `Aufgabe ${current + 1} von ${TOTAL}`;
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('feedback').className = 'feedback';
+            document.getElementById('numA').textContent = numA;
+            document.getElementById('numB').textContent = numB;
+            document.getElementById('frame').innerHTML =
+                Array.from({length:10}, (_,i) => `<div class="dot ${i < numA ? 'filled' : ''}"></div>`).join('');
+            document.getElementById('vorrat').innerHTML =
+                Array.from({length:numB}, () => '<div class="dot"></div>').join('');
+            document.getElementById('instruction').textContent = 'Wie viele fehlen bis zur 10?';
+            showPhase(1);
+        }
+
+        // showPhase setzt currentPhase und rendert die passenden Buttons
+        function showPhase(phase) {
+            currentPhase = phase;
+            waiting = false;
+            var correctVal = phase === 1 ? toTen : phase === 2 ? rest : result;
+            var options;
+            if (phase === 1) {
+                options = makeOptions(correctVal, 1, 9, 4);
+            } else if (phase === 2) {
+                options = makeOptions(correctVal, 1, 9, 4);
+            } else {
+                options = makeOptions(correctVal, correctVal - 3, correctVal + 3, 4, 11, 19);
+            }
+            renderButtons(shuffle(options));
+        }
+
+        function makeOptions(correct, min, max, count, rangeMin, rangeMax) {
+            rangeMin = rangeMin !== undefined ? rangeMin : min;
+            rangeMax = rangeMax !== undefined ? rangeMax : max;
+            var opts = [correct];
+            var tries = 0;
+            while (opts.length < count && tries < 200) {
+                tries++;
+                var v = Math.floor(Math.random() * (rangeMax - rangeMin + 1)) + rangeMin;
+                if (!opts.includes(v) && v >= rangeMin && v <= rangeMax) opts.push(v);
+            }
+            // Fallback: fülle mit sequentiellen Werten auf
+            for (var v2 = rangeMin; opts.length < count && v2 <= rangeMax; v2++) {
+                if (!opts.includes(v2)) opts.push(v2);
+            }
+            return opts;
+        }
+
+        function renderButtons(options) {
+            var div = document.getElementById('answers');
+            div.innerHTML = '';
+            options.forEach(opt => {
+                var btn = document.createElement('button');
+                btn.className = 'ans-btn';
+                btn.textContent = opt;
+                btn.dataset.val = String(opt);
+                div.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(val) {
+            if (waiting) return;
+            waiting = true;
+
+            var correctVal = currentPhase === 1 ? toTen : currentPhase === 2 ? rest : result;
+            var feedback = document.getElementById('feedback');
+            var buttons  = document.querySelectorAll('.ans-btn');
+
+            if (val === correctVal) {
+                feedback.textContent = '✅ Richtig!';
+                feedback.className = 'feedback correct';
+                buttons.forEach(btn => { if (Number(btn.dataset.val) === val) btn.classList.add('correct'); });
+
+                if (currentPhase === 1) {
+                    setTimeout(goPhase2, 800);
+                } else if (currentPhase === 2) {
+                    setTimeout(goPhase3, 800);
+                } else {
+                    taskCorrect++; addStar();
+                    setTimeout(nextTask, 1200);
+                }
+            } else {
+                feedback.textContent = `❌ Richtig wäre: ${correctVal}`;
+                feedback.className = 'feedback wrong';
+                buttons.forEach(btn => {
+                    if (Number(btn.dataset.val) === val)       btn.classList.add('wrong');
+                    if (Number(btn.dataset.val) === correctVal) btn.classList.add('correct');
+                });
+                if (currentPhase === 3) {
+                    setTimeout(nextTask, 1500);
+                } else {
+                    setTimeout(() => {
+                        feedback.textContent = '';
+                        feedback.className = 'feedback';
+                        showPhase(currentPhase); // nochmal versuchen
+                    }, 1400);
+                }
+            }
+        }
+
+        function goPhase2() {
+            document.getElementById('instruction').textContent = `${toTen} kommen dazu — wie viele bleiben übrig?`;
+            document.querySelectorAll('#vorrat .dot').forEach((dot, i) => {
+                if (i < toTen) setTimeout(() => dot.classList.add('used'), i * 150);
+            });
+            document.querySelectorAll('#frame .dot:not(.filled)').forEach((dot, i) => {
+                if (i < toTen) setTimeout(() => dot.classList.add('move-in'), i * 150);
+            });
+            setTimeout(() => {
+                document.getElementById('feedback').textContent = '';
+                showPhase(2);
+            }, toTen * 150 + 600);
+        }
+
+        function goPhase3() {
+            document.getElementById('instruction').textContent = `10 + ${rest} = ?`;
+            document.querySelectorAll('#vorrat .dot.used').forEach(dot => dot.style.display = 'none');
+            setTimeout(() => {
+                document.getElementById('feedback').textContent = '';
+                showPhase(3);
+            }, 800);
+        }
+
+        function nextTask() {
+            current++;
+            if (current < TOTAL) showTask(); else showDone();
+        }
+
+        function showDone() {
+            var pct = Math.round((taskCorrect / TOTAL) * 100);
+            var msg = pct === 100 ? 'Perfekt! Du bist ein Zehner-Profi!' : pct >= 75 ? 'Super! Fast alle richtig!' : 'Gut! Übung macht den Meister!';
+            document.getElementById('score').textContent = `${taskCorrect}/${TOTAL}`;
+            document.getElementById('doneMessage').textContent = msg;
+            showScreen('screenDone');
+        }
+
+        document.getElementById('btnStart').addEventListener('click', startGame);
+        document.getElementById('btnAgain').addEventListener('click', () => showScreen('screenStart'));
+        document.getElementById('answers').addEventListener('click', e => {
+            if (e.target.classList.contains('ans-btn')) handleAnswer(Number(e.target.dataset.val));
+        });
+
+        load();
+    </script>
+</body>
+</html>
