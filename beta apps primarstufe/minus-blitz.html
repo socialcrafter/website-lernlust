@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minus-Blitz</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --primary: #FF6B9D;
+            --primary-light: #ff87b5;
+            --secondary: #4ECDC4;
+            --success: #4ECDC4;
+            --warning: #FFE66D;
+            --bg-gradient-1: #1a1a2e;
+            --bg-gradient-2: #16213e;
+            --card-bg: rgba(255, 255, 255, 0.08);
+            --card-border: rgba(255, 255, 255, 0.12);
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .bg-shapes { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-shape { position: absolute; border-radius: 50%; opacity: 0.1; animation: float 20s infinite ease-in-out; }
+        .bg-shape:nth-child(1) { width: 300px; height: 300px; background: var(--primary); top: -100px; right: -100px; }
+        .bg-shape:nth-child(2) { width: 200px; height: 200px; background: var(--secondary); bottom: 10%; left: -50px; animation-delay: -5s; }
+        .bg-shape:nth-child(3) { width: 150px; height: 150px; background: var(--success); top: 40%; right: 10%; animation-delay: -10s; }
+        @keyframes float { 0%, 100% { transform: translate(0,0) rotate(0deg); } 50% { transform: translate(-10px,20px) rotate(-5deg); } }
+
+        .container { position: relative; z-index: 1; max-width: 450px; margin: 0 auto; width: 100%; }
+
+        header { text-align: center; padding: 20px; margin-bottom: 20px; }
+        header h1 { font-weight: 800; font-size: 2.2rem; color: var(--text-primary); margin-bottom: 10px; }
+        header h1 .fa-solid { color: var(--primary); margin-right: 10px; }
+
+        .rewards-display { display: flex; justify-content: center; gap: 15px; margin-top: 12px; }
+        .reward-item { background: var(--card-bg); padding: 8px 16px; border-radius: 50px; font-weight: 600; display: flex; align-items: center; gap: 6px; border: 1px solid var(--card-border); }
+        .reward-item .fa-star { color: var(--warning); }
+        .reward-item .fa-gem { color: var(--success); }
+
+        .card { background: var(--card-bg); backdrop-filter: blur(10px); border-radius: 24px; padding: 30px; border: 1px solid var(--card-border); }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ── Start Screen ── */
+        .start { text-align: center; padding: 10px 0; }
+        .start-icon { font-size: 3.5rem; margin-bottom: 15px; color: var(--primary); }
+        .start h2 { font-size: 1.8rem; margin-bottom: 8px; }
+        .start p { color: var(--text-secondary); margin-bottom: 24px; line-height: 1.6; }
+
+        .level-buttons { display: flex; flex-direction: column; gap: 12px; margin-bottom: 0; }
+        .btn-level {
+            width: 100%; padding: 18px 20px;
+            font-size: 1.05rem; font-weight: 700;
+            border: 2px solid var(--card-border);
+            border-radius: 18px; cursor: pointer;
+            background: var(--card-bg); color: white;
+            display: flex; align-items: center; gap: 14px;
+            transition: all 0.2s; text-align: left;
+        }
+        .btn-level:hover { border-color: var(--primary-light); background: rgba(255,107,157,0.12); transform: translateY(-2px); }
+        .btn-level:active { transform: scale(0.98); }
+        .btn-level .level-icon { font-size: 2rem; min-width: 40px; text-align: center; }
+        .btn-level .level-text .title { font-size: 1.1rem; font-weight: 800; color: var(--primary-light); }
+        .btn-level .level-text .sub { font-size: 0.85rem; color: var(--text-secondary); margin-top: 2px; }
+
+        /* ── Game Screen ── */
+        .progress-bar { height: 8px; background: var(--card-border); border-radius: 10px; overflow: hidden; margin-bottom: 8px; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary)); border-radius: 10px; transition: width 0.3s; }
+        .progress-text { text-align: center; font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 18px; }
+
+        .equation { text-align: center; font-size: 3rem; font-weight: 900; margin: 10px 0 16px; letter-spacing: 2px; }
+        .eq-a   { color: var(--primary-light); }
+        .eq-b   { color: var(--secondary); }
+        .eq-q   { color: rgba(255,255,255,0.35); }
+
+        /* 10-frame visual */
+        .frame-wrap { display: flex; justify-content: center; gap: 10px; margin: 12px 0 18px; flex-wrap: wrap; }
+        .frame { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; background: rgba(0,0,0,0.2); border: 1px solid var(--card-border); border-radius: 14px; }
+        .dot { width: 34px; height: 34px; border-radius: 50%; background: var(--card-border); transition: all 0.25s; }
+        .dot.kept   { background: linear-gradient(135deg, var(--success), #31a198); }
+        .dot.gone   { background: linear-gradient(135deg, var(--secondary), #c7567e); opacity: 0.45; }
+        .dot.extra  { background: linear-gradient(135deg, var(--primary-light), var(--primary)); }
+
+        .frame-label { text-align: center; font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 4px; letter-spacing: 0.5px; }
+
+        .answers { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 4px; }
+        .ans-btn { padding: 16px 8px; font-size: 1.6rem; font-weight: 800; border: 1px solid var(--card-border); border-radius: 14px; background: var(--card-bg); color: white; cursor: pointer; transition: all 0.2s; }
+        .ans-btn:hover { transform: translateY(-2px); border-color: var(--secondary); }
+        .ans-btn.correct { background: linear-gradient(135deg, var(--success), #31a198); border-color: var(--success); }
+        .ans-btn.wrong   { background: linear-gradient(135deg, #ee5a5a, var(--primary)); animation: shake 0.4s; }
+        @keyframes shake { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-8px)} 75%{transform:translateX(8px)} }
+
+        .feedback { text-align: center; font-size: 1.1rem; font-weight: 700; margin-top: 14px; min-height: 28px; }
+        .feedback.correct { color: var(--success); }
+        .feedback.wrong   { color: var(--primary-light); }
+
+        /* ── Done Screen ── */
+        .done { text-align: center; padding: 10px 0; }
+        .done-icon { font-size: 3.5rem; margin-bottom: 14px; color: var(--warning); }
+        .done h2 { font-size: 1.8rem; margin-bottom: 6px; }
+        .score { font-size: 2.8rem; font-weight: 800; color: var(--primary); margin: 10px 0 18px; }
+        .done p { color: var(--text-secondary); margin-bottom: 22px; line-height: 1.6; }
+
+        .done-actions { display: flex; flex-direction: column; gap: 10px; }
+        .btn { width: 100%; padding: 16px; font-size: 1rem; font-weight: 700; border: none; border-radius: 16px; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary  { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
+        .btn-secondary { background: var(--card-bg); color: var(--text-primary); border: 1px solid var(--card-border); }
+        .btn:active { transform: scale(0.98); }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes">
+        <div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-bolt-lightning"></i> Minus-Blitz</h1>
+            <div class="rewards-display">
+                <div class="reward-item"><i class="fa-solid fa-star"></i><span id="stars">0</span></div>
+                <div class="reward-item"><i class="fa-solid fa-gem"></i><span id="diamonds">0</span></div>
+            </div>
+        </header>
+
+        <div class="card">
+
+            <!-- START -->
+            <div class="screen active" id="screenStart">
+                <div class="start">
+                    <div class="start-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                    <h2>Minus-Blitz</h2>
+                    <p>Welche Aufgaben willst du üben?</p>
+                    <div class="level-buttons">
+                        <button class="btn-level" id="btnLevel1">
+                            <span class="level-icon"><i class="fa-solid fa-1"></i></span>
+                            <span class="level-text">
+                                <div class="title">Stufe 1 — Von 10 weg</div>
+                                <div class="sub">10, 20, 30 ... 90 &nbsp;minus&nbsp; 1−9</div>
+                            </span>
+                        </button>
+                        <button class="btn-level" id="btnLevel2">
+                            <span class="level-icon"><i class="fa-solid fa-2"></i></span>
+                            <span class="level-text">
+                                <div class="title">Stufe 2 — Zehnerbrücke</div>
+                                <div class="sub">11 − X &nbsp;bis&nbsp; 18 − X &nbsp;(über die 10)</div>
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- GAME -->
+            <div class="screen" id="screenGame">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressBar" style="width:0%"></div>
+                </div>
+                <div class="progress-text" id="progressText">Aufgabe 1 von 10</div>
+
+                <div class="equation">
+                    <span class="eq-a" id="eqA">10</span>
+                    <span style="color:rgba(255,255,255,0.5)"> − </span>
+                    <span class="eq-b" id="eqB">4</span>
+                    <span style="color:rgba(255,255,255,0.5)"> = </span>
+                    <span class="eq-q">?</span>
+                </div>
+
+                <div class="frame-wrap" id="frameWrap"></div>
+
+                <div class="answers" id="answers"></div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+
+            <!-- DONE -->
+            <div class="screen" id="screenDone">
+                <div class="done">
+                    <div class="done-icon"><i class="fa-solid fa-trophy"></i></div>
+                    <h2>Super gemacht!</h2>
+                    <div class="score" id="score">10/10</div>
+                    <p id="doneMsg">Du kennst alle Minus-Fakten!</p>
+                    <div class="done-actions">
+                        <button class="btn btn-primary" id="btnAgain"><i class="fa-solid fa-rotate-right"></i> Nochmal</button>
+                        <button class="btn btn-secondary" id="btnMenu"><i class="fa-solid fa-list"></i> Stufenwahl</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // ── Facts ──────────────────────────────────────────────
+        // Level 1: runde Zehner − X (10, 20, 30, 40, 50, 60, 70, 80, 90)
+        var LEVEL1 = [];
+        for (var tens = 10; tens <= 90; tens += 10) {
+            for (var x = 1; x <= 9; x++) LEVEL1.push({ a: tens, b: x, r: tens - x });
+        }
+
+        // Level 2: Teens subtraction crossing 10 (a − b where a=11..18, b > a%10, result > 0)
+        var LEVEL2 = [];
+        for (var a = 11; a <= 18; a++) {
+            var ones = a % 10;           // ones digit of a
+            for (var b = ones + 1; b <= 9; b++) {  // only facts that cross the 10
+                LEVEL2.push({ a: a, b: b, r: a - b });
+            }
+        }
+
+        // ── State ──────────────────────────────────────────────
+        var state = {
+            stars: 0, diamonds: 0,
+            level: 1,
+            tasks: [], current: 0, correct: 0, total: 10
+        };
+
+        function load() {
+            try {
+                var d = JSON.parse(localStorage.getItem('minus_blitz_v1') || '{}');
+                state.stars    = d.stars    || 0;
+                state.diamonds = d.diamonds || 0;
+            } catch(e) {}
+            updateRewards();
+        }
+
+        function save() {
+            localStorage.setItem('minus_blitz_v1', JSON.stringify({ stars: state.stars, diamonds: state.diamonds }));
+        }
+
+        function updateRewards() {
+            document.getElementById('stars').textContent    = state.stars;
+            document.getElementById('diamonds').textContent = state.diamonds;
+        }
+
+        function addStar() {
+            state.stars++;
+            if (state.stars >= 100) { state.stars -= 100; state.diamonds++; }
+            updateRewards(); save();
+        }
+
+        function shuffle(arr) {
+            for (var i = arr.length - 1; i > 0; i--) {
+                var j = Math.floor(Math.random() * (i + 1));
+                var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+            }
+            return arr;
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+            document.getElementById(id).classList.add('active');
+        }
+
+        // ── Game ───────────────────────────────────────────────
+        function startLevel(lvl) {
+            state.level = lvl;
+            var pool = lvl === 1 ? LEVEL1 : LEVEL2;
+            state.tasks   = shuffle(pool.slice()).slice(0, state.total);
+            state.current = 0;
+            state.correct = 0;
+            showScreen('screenGame');
+            showTask();
+        }
+
+        function showTask() {
+            var t = state.tasks[state.current];
+            document.getElementById('progressBar').style.width = (state.current / state.total * 100) + '%';
+            document.getElementById('progressText').textContent = 'Aufgabe ' + (state.current + 1) + ' von ' + state.total;
+            document.getElementById('eqA').textContent = t.a;
+            document.getElementById('eqB').textContent = t.b;
+            clearFeedback();
+            renderFrames(t);
+            renderAnswers(t);
+        }
+
+        function renderFrames(t) {
+            var wrap = document.getElementById('frameWrap');
+            wrap.innerHTML = '';
+
+            if (state.level === 1) {
+                var base = t.a - 10; // z.B. bei 30: base=20
+                // Wenn Basis > 0: zeige "20 +" Label links
+                if (base > 0) {
+                    var baseLabel = document.createElement('div');
+                    baseLabel.style.cssText = 'display:flex;align-items:center;font-size:1.8rem;font-weight:800;color:var(--success);margin-right:4px;';
+                    baseLabel.textContent = base + ' +';
+                    wrap.appendChild(baseLabel);
+                }
+                // 10er-Feld: b dots weg (gone), Rest bleibt (kept)
+                var col = document.createElement('div');
+                col.innerHTML = '<div class="frame-label">10er-Feld</div>';
+                var frame = document.createElement('div');
+                frame.className = 'frame';
+                for (var i = 0; i < 10; i++) {
+                    var d = document.createElement('div');
+                    d.className = 'dot ' + (i < t.b ? 'gone' : 'kept');
+                    frame.appendChild(d);
+                }
+                col.appendChild(frame);
+                wrap.appendChild(col);
+
+            } else {
+                // Two frames: full 10 + partial ones
+                // Frame 1: the "ten" part
+                var col1 = document.createElement('div');
+                col1.innerHTML = '<div class="frame-label">10er</div>';
+                var f1 = document.createElement('div');
+                f1.className = 'frame';
+                var ones = t.a % 10;           // ones digit of a
+                var fromTen = t.b - ones;       // still to remove from the 10
+                for (var i = 0; i < 10; i++) {
+                    var d = document.createElement('div');
+                    // last fromTen dots = gone (subtracted from 10), rest = kept
+                    d.className = 'dot ' + (i >= 10 - fromTen ? 'gone' : 'kept');
+                    f1.appendChild(d);
+                }
+                col1.appendChild(f1);
+                wrap.appendChild(col1);
+
+                // Frame 2: ones of a (all gone — removed first)
+                var col2 = document.createElement('div');
+                col2.innerHTML = '<div class="frame-label">Einer</div>';
+                var f2 = document.createElement('div');
+                f2.className = 'frame';
+                for (var i = 0; i < ones; i++) {
+                    var d = document.createElement('div');
+                    d.className = 'dot gone';
+                    f2.appendChild(d);
+                }
+                col2.appendChild(f2);
+                wrap.appendChild(col2);
+            }
+        }
+
+        function renderAnswers(t) {
+            var correct = t.r;
+            var opts = [correct];
+
+            // Generate 3 wrong answers close to correct
+            var tries = 0;
+            while (opts.length < 4 && tries < 50) {
+                tries++;
+                var off = Math.floor(Math.random() * 7) - 3;
+                var v = correct + off;
+                if (v > 0 && v !== correct && opts.indexOf(v) === -1) opts.push(v);
+            }
+            shuffle(opts);
+
+            var div = document.getElementById('answers');
+            div.innerHTML = '';
+            opts.forEach(function(o) {
+                var btn = document.createElement('button');
+                btn.className = 'ans-btn';
+                btn.textContent = o;
+                btn.dataset.val = o;
+                div.appendChild(btn);
+            });
+        }
+
+        function clearFeedback() {
+            var fb = document.getElementById('feedback');
+            fb.textContent = '';
+            fb.className = 'feedback';
+        }
+
+        function handleAnswer(val) {
+            var t = state.tasks[state.current];
+            var correct = t.r;
+            var buttons = document.querySelectorAll('.ans-btn');
+            var fb = document.getElementById('feedback');
+            buttons.forEach(function(b){ b.style.pointerEvents = 'none'; });
+
+            if (val === correct) {
+                state.correct++;
+                addStar();
+                fb.textContent = t.a + ' − ' + t.b + ' = ' + correct + ' ✓';
+                fb.className = 'feedback correct';
+                buttons.forEach(function(b){ if (parseInt(b.dataset.val) === val) b.classList.add('correct'); });
+            } else {
+                fb.textContent = 'Die Antwort ist ' + correct;
+                fb.className = 'feedback wrong';
+                buttons.forEach(function(b){
+                    if (parseInt(b.dataset.val) === val)     b.classList.add('wrong');
+                    if (parseInt(b.dataset.val) === correct) b.classList.add('correct');
+                });
+            }
+
+            setTimeout(function() {
+                state.current++;
+                if (state.current < state.total) showTask();
+                else showDone();
+            }, 1100);
+        }
+
+        function showDone() {
+            var pct = Math.round(state.correct / state.total * 100);
+            document.getElementById('score').textContent = state.correct + ' / ' + state.total;
+            var msg;
+            if (pct === 100)     msg = 'Perfekt! Alle auswendig!';
+            else if (pct >= 80)  msg = 'Super! Fast alle richtig!';
+            else if (pct >= 60)  msg = 'Gut! Weiter üben!';
+            else                 msg = 'Nochmal — du schaffst das!';
+            document.getElementById('doneMsg').textContent = msg;
+            showScreen('screenDone');
+        }
+
+        // ── Events ────────────────────────────────────────────
+        document.getElementById('btnLevel1').addEventListener('click', function(){ startLevel(1); });
+        document.getElementById('btnLevel2').addEventListener('click', function(){ startLevel(2); });
+        document.getElementById('btnAgain').addEventListener('click', function(){ startLevel(state.level); });
+        document.getElementById('btnMenu').addEventListener('click', function(){ showScreen('screenStart'); });
+        document.getElementById('answers').addEventListener('click', function(e) {
+            var btn = e.target.closest('.ans-btn');
+            if (btn) handleAnswer(parseInt(btn.dataset.val));
+        });
+
+        load();
+    </script>
+</body>
+</html>
