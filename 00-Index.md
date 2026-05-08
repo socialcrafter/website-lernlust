@@ -24,6 +24,7 @@ Dokumentation für lernlust.ch - Lerncoaching Website und Web-Apps.
 |----------|--------------|
 | [[README]] | Design & Struktur |
 | [[DEPLOYMENT]] | Hosting & DNS Setup |
+| [[APP-GUIDE]] | Entwicklungsguide für neue Apps (Muster, CSS, JS) |
 
 ---
 
@@ -57,6 +58,8 @@ Alle weiteren Apps sind im Ordner `beta apps primarstufe/` archiviert und über 
 | Zehner-Brücke Blitz | `zehner-bruecke-blitz.html` |
 | Zehner-Paare Blitz | `zehner-paare-blitz-v2.html` |
 | Rückwärts zur 10 | `rueckwaerts-zur-10.html` |
+| Minus-Blitz | `minus-blitz.html` |
+| Hunderter Zehnerbrücke | `hunderter-zehnerbruecke.html` |
 | Mengen-Bilder | `mengen-bilder.html` |
 | Zahlen-Baumeister | `zahlen-baumeister.html` |
 | Zahlenstrahl Explorer | `zahlenstrahl-explorer_1.html` |
@@ -88,7 +91,7 @@ website & web apps lernlust/
 ├── styles.css                  # Neobrutalism Design-System
 ├── script.js                   # Interaktionen
 ├── impressum.html              # Impressum
-├── datenschutz.html            # Datenschutz
+├── datenschutz.html            # [[Datenschutz]]
 ├── prompts.html                # Prompts-Seite
 ├── vorlage.html                # HTML-Vorlage für neue Apps
 ├── CNAME                       # GitHub Pages Domain

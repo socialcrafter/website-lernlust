@@ -1,6 +1,6 @@
 # Gedächtnis und Abspeicherprozesse
 
-Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit ADHS-Kindern*, 12. Auflage, Kohlhammer.
+Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit [[ADHS]]-Kindern*, 12. Auflage, Kohlhammer.
 
 ## Das Dreispeichermodell
 
@@ -8,7 +8,7 @@ Unser Gedächtnis arbeitet in drei Stufen, die für das Design von Lern-Apps zen
 
 1. **Wahrnehmungsspeicher**: Über unsere Sinnesorgane nehmen wir pro Sekunde über 10 Millionen Informationseinheiten auf. Der visuelle Kanal ist mit Abstand der leistungsfähigste (10 Mio. bits/sec), gefolgt vom akustischen (1 Mio.), taktilen (400'000) und weiteren Kanälen. Der grösste Teil dieser Eindrücke erlischt innerhalb weniger Sekunden ohne Gedächtnisspur.
 
-2. **Arbeitsgedächtnis (Kurzzeitgedächtnis)**: Hier werden Informationen vorübergehend gespeichert und verarbeitet. Es ist das «Hier- und Jetzt-Gedächtnis» – die zentrale Engstelle. Erwachsene verfügen über ca. 7 Speicherplätze, Kinder über weniger, ADHS-Kinder möglicherweise nur über 3–5 Informationseinheiten.
+2. **Arbeitsgedächtnis (Kurzzeitgedächtnis)**: Hier werden Informationen vorübergehend gespeichert und verarbeitet. Es ist das «Hier- und Jetzt-Gedächtnis» – die zentrale Engstelle. Erwachsene verfügen über ca. 7 Speicherplätze, Kinder über weniger, [[ADHS]]-Kinder möglicherweise nur über 3–5 Informationseinheiten.
 
 3. **Langzeitgedächtnis**: Nur ein Bruchteil der Informationen gelangt hierher. Wissen kann als «aktives Wissen» (abrufbar) oder «passives Wissen» (gespeichert, aber nicht auffindbar) vorliegen.
 
@@ -16,7 +16,7 @@ Unser Gedächtnis arbeitet in drei Stufen, die für das Design von Lern-Apps zen
 
 Zwischen den Speicherstufen wirken zwei Filter:
 
-- **1. Filter (selektive Aufmerksamkeit)**: Bestimmt, was überhaupt ins Arbeitsgedächtnis gelangt. Bei ADHS-Kindern ist diese Filterung erschwert.
+- **1. Filter (selektive Aufmerksamkeit)**: Bestimmt, was überhaupt ins Arbeitsgedächtnis gelangt. Bei [[ADHS]]-Kindern ist diese Filterung erschwert.
 - **2. Filter (Übergang ins Langzeitgedächtnis)**: Nur durch aktives Wiederholen oder starke emotionale Beteiligung gelangen Informationen dauerhaft ins Langzeitgedächtnis.
 
 ## Zwei Wege des Abspeicherns
@@ -33,4 +33,4 @@ Zwischen den Speicherstufen wirken zwei Filter:
 
 ---
 
-*Quelle: Born, A. & Oehler, C. (2023). Lernen mit ADHS-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 3.*
+*Quelle: Born, A. & Oehler, C. (2023). Lernen mit [[ADHS]]-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 3.*

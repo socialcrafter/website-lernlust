@@ -1,12 +1,12 @@
 # Grundprinzipien der Lernmethoden
 
-Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit ADHS-Kindern*, 12. Auflage, Kohlhammer.
+Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit [[ADHS]]-Kindern*, 12. Auflage, Kohlhammer.
 
 ## «Weniger ist mehr»
 
 Born/Oehler betonen dieses Prinzip als Leitmotiv: Schulische Lernmethoden müssen den Kindern angepasst werden – nicht die Kinder den Methoden. Das bedeutet konkret eine konsequente Reduktion auf das Wesentliche.
 
-Die typische schulische Praxis – eine Fülle von Veranschaulichungen, unterschiedlichen Erklärungswegen und Übungsformen – überfrachtet ADHS-Kinder. Die «Überlasttheorie des Arbeitsgedächtnisses» (Wellenreuther) formuliert es so: Eine der grundlegenden Fragen der Schulpädagogik ist, wie Wissen zu vermitteln und zu strukturieren ist, um das «Nadelöhr Arbeitsgedächtnis» passieren zu können.
+Die typische schulische Praxis – eine Fülle von Veranschaulichungen, unterschiedlichen Erklärungswegen und Übungsformen – überfrachtet [[ADHS]]-Kinder. Die «Überlasttheorie des Arbeitsgedächtnisses» (Wellenreuther) formuliert es so: Eine der grundlegenden Fragen der Schulpädagogik ist, wie Wissen zu vermitteln und zu strukturieren ist, um das «Nadelöhr Arbeitsgedächtnis» passieren zu können.
 
 ## Möglichst nicht schriftlich
 
@@ -22,7 +22,7 @@ Das zentrale methodische Prinzip lautet: Lieber kurz und oft als lang und selten
 
 ## Mehr Strukturierung von aussen
 
-ADHS-Kinder haben Schwierigkeiten mit Selbststeuerung und Selbstorganisation. Die Lernumgebung muss deshalb von aussen strukturiert werden:
+[[ADHS]]-Kinder haben Schwierigkeiten mit Selbststeuerung und Selbstorganisation. Die Lernumgebung muss deshalb von aussen strukturiert werden:
 
 - Vereinbarungen im Voraus treffen
 - Realistische Ziele setzen
@@ -59,4 +59,4 @@ Born/Oehler betonen die Notwendigkeit der Kooperation aller Beteiligten – Elte
 
 ---
 
-*Quelle: Born, A. & Oehler, C. (2023). Lernen mit ADHS-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 7, 8, 9 und 10.*
+*Quelle: Born, A. & Oehler, C. (2023). Lernen mit [[ADHS]]-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 7, 8, 9 und 10.*

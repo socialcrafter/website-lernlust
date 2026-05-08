@@ -1,12 +1,12 @@
 # Medienbildung und Lernen – Die andere Seite des Feldversuchs
 
-Fachlicher Input für die kritische Rahmung der Lernlust Web-Apps, basierend auf Döbeli Honegger (PHSZ), Lisa Rosa, GEW-Leitfaden KI & Schule, sowie Hundertpfund/Hartmann.
+Fachlicher Input für die kritische Rahmung der Lernlust Web-Apps, basierend auf [[Döbeli]] Honegger (PHSZ), Lisa Rosa, GEW-Leitfaden KI & Schule, sowie Hundertpfund/Hartmann.
 
 ## Die zentrale Frage
 
-Beat Döbeli Honegger (PHSZ) stellt eine Frage, die das Bildungssystem herausfordert: *«Warum soll ich lernen, was die Maschine besser kann?»* – ChatGPT hat die Schwelle dessen, was Maschinen sprachlich leisten können, über das Niveau mancher Schüler:innen gehoben. Schulen müssen sich dieser Frage offen stellen, statt sie zu ignorieren.
+Beat [[Döbeli]] Honegger (PHSZ) stellt eine Frage, die das Bildungssystem herausfordert: *«Warum soll ich lernen, was die Maschine besser kann?»* – ChatGPT hat die Schwelle dessen, was Maschinen sprachlich leisten können, über das Niveau mancher Schüler:innen gehoben. Schulen müssen sich dieser Frage offen stellen, statt sie zu ignorieren.
 
-Dieses Projekt dreht die Frage um: **Kann die Maschine helfen, wo das Lernen scheitert?** Kann ein Sozialpädagoge ohne Programmierkenntnisse mit Vibecoding Lern-Apps bauen, die fachlich fundiert sind? Und wo liegen die Grenzen?
+Dieses Projekt dreht die Frage um: **Kann die Maschine helfen, wo das Lernen scheitert?** Kann ein [[Sozialpädagogik]]e ohne Programmierkenntnisse mit Vibecoding Lern-Apps bauen, die fachlich fundiert sind? Und wo liegen die Grenzen?
 
 ## Digitale Medien verändern das Lernen selbst
 
@@ -33,7 +33,7 @@ Ihre These: KI macht reformpädagogische Ansätze (Wagenschein, Dewey, Challenge
 
 ## Begriffliche Präzision
 
-Döbeli Honegger (PHSZ) empfiehlt den Begriff «generative Machine-Learning-Systeme» statt des vagen «KI». Drei Analyseebenen helfen bei der Einordnung:
+[[Döbeli]] Honegger (PHSZ) empfiehlt den Begriff «generative Machine-Learning-Systeme» statt des vagen «KI». Drei Analyseebenen helfen bei der Einordnung:
 
 1. **Technisch**: Wie funktionieren die Systeme?
 2. **Gesellschaftlich**: Welche kulturellen Auswirkungen haben sie?
@@ -45,9 +45,9 @@ Döbeli Honegger (PHSZ) empfiehlt den Begriff «generative Machine-Learning-Syst
 - **Ehrliche Grenzen benennen**: Wo stossen vibecoded Apps an ihre Grenzen? Wo braucht es menschliche Begleitung? Wo ist Technologie der falsche Ansatz?
 - **Pädagogik vor Technologie**: Die fachlichen Grundlagen (CLT, Hattie, Born/Oehler) müssen das Design bestimmen – nicht die technischen Möglichkeiten.
 - **Kritische Distanz wahren**: Nicht jede App, die man bauen *kann*, sollte man auch bauen. Der GEW-Leitfaden mahnt: Welches Problem löst das tatsächlich?
-- **Medienbildung als Haltung**: Nicht nur fragen «Was geht?», sondern auch «Was soll?» – im Sinne einer Medienbildung, die Technologie einordnet statt sie zu feiern.
+- **[[Medienbildung]] als Haltung**: Nicht nur fragen «Was geht?», sondern auch «Was soll?» – im Sinne einer [[Medienbildung]], die Technologie einordnet statt sie zu feiern.
 - **Döbelis Frage ernst nehmen**: Die Lern-Apps müssen sich der Frage stellen, ob sie etwas bieten, das über das hinausgeht, was die Maschine ohnehin besser kann. Ziel ist nicht Ersatz, sondern Unterstützung dort, wo menschliches Lernen scheitert.
 
 ---
 
-*Quellen: Döbeli Honegger, B. (PHSZ). «Warum soll ich lernen, was die Maschine besser kann?» / ChatGPT und Schule. Rosa, L. «Aufbruch in ein Zeitalter des Lernens». GEW-Leitfaden KI & Schule. Hundertpfund, A. & Hartmann, W. «Bildung überdenken». Eigene Zusammenstellung aus Obsidian-Notizen.*
+*Quellen: [[Döbeli]] Honegger, B. (PHSZ). «Warum soll ich lernen, was die Maschine besser kann?» / ChatGPT und Schule. Rosa, L. «Aufbruch in ein Zeitalter des Lernens». GEW-Leitfaden KI & Schule. Hundertpfund, A. & Hartmann, W. «Bildung überdenken». Eigene Zusammenstellung aus Obsidian-Notizen.*

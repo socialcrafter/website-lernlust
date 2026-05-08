@@ -1,14 +1,14 @@
 # ADHS und Lernprobleme – Besonderheiten für die App-Gestaltung
 
-Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit ADHS-Kindern*, 12. Auflage, Kohlhammer.
+Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit [[ADHS]]-Kindern*, 12. Auflage, Kohlhammer.
 
 ## ADHS in Zahlen
 
-Etwa 5 % aller Kinder sind von ADHS betroffen – das sind ein bis zwei Kinder in jeder Schulklasse. Bis zu 85 % der ADHS-Kinder zeigen Lernschwächen. Lesestörungen finden sich bei 8–39 %, Rechtschreibstörungen bei 12–26 %, Rechenstörungen bei 12–33 % der betroffenen Kinder.
+Etwa 5 % aller Kinder sind von [[ADHS]] betroffen – das sind ein bis zwei Kinder in jeder Schulklasse. Bis zu 85 % der [[ADHS]]-Kinder zeigen Lernschwächen. Lesestörungen finden sich bei 8–39 %, Rechtschreibstörungen bei 12–26 %, Rechenstörungen bei 12–33 % der betroffenen Kinder.
 
 ## Die drei Kernsymptome
 
-ADHS zeigt sich in drei Symptombereichen, die alle Auswirkungen auf das Lernen haben:
+[[ADHS]] zeigt sich in drei Symptombereichen, die alle Auswirkungen auf das Lernen haben:
 
 - **Unaufmerksamkeit**: Schwierigkeiten, die Aufmerksamkeit aufrechtzuerhalten, hohe Ablenkbarkeit, Probleme mit der Organisation. Kinder übersehen Details, können Aufgaben nicht zu Ende führen und verlieren häufiger Dinge.
 - **Hyperaktivität**: Übermässige motorische Aktivität, Schwierigkeit still zu bleiben. Zeigt sich besonders in strukturierten Situationen.
@@ -17,7 +17,7 @@ ADHS zeigt sich in drei Symptombereichen, die alle Auswirkungen auf das Lernen h
 ## Spezifische Lernprobleme
 
 ### Arbeitsgedächtnis-Überlastung
-Das Arbeitsgedächtnis von ADHS-Kindern kann möglicherweise nur 3–5 Informationseinheiten gleichzeitig verarbeiten (statt 7 bei Erwachsenen). Zu viele Informationen auf einmal führen dazu, dass überzählige Informationen einfach «herausgeworfen» werden.
+Das Arbeitsgedächtnis von [[ADHS]]-Kindern kann möglicherweise nur 3–5 Informationseinheiten gleichzeitig verarbeiten (statt 7 bei Erwachsenen). Zu viele Informationen auf einmal führen dazu, dass überzählige Informationen einfach «herausgeworfen» werden.
 
 ### Aufmerksamkeitsprobleme
 - Selektive Aufmerksamkeit (den ersten Filter passieren) ist beeinträchtigt.
@@ -44,7 +44,7 @@ Born/Oehler beschreiben einen typischen Teufelskreis: Leistungsprobleme führen 
 
 - **Maximal 3–5 Informationseinheiten** pro Bildschirm/Aufgabe anzeigen.
 - **Klare, reizarme Oberfläche**: Ablenkungen minimieren, kein visuelles Rauschen.
-- **Sofortiges Feedback**: ADHS-Kinder sind auf unmittelbare Verstärkungen angewiesen.
+- **Sofortiges Feedback**: [[ADHS]]-Kinder sind auf unmittelbare Verstärkungen angewiesen.
 - **Fehlerfreundlichkeit**: Fehler nicht rot markieren oder bestrafen, sondern als normalen Teil des Lernens behandeln.
 - **Kurze Übungseinheiten**: Die begrenzte Aufmerksamkeitsspanne berücksichtigen.
 - **Erfolgserlebnisse einbauen**: Dem Teufelskreis entgegenwirken durch sichtbare Fortschritte und positive Rückmeldungen.
@@ -52,4 +52,4 @@ Born/Oehler beschreiben einen typischen Teufelskreis: Leistungsprobleme führen 
 
 ---
 
-*Quelle: Born, A. & Oehler, C. (2023). Lernen mit ADHS-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 1, 2 und 5.*
+*Quelle: Born, A. & Oehler, C. (2023). Lernen mit [[ADHS]]-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 1, 2 und 5.*

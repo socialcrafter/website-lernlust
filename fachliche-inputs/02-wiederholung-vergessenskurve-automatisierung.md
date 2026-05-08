@@ -1,6 +1,6 @@
 # Wiederholung, Vergessenskurve und Automatisierung
 
-Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit ADHS-Kindern*, 12. Auflage, Kohlhammer.
+Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit [[ADHS]]-Kindern*, 12. Auflage, Kohlhammer.
 
 ## Die Vergessenskurve
 
@@ -44,4 +44,4 @@ Beispiel aus der Forschung: Gehirnscans zeigen, dass bei geübten Rechnern bei e
 
 ---
 
-*Quelle: Born, A. & Oehler, C. (2023). Lernen mit ADHS-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 3 und 4.*
+*Quelle: Born, A. & Oehler, C. (2023). Lernen mit [[ADHS]]-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 3 und 4.*

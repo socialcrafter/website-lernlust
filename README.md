@@ -9,12 +9,12 @@
 ## Konzept
 
 **Leitfrage:** *Was braucht es, damit Lernen gelingt?*
-**Inverse Frage:** *Kann die Maschine helfen, wo das Lernen scheitert?* (nach Döbeli Honegger)
+**Inverse Frage:** *Kann die Maschine helfen, wo das Lernen scheitert?* (nach [[Döbeli]] Honegger)
 
-Ein Sozialpädagoge mit Erfahrung in der integrativen Förderung erkundet Vibecoding – das Bauen von Web-Apps mit KI ohne Programmierkenntnisse. Die Website verbindet drei Dimensionen:
+Ein [[Sozialpädagogik]]e mit Erfahrung in der integrativen Förderung erkundet Vibecoding – das Bauen von Web-Apps mit KI ohne Programmierkenntnisse. Die Website verbindet drei Dimensionen:
 
-1. **Lernforschung** – Cognitive Load Theory, Hattie, Born/Oehler (Gedächtnis, Vergessenskurve, ADHS)
-2. **Medienbildung** – Döbeli Honegger (PHSZ), Lisa Rosa, GEW-Leitfaden KI & Schule
+1. **Lernforschung** – Cognitive Load Theory, Hattie, Born/Oehler (Gedächtnis, Vergessenskurve, [[ADHS]])
+2. **[[Medienbildung]]** – [[Döbeli]] Honegger (PHSZ), Lisa Rosa, GEW-Leitfaden KI & Schule
 3. **Praxis** – Vibecoded Lern-Apps für Kinder mit Lernschwächen oder wenig Motivation
 
 ## Seitenstruktur (aktuell)
@@ -27,7 +27,7 @@ Hero:        "Was braucht es, damit Lernen gelingt?"
 #reflexion:  Der Feldversuch (Brücke Lernforschung ↔ Medienbildung)
 #git:        Open Source auf GitHub
 #kontakt:    Über den Autor (Mario Robles)
-Footer:      Impressum, Datenschutz
+Footer:      Impressum, [[Datenschutz]]
 ```
 
 ### prompts.html – Vibecoding-Anleitung
@@ -36,7 +36,7 @@ Hero:        "Vibecoding – wie geht das?"
 Steps:       1. KI-Tool wählen → 2. Prompt schreiben → 3-5 ...
              (Tool-agnostisch: Claude, Gemini, ChatGPT, VS Code)
 #fachliche-grundlagen:  8 Karten mit fachlichen Inputs
-             (Arbeitsgedächtnis, Vergessenskurve, Emotionen, ADHS,
+             (Arbeitsgedächtnis, Vergessenskurve, Emotionen, [[ADHS]],
               Weniger ist mehr, Karteikarten, CLT, Load Reduction)
 Sources:     Born/Oehler, Sweller, Hattie, Martin & Evans
 ```
@@ -93,18 +93,18 @@ website & web apps lernlust/
 ## Fachliche Quellen
 
 ### Lernforschung (fachliche-inputs 01–06)
-- **Born, A. & Oehler, C.** – Lernen mit ADS-Kindern (Gedächtnis, Vergessenskurve, ADHS, Emotionen, Grundprinzipien)
+- **Born, A. & Oehler, C.** – Lernen mit ADS-Kindern (Gedächtnis, Vergessenskurve, [[ADHS]], Emotionen, Grundprinzipien)
 - **Sweller, J.** – Cognitive Load Theory (intrinsic, extraneous, germane load)
 - **Hattie, J.** – Visible Learning (Effektstärken: Spaced Practice d=0.60, Feedback d=0.70)
 - **Martin, A. & Evans, R.** – Load Reduction Instruction (5 Schritte)
 
 ### Medienbildung (fachliche-inputs 07 + Obsidian-Vault)
-- **Döbeli Honegger, B.** (PHSZ) – «Warum soll ich lernen, was die Maschine besser kann?»
+- **[[Döbeli]] Honegger, B.** (PHSZ) – «Warum soll ich lernen, was die Maschine besser kann?»
 - **Rosa, L.** – «Aufbruch in ein Zeitalter des Lernens» (Lernen verändert sich)
 - **GEW** – Leitfaden KI & Schule (kritische Prüfsteine)
 - **Hundertpfund/Hartmann** – «Bildung überdenken» (Urteilskraft statt Wissensanhäufung)
 
-Obsidian-Quellnotizen: `Medienbildung/` und `Pädagogik/` im Vault
+Obsidian-Quellnotizen: `[[Medienbildung]]/` und `Pädagogik/` im Vault
 
 ## Offene Punkte
 
@@ -136,5 +136,5 @@ git push -u origin main
 - **Keine Build-Tools:** Reines HTML/CSS/JS, kein Framework
 - **Vibecoding ist tool-agnostisch:** Claude, Gemini, ChatGPT, VS Code + Copilot
 - **Fachliche Inputs:** Immer auf Born/Oehler, CLT, Hattie referenzieren
-- **Medienbildung:** Döbelis inverse Frage als roter Faden
+- **[[Medienbildung]]:** Döbelis inverse Frage als roter Faden
 - **CSS:** Nutze die definierten Custom Properties und Klassen (kein Inline-Style für strukturelle Elemente)

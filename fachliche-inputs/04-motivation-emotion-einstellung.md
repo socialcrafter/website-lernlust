@@ -1,12 +1,12 @@
 # Motivation, Emotion und Einstellung beim Lernen
 
-Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit ADHS-Kindern*, 12. Auflage, Kohlhammer.
+Fachlicher Input für die Gestaltung der Lernlust Web-Apps, basierend auf Born/Oehler (2023): *Lernen mit [[ADHS]]-Kindern*, 12. Auflage, Kohlhammer.
 
 ## Gefühle als Schlüssel zum Gedächtnis
 
 Born/Oehler formulieren ein zentrales Prinzip: Unsere Gefühle sind ein Schlüssel für das Tor zum Gedächtnis. Sie öffnen den Filter, der Informationen quasi «durchrutschen» lässt. Eine positive emotionale Teilnahme am Lern- und Übungsprozess führt zu besserem Behalten von Gedächtnisinhalten.
 
-Informationen, die mit starken Gefühlen, hohem Interesse oder Motivation verbunden sind, passieren die Gedächtnisfilter fast mühelos. Das erklärt, warum ADHS-Kinder bei Themen, die sie faszinieren, erstaunlich detailliertes Spezialwissen aufbauen können.
+Informationen, die mit starken Gefühlen, hohem Interesse oder Motivation verbunden sind, passieren die Gedächtnisfilter fast mühelos. Das erklärt, warum [[ADHS]]-Kinder bei Themen, die sie faszinieren, erstaunlich detailliertes Spezialwissen aufbauen können.
 
 ## Auf die «Einstellung» kommt es an
 
@@ -50,4 +50,4 @@ Je mehr anschauliche Gedächtnishaken gefunden werden, umso besser kann die neue
 
 ---
 
-*Quelle: Born, A. & Oehler, C. (2023). Lernen mit ADHS-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 3 und 5.*
+*Quelle: Born, A. & Oehler, C. (2023). Lernen mit [[ADHS]]-Kindern. 12. Auflage. Stuttgart: Kohlhammer. Kapitel 3 und 5.*

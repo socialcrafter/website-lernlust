@@ -182,7 +182,7 @@ Die echte Website läuft komplett über GitHub Pages!
 - Scraper können sie nicht auslesen
 - Code: `<svg>...<text>info@lernlust.ch</text></svg>`
 
-**Impressum & Datenschutz:**
+**Impressum & [[Datenschutz]]:**
 - Minimal-Angaben: Mario Robles, Basel, Schweiz
 - E-Mail als SVG-Grafik (Anti-Scraping)
 - Sehr datenschutzfreundlich: Keine Cookies, kein Tracking
@@ -191,7 +191,7 @@ Die echte Website läuft komplett über GitHub Pages!
 
 - **7. Dezember 2025**: Initial Setup, GitHub Pages, DNS-Konfiguration
 - **7. Dezember 2025**: Lerncoaching-Link entfernt
-- **7. Dezember 2025**: Impressum & Datenschutz hinzugefügt
+- **7. Dezember 2025**: Impressum & [[Datenschutz]] hinzugefügt
 - **7. Dezember 2025**: 4 fehlende Apps hinzugefügt (Einmaleins-Trainer, Division, Mengen-Bilder, Rückwärts zur 10)
 - **11. März 2026**: Web-Apps in "beta apps primarstufe" archiviert, Übersichtsseite erstellt
 - **11. März 2026**: Ideenkiste (Schule · Methoden & Massnahmen) hinzugefügt
