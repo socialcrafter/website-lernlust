@@ -300,8 +300,8 @@ function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor
 function ans(btn,ok){
 if(S.answered)return;S.answered=true;
 const btns=document.querySelectorAll('#ans-grid .ans-btn');btns.forEach(b=>b.disabled=true);
-if(ok){btn.classList.add('correct');S.streak++;S.results.push(true);document.getElementById('fb-ok').classList.add('show');speak('Richtig!')}
-else{btn.classList.add('wrong');S.streak=0;S.results.push(false);btns.forEach(b=>{if(b.dataset.c==='true')b.classList.add('revealed')});document.getElementById('fb-ko').classList.add('show');speak('Leider falsch.');}
+if(ok){btn.classList.add('correct');S.streak++;S.results.push(true);document.getElementById('fb-ok').classList.add('show');playAudio('audio/richtig.mp3')}
+else{btn.classList.add('wrong');S.streak=0;S.results.push(false);btns.forEach(b=>{if(b.dataset.c==='true')b.classList.add('revealed')});document.getElementById('fb-ko').classList.add('show');playAudio('audio/leider-falsch.mp3');}
 document.getElementById('nq-btn').style.display='flex';save();}
 
 function nextQ(){const sec=MODULES[S.mi].sections[S.si];S.qi++;S.answered=false;if(S.qi>=sec.questions.length){S.screen='parent'}save();render()}
@@ -322,16 +322,19 @@ if(allDone){S.screen='allDone'}else{S.mi=S.mi<MODULES.length-1?S.mi+1:0;S.si=0;S
 
 function saveParent(){const key=`${S.mi}-${S.si}`;const ta=document.getElementById('parent-input');if(ta){S.parentSaved[key]=ta.value;save()}}
 
-function speakText(){const sec=MODULES[S.mi].sections[S.si];speak(sec.text.replace(/<[^>]+>/g,''))}
-function speakQ(){speak(MODULES[S.mi].sections[S.si].questions[S.qi].q)}
-function speakFullSec(mi,si){const sec=MODULES[mi].sections[si];speak(sec.text.replace(/<[^>]+>/g,''))}
-
-function speak(text){
-if(!window.speechSynthesis)return;window.speechSynthesis.cancel();
-const u=new SpeechSynthesisUtterance(text);u.lang='de-CH';u.rate=0.85;
-u.onstart=()=>document.querySelectorAll('.tts-btn').forEach(b=>b.classList.add('speaking'));
-u.onend=()=>document.querySelectorAll('.tts-btn').forEach(b=>b.classList.remove('speaking'));
-window.speechSynthesis.speak(u)}
+let _audio=null;
+function playAudio(src){
+  if(_audio){_audio.pause();_audio=null}
+  _audio=new Audio(src);_audio.play().catch(()=>{});
+  document.querySelectorAll('.tts-btn').forEach(b=>b.classList.add('speaking'));
+  _audio.onended=()=>{document.querySelectorAll('.tts-btn').forEach(b=>b.classList.remove('speaking'));_audio=null};
+  _audio.onerror=()=>{document.querySelectorAll('.tts-btn').forEach(b=>b.classList.remove('speaking'));_audio=null};
+}
+function secIdx(){let idx=0;for(let i=0;i<S.mi;i++)idx+=MODULES[i].sections.length;return idx+S.si}
+function speakText(){playAudio('audio/v5-sec'+String(secIdx()).padStart(2,'0')+'.mp3')}
+function speakQ(){playAudio('audio/v5-sec'+String(secIdx()).padStart(2,'0')+'.mp3')}
+function speakFullSec(mi,si){let idx=0;for(let i=0;i<mi;i++)idx+=MODULES[i].sections.length;playAudio('audio/v5-sec'+String(idx+si).padStart(2,'0')+'.mp3')}
+function speak(text){/* fallback: replaced by pre-generated audio */}
 
 load();render();
 </script>
