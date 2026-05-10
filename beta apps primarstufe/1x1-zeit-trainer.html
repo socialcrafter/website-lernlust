@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1x1 Zeit-Trainer — Lernlust</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary:   #FF6B6B;
+      --secondary: #4ECDC4;
+      --accent:    #FFE66D;
+      --success:   #95E1A3;
+      --danger:    #FF8B94;
+      --purple:    #C3A6FF;
+      --bg-light:  #FFF9F0;
+      --bg-card:   #FFFFFF;
+      --text-dark: #2D3436;
+      --text-muted:#636E72;
+      --shadow:       0 8px 32px rgba(0,0,0,0.10);
+      --shadow-hover: 0 12px 48px rgba(0,0,0,0.15);
+      --radius:    24px;
+      --radius-sm: 16px;
+      --radius-xs: 10px;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg-light);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 60px;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    .bg-shapes {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .bg-shape {
+      position: absolute; border-radius: 50%; opacity: 0.08;
+      animation: float 20s infinite ease-in-out;
+    }
+    .bg-shape:nth-child(1) { width: 320px; height: 320px; background: var(--primary); top: -80px; right: -60px; }
+    .bg-shape:nth-child(2) { width: 240px; height: 240px; background: var(--secondary); bottom: 10%; left: -40px; animation-delay: -7s; }
+    .bg-shape:nth-child(3) { width: 180px; height: 180px; background: var(--accent); top: 45%; right: 5%; animation-delay: -13s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      50% { transform: translate(-15px, 25px) rotate(-8deg); }
+    }
+
+    .container {
+      position: relative; z-index: 1;
+      max-width: 480px; width: 100%;
+    }
+
+    header {
+      text-align: center; margin-bottom: 24px;
+    }
+    header h1 {
+      font-family: 'Fredoka', sans-serif; font-size: 2rem;
+      color: var(--text-dark); margin-bottom: 4px;
+    }
+    header h1 i { color: var(--primary); }
+
+    /* ── Screen switching ── */
+    .screen { display: none; }
+    .screen.active { display: block; animation: fadeIn 0.4s ease; }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Card ── */
+    .card {
+      background: var(--bg-card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 28px 24px;
+      margin-bottom: 20px;
+    }
+
+    /* ── Start Screen ── */
+    .mode-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 14px; margin-top: 20px;
+    }
+    .mode-btn {
+      background: var(--bg-light);
+      border: 3px solid transparent;
+      border-radius: var(--radius-sm);
+      padding: 22px 12px;
+      text-align: center; cursor: pointer;
+      transition: all 0.25s ease;
+      font-family: 'Nunito', sans-serif;
+    }
+    .mode-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
+    .mode-btn.selected { border-color: var(--primary); background: rgba(255,107,107,0.08); }
+    .mode-btn i { font-size: 2rem; display: block; margin-bottom: 8px; }
+    .mode-btn .mode-title { font-weight: 700; font-size: 1.1rem; color: var(--text-dark); }
+    .mode-btn .mode-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
+
+    /* ── Stufen-Buttons (Mal oder Durch) ── */
+    .stufen-row {
+      display: flex; gap: 10px; flex-wrap: wrap;
+      justify-content: center; margin: 18px 0;
+    }
+    .stufi-btn {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.1rem; font-weight: 700;
+      padding: 10px 18px;
+      border: 2px solid var(--bg-light);
+      border-radius: 50px;
+      background: var(--bg-light);
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .stufi-btn:hover { border-color: var(--secondary); transform: scale(1.08); }
+    .stufi-btn.active {
+      background: var(--secondary); color: white;
+      border-color: var(--secondary);
+    }
+    .stufi-btn.mastered {
+      background: var(--success); color: white;
+      border-color: var(--success);
+    }
+
+    /* ── Start Button ── */
+    .start-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.3rem; font-weight: 600;
+      padding: 16px 48px;
+      border: none; border-radius: 50px;
+      background: linear-gradient(135deg, var(--primary), #ff8e8e);
+      color: white; cursor: pointer;
+      box-shadow: 0 4px 20px rgba(255,107,107,0.4);
+      transition: all 0.25s ease;
+    }
+    .start-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255,107,107,0.5); }
+    .start-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+    /* ── Game Screen ── */
+    .timer-bar {
+      display: flex; align-items: center; justify-content: center;
+      gap: 8px; margin-bottom: 16px;
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.5rem; font-weight: 700;
+      color: var(--primary);
+    }
+    .timer-bar i { font-size: 1.2rem; }
+
+    .progress-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 12px; font-size: 0.9rem; color: var(--text-muted);
+    }
+    .progress-bar {
+      width: 100%; height: 10px;
+      background: var(--bg-light); border-radius: 10px;
+      margin-bottom: 20px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%; border-radius: 10px;
+      background: linear-gradient(90deg, var(--secondary), var(--success));
+      transition: width 0.4s ease;
+    }
+
+    .task-display {
+      text-align: center; padding: 12px 0 20px;
+    }
+    .task-equation {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 3.5rem; font-weight: 700;
+      color: var(--text-dark); line-height: 1.2;
+    }
+    .task-equation .op { color: var(--primary); }
+    .task-equation .eq { color: var(--text-muted); }
+    .task-equation .answer-slot {
+      display: inline-block; min-width: 60px;
+      border-bottom: 4px solid var(--primary);
+      color: var(--secondary);
+    }
+
+    .answer-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-top: 16px;
+    }
+    .answer-btn {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem; font-weight: 700;
+      padding: 18px; text-align: center;
+      border: 3px solid var(--bg-light);
+      border-radius: var(--radius-sm);
+      background: var(--bg-light);
+      color: var(--text-dark);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .answer-btn:hover { border-color: var(--secondary); transform: scale(1.05); }
+    .answer-btn:active { transform: scale(0.97); }
+    .answer-btn.correct {
+      background: var(--success); color: white;
+      border-color: var(--success);
+      animation: popCorrect 0.4s ease;
+    }
+    .answer-btn.wrong {
+      background: var(--danger); color: white;
+      border-color: var(--danger);
+      animation: shake 0.4s ease;
+    }
+    .answer-btn.disabled { pointer-events: none; opacity: 0.5; }
+    .answer-btn.show-correct {
+      border-color: var(--success);
+      background: rgba(149,225,163,0.3);
+    }
+
+    @keyframes popCorrect {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+      100% { transform: scale(1); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+
+    /* ── Stat pills ── */
+    .stat-row {
+      display: flex; justify-content: center; gap: 16px;
+      margin-top: 14px; flex-wrap: wrap;
+    }
+    .stat-pill {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg-light); border-radius: 50px;
+      padding: 6px 14px; font-size: 0.85rem; font-weight: 600;
+      color: var(--text-muted);
+    }
+    .stat-pill i { font-size: 0.9rem; }
+    .stat-pill .stat-val { color: var(--text-dark); }
+
+    /* ── Done Screen ── */
+    .done-icon { font-size: 4rem; margin-bottom: 12px; }
+    .done-icon.gold i { color: var(--accent); }
+    .done-icon.silver i { color: #aaa; }
+    .done-icon.bronze i { color: #cd7f32; }
+    .done-title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 2rem; margin-bottom: 8px;
+    }
+    .done-stats {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin: 20px 0;
+    }
+    .done-stat {
+      background: var(--bg-light);
+      border-radius: var(--radius-xs);
+      padding: 14px; text-align: center;
+    }
+    .done-stat .label { font-size: 0.8rem; color: var(--text-muted); }
+    .done-stat .value {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.6rem; font-weight: 700; color: var(--text-dark);
+    }
+    .done-stat .value.best { color: var(--primary); }
+
+    .btn-row {
+      display: flex; gap: 10px; justify-content: center;
+      margin-top: 20px; flex-wrap: wrap;
+    }
+    .btn {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem; font-weight: 700;
+      padding: 14px 28px;
+      border: none; border-radius: 50px;
+      cursor: pointer; display: inline-flex;
+      align-items: center; gap: 8px;
+      transition: all 0.25s ease;
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { background: linear-gradient(135deg, var(--primary), #ff8e8e); color: white; }
+    .btn-secondary { background: var(--bg-light); color: var(--text-dark); }
+
+    /* ── Hidden input for keyboard ── */
+    #hiddenInput {
+      position: absolute; top: -200px; left: -200px;
+      width: 1px; height: 1px; opacity: 0;
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-shapes">
+    <div class="bg-shape"></div>
+    <div class="bg-shape"></div>
+    <div class="bg-shape"></div>
+  </div>
+
+  <div class="container">
+    <header>
+      <h1><i class="fa-solid fa-stopwatch"></i> 1x1 Zeit-Trainer</h1>
+    </header>
+
+    <!-- ═══ START SCREEN ═══ -->
+    <div class="screen active" id="screenStart">
+      <div class="card">
+        <h2 style="font-family:'Fredoka',sans-serif;text-align:center;margin-bottom:4px;">Wie willst du ueben?</h2>
+        <p style="text-align:center;color:var(--text-muted);font-size:0.9rem;margin-bottom:16px;">Malnehmen oder Teilen — mit Stoppuhr!</p>
+
+        <div class="mode-grid">
+          <div class="mode-btn selected" id="modeMal" onclick="selectMode('mal')">
+            <i class="fa-solid fa-xmark" style="color:var(--primary);"></i>
+            <div class="mode-title">Malnehmen</div>
+            <div class="mode-sub">3 × 7 = ?</div>
+          </div>
+          <div class="mode-btn" id="modeDurch" onclick="selectMode('durch')">
+            <i class="fa-solid fa-divide" style="color:var(--secondary);"></i>
+            <div class="mode-title">Teilen</div>
+            <div class="mode-sub">21 ÷ 3 = ?</div>
+          </div>
+        </div>
+
+        <p style="text-align:center;font-weight:700;color:var(--text-dark);margin-top:20px;">Welche Reihe?</p>
+        <div class="stufen-row" id="reihenRow"></div>
+
+        <div style="text-align:center;margin-top:24px;">
+          <button class="start-btn" id="btnStart" onclick="startGame()">
+            <i class="fa-solid fa-play"></i> Los gehts!
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ GAME SCREEN ═══ -->
+    <div class="screen" id="screenGame">
+      <div class="card">
+        <div class="timer-bar" id="timerBar">
+          <i class="fa-solid fa-stopwatch"></i>
+          <span id="timerDisplay">0:00</span>
+        </div>
+
+        <div class="progress-row">
+          <span id="progressText">Aufgabe 1 von 10</span>
+          <span id="correctCount">0 richtig</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+
+        <div class="task-display">
+          <div class="task-equation" id="taskEquation"></div>
+        </div>
+
+        <div class="answer-grid" id="answerGrid"></div>
+
+        <div class="stat-row">
+          <div class="stat-pill"><i class="fa-solid fa-fire" style="color:var(--primary);"></i> <span class="stat-val" id="streakDisplay">0</span> Serie</div>
+          <div class="stat-pill"><i class="fa-solid fa-star" style="color:var(--accent);"></i> <span class="stat-val" id="starsDisplay">0</span></div>
+        </div>
+      </div>
+      <input type="number" id="hiddenInput" autocomplete="off" aria-hidden="true">
+    </div>
+
+    <!-- ═══ DONE SCREEN ═══ -->
+    <div class="screen" id="screenDone">
+      <div class="card" style="text-align:center;">
+        <div class="done-icon" id="doneIcon"><i class="fa-solid fa-trophy"></i></div>
+        <div class="done-title" id="doneTitle">Super gemacht!</div>
+        <p style="color:var(--text-muted);margin-bottom:8px;" id="doneSub"></p>
+
+        <div class="done-stats">
+          <div class="done-stat">
+            <div class="label">Zeit</div>
+            <div class="value" id="doneTime">—</div>
+          </div>
+          <div class="done-stat">
+            <div class="label">Richtig</div>
+            <div class="value" id="doneCorrect">—</div>
+          </div>
+          <div class="done-stat">
+            <div class="label">Pro Aufgabe</div>
+            <div class="value" id="doneAvg">—</div>
+          </div>
+          <div class="done-stat">
+            <div class="label">Bestzeit</div>
+            <div class="value best" id="doneBest">—</div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="startGame()"><i class="fa-solid fa-rotate-right"></i> Nochmal</button>
+          <button class="btn btn-secondary" onclick="showScreen('screenStart')"><i class="fa-solid fa-house"></i> Startseite</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    /* ═══════════════════════════════════════════════════
+       STATE
+    ═══════════════════════════════════════════════════ */
+    var STORAGE_KEY = '1x1_zeit_trainer_v1';
+    var state = {
+      mode: 'mal',       // 'mal' oder 'durch'
+      reihe: 0,          // 0 = gemischt (1-10), 1-10 = fest
+      tasks: [],
+      current: 0,
+      total: 10,
+      correct: 0,
+      streak: 0,
+      startTime: 0,
+      elapsed: 0,
+      timerInterval: null
+    };
+
+    /* Persisted high scores */
+    var scores = loadScores();
+
+    /* ═══════════════════════════════════════════════════
+       INIT
+    ═══════════════════════════════════════════════════ */
+    function init() {
+      buildReihenRow();
+      selectReihe(0);
+      document.body.addEventListener('click', function(){ document.getElementById('hiddenInput').focus(); });
+      document.getElementById('hiddenInput').addEventListener('input', handleKeyboard);
+    }
+
+    function buildReihenRow() {
+      var row = document.getElementById('reihenRow');
+      row.innerHTML = '';
+
+      /* Alle (gemischt) */
+      var btn0 = document.createElement('button');
+      btn0.className = 'stufi-btn active';
+      btn0.textContent = 'Alle';
+      btn0.dataset.reihe = '0';
+      btn0.onclick = function(){ selectReihe(0); };
+      row.appendChild(btn0);
+
+      for (var i = 1; i <= 10; i++) {
+        var btn = document.createElement('button');
+        btn.className = 'stufi-btn';
+        btn.textContent = i;
+        btn.dataset.reihe = String(i);
+        var key = state.mode + '_' + i;
+        if (scores[key] && scores[key].mastered) btn.classList.add('mastered');
+        (function(num){
+          btn.onclick = function(){ selectReihe(num); };
+        })(i);
+        row.appendChild(btn);
+      }
+    }
+
+    function selectReihe(n) {
+      state.reihe = n;
+      var btns = document.querySelectorAll('.stufi-btn');
+      btns.forEach(function(b){
+        b.classList.remove('active');
+        if (parseInt(b.dataset.reihe) === n) b.classList.add('active');
+      });
+    }
+
+    function selectMode(mode) {
+      state.mode = mode;
+      document.getElementById('modeMal').classList.toggle('selected', mode === 'mal');
+      document.getElementById('modeDurch').classList.toggle('selected', mode === 'durch');
+      buildReihenRow();
+      selectReihe(state.reihe || 0);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       GAME LOGIC
+    ═══════════════════════════════════════════════════ */
+    function generateTasks() {
+      state.tasks = [];
+      var pool = [];
+
+      if (state.mode === 'durch') {
+        /* Division: a ÷ reihe = b, also product ÷ divisor = quotient */
+        if (state.reihe === 0) {
+          /* Gemischt: beliebige Divisionsaufgaben */
+          for (var i = 1; i <= 10; i++) {
+            for (var j = 1; j <= 10; j++) {
+              pool.push({ question: (i * j) + ' \u00F7 ' + i, answer: j });
+            }
+          }
+        } else {
+          /* Feste Reihe: alle Aufgaben der Reihe N */
+          /* z.B. Reihe 3: 3÷3=1, 6÷3=2, 9÷3=3 ... 30÷3=10 */
+          for (var k = 1; k <= 10; k++) {
+            pool.push({ question: (state.reihe * k) + ' \u00F7 ' + state.reihe, answer: k });
+          }
+        }
+        shuffle(pool);
+        state.tasks = pool.slice(0, state.total);
+      } else {
+        /* Multiplikation */
+        if (state.reihe === 0) {
+          for (var m = 1; m <= 10; m++) {
+            for (var n = 1; n <= 10; n++) {
+              pool.push({ a: m, b: n });
+            }
+          }
+        } else {
+          for (var p = 1; p <= 10; p++) {
+            pool.push({ a: state.reihe, b: p });
+          }
+        }
+        shuffle(pool);
+        state.tasks = pool.slice(0, state.total).map(function(t){
+          return { question: t.a + ' \u00D7 ' + t.b, answer: t.a * t.b };
+        });
+      }
+
+      /* Wenn weniger als total Aufgaben, wiederhole */
+      while (state.tasks.length < state.total) {
+        var extra = state.tasks.slice(0);
+        shuffle(extra);
+        state.tasks = state.tasks.concat(extra);
+      }
+      state.tasks = state.tasks.slice(0, state.total);
+    }
+
+    function shuffle(arr) {
+      for (var i = arr.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+      }
+    }
+
+    function startGame() {
+      generateTasks();
+      state.current = 0;
+      state.correct = 0;
+      state.streak = 0;
+      state.startTime = Date.now();
+      state.elapsed = 0;
+
+      showScreen('screenGame');
+      showTask();
+      startTimer();
+    }
+
+    function showTask() {
+      if (state.current >= state.total) {
+        endGame();
+        return;
+      }
+
+      var task = state.tasks[state.current];
+      var eq = document.getElementById('taskEquation');
+      eq.textContent = task.question + ' = ?';
+
+      document.getElementById('progressText').textContent = 'Aufgabe ' + (state.current + 1) + ' von ' + state.total;
+      document.getElementById('progressFill').style.width = ((state.current) / state.total * 100) + '%';
+
+      /* Generate 4 answer options */
+      var correct = task.answer;
+      var opts = [correct];
+      var offsets = [-5,-4,-3,-2,-1,1,2,3,4,5];
+      shuffle(offsets);
+      for (var i = 0; i < offsets.length && opts.length < 4; i++) {
+        var v = correct + offsets[i];
+        if (v > 0 && opts.indexOf(v) === -1) opts.push(v);
+      }
+      /* Fallback fuer kleine Zahlen */
+      var fallback = [1,2,3,4,5,6,7,8,9,10,12,15,16,18,20,24,25,30,36,40,42,48,49,50,56,60,64,70,72,80,81,90,100];
+      shuffle(fallback);
+      while (opts.length < 4) {
+        var f = fallback.pop();
+        if (opts.indexOf(f) === -1) opts.push(f);
+      }
+      shuffle(opts);
+
+      var grid = document.getElementById('answerGrid');
+      grid.innerHTML = '';
+      opts.forEach(function(opt) {
+        var btn = document.createElement('button');
+        btn.className = 'answer-btn';
+        btn.textContent = opt;
+        btn.onclick = function(){ checkAnswer(opt, correct, btn); };
+        grid.appendChild(btn);
+      });
+
+      document.getElementById('hiddenInput').value = '';
+      document.getElementById('hiddenInput').focus();
+    }
+
+    function checkAnswer(chosen, correct, btn) {
+      /* Disable all buttons */
+      var allBtns = document.querySelectorAll('.answer-btn');
+      allBtns.forEach(function(b){ b.classList.add('disabled'); });
+
+      if (chosen === correct) {
+        btn.classList.add('correct');
+        state.correct++;
+        state.streak++;
+        /* Stern nach je 10 korrekt */
+        addStarsDisplay(1);
+      } else {
+        btn.classList.add('wrong');
+        state.streak = 0;
+        /* Richtige Antwort hervorheben */
+        allBtns.forEach(function(b){
+          if (parseInt(b.textContent) === correct) b.classList.add('show-correct');
+        });
+      }
+
+      updateStats();
+
+      setTimeout(function(){
+        state.current++;
+        showTask();
+      }, chosen === correct ? 800 : 1400);
+    }
+
+    function handleKeyboard() {
+      var inp = document.getElementById('hiddenInput');
+      var val = parseInt(inp.value);
+      if (isNaN(val)) return;
+
+      /* Pruefe ob die Eingabe eine der Antwort-Optionen ist */
+      var btns = document.querySelectorAll('.answer-btn');
+      var found = false;
+      btns.forEach(function(b){
+        if (!b.classList.contains('disabled') && parseInt(b.textContent) === val) {
+          b.click();
+          found = true;
+        }
+      });
+    }
+
+    function updateStats() {
+      document.getElementById('correctCount').textContent = state.correct + ' richtig';
+      document.getElementById('streakDisplay').textContent = state.streak;
+    }
+
+    function addStarsDisplay(n) {
+      var el = document.getElementById('starsDisplay');
+      var current = parseInt(el.textContent) || 0;
+      el.textContent = current + n;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       TIMER
+    ═══════════════════════════════════════════════════ */
+    function startTimer() {
+      clearInterval(state.timerInterval);
+      state.startTime = Date.now();
+      updateTimerDisplay();
+      state.timerInterval = setInterval(updateTimerDisplay, 200);
+    }
+
+    function updateTimerDisplay() {
+      var ms = Date.now() - state.startTime;
+      state.elapsed = ms;
+      var secs = Math.floor(ms / 1000);
+      var mins = Math.floor(secs / 60);
+      var s = secs % 60;
+      document.getElementById('timerDisplay').textContent = mins + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    function stopTimer() {
+      clearInterval(state.timerInterval);
+      state.elapsed = Date.now() - state.startTime;
+      updateTimerDisplay();
+    }
+
+    /* ═══════════════════════════════════════════════════
+       END SCREEN
+    ═══════════════════════════════════════════════════ */
+    function endGame() {
+      stopTimer();
+
+      var secs = Math.round(state.elapsed / 1000);
+      var mins = Math.floor(secs / 60);
+      var s = secs % 60;
+      var timeStr = mins + ':' + (s < 10 ? '0' : '') + s;
+      var avgStr = (secs / state.total).toFixed(1) + 's';
+      var pctCorrect = state.correct / state.total;
+
+      /* Bestzeit berechnen */
+      var key = state.mode + '_' + state.reihe;
+      var bestBefore = (scores[key] && scores[key].time) ? scores[key].time : null;
+      var isNewBest = !bestBefore || secs < bestBefore;
+      if (!scores[key]) scores[key] = {};
+      scores[key].time = isNewBest ? secs : (bestBefore || secs);
+      if (pctCorrect >= 0.9) scores[key].mastered = true;
+      saveScores();
+
+      /* Done screen fuellen */
+      document.getElementById('doneTime').textContent = timeStr;
+      document.getElementById('doneCorrect').textContent = state.correct + '/' + state.total;
+      document.getElementById('doneAvg').textContent = avgStr;
+      document.getElementById('doneBest').textContent = isNewBest ? timeStr + ' \u2728' : formatTime(scores[key].time);
+
+      var icon = document.getElementById('doneIcon');
+      icon.className = 'done-icon';
+      var title = document.getElementById('doneTitle');
+
+      if (pctCorrect >= 0.9) {
+        icon.classList.add('gold');
+        title.textContent = 'Super gemacht!';
+      } else if (pctCorrect >= 0.7) {
+        icon.classList.add('silver');
+        title.textContent = 'Weiter so!';
+      } else {
+        icon.classList.add('bronze');
+        title.textContent = 'Uebung macht den Meister!';
+      }
+
+      var sub = document.getElementById('doneSub');
+      if (isNewBest && pctCorrect >= 0.7) {
+        sub.textContent = 'Neue Bestzeit!';
+      } else {
+        sub.textContent = state.mode === 'mal' ? '1x1 Malnehmen' : '1x1 Teilen';
+      }
+
+      showScreen('screenDone');
+    }
+
+    function formatTime(totalSecs) {
+      var m = Math.floor(totalSecs / 60);
+      var s = totalSecs % 60;
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PERSISTENCE
+    ═══════════════════════════════════════════════════ */
+    function loadScores() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
+      } catch(e) { return {}; }
+    }
+    function saveScores() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SCREEN NAV
+    ═══════════════════════════════════════════════════ */
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
+      document.getElementById(id).classList.add('active');
+    }
+
+    init();
+  </script>
+</body>
+</html>
