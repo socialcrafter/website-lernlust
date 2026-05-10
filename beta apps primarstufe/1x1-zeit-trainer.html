@@ -24,9 +24,7 @@
       --radius-sm: 16px;
       --radius-xs: 10px;
     }
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
-
     body {
       font-family: 'Nunito', sans-serif;
       background: var(--bg-light);
@@ -38,261 +36,213 @@
       position: relative;
       overflow-x: hidden;
     }
-
-    .bg-shapes {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      pointer-events: none; z-index: 0; overflow: hidden;
-    }
+    .bg-shapes { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
     .bg-shape {
-      position: absolute; border-radius: 50%; opacity: 0.08;
-      animation: float 20s infinite ease-in-out;
+      position: absolute; border-radius: 50%;
+      animation: float 18s ease-in-out infinite;
     }
-    .bg-shape:nth-child(1) { width: 320px; height: 320px; background: var(--primary); top: -80px; right: -60px; }
-    .bg-shape:nth-child(2) { width: 240px; height: 240px; background: var(--secondary); bottom: 10%; left: -40px; animation-delay: -7s; }
-    .bg-shape:nth-child(3) { width: 180px; height: 180px; background: var(--accent); top: 45%; right: 5%; animation-delay: -13s; }
-
+    .bg-shape:nth-child(1) {
+      width: 400px; height: 400px; top: -100px; right: -80px;
+      background: radial-gradient(circle, rgba(255,107,107,0.15), transparent 70%);
+    }
+    .bg-shape:nth-child(2) {
+      width: 350px; height: 350px; bottom: 10%; left: -100px;
+      background: radial-gradient(circle, rgba(78,205,196,0.15), transparent 70%);
+      animation-delay: -7s;
+    }
+    .bg-shape:nth-child(3) {
+      width: 300px; height: 300px; top: 40%; right: 10%;
+      background: radial-gradient(circle, rgba(255,230,109,0.18), transparent 70%);
+      animation-delay: -13s;
+    }
     @keyframes float {
-      0%, 100% { transform: translate(0, 0) rotate(0deg); }
-      50% { transform: translate(-15px, 25px) rotate(-8deg); }
+      0%,100% { transform: translate(0,0) scale(1); }
+      33%      { transform: translate(20px,-25px) scale(1.04); }
+      66%      { transform: translate(-15px,15px) scale(0.97); }
     }
-
     .container {
+      width: 100%; max-width: 480px;
       position: relative; z-index: 1;
-      max-width: 480px; width: 100%;
+      display: flex; flex-direction: column; gap: 16px;
     }
 
-    header {
-      text-align: center; margin-bottom: 24px;
+    /* Header */
+    .header { text-align: center; padding: 16px 0 4px; }
+    .header h1 {
+      font-family: 'Fredoka', cursive; font-size: 2rem;
+      font-weight: 700; color: var(--text-dark); margin-bottom: 2px;
     }
-    header h1 {
-      font-family: 'Fredoka', sans-serif; font-size: 2rem;
-      color: var(--text-dark); margin-bottom: 4px;
-    }
-    header h1 i { color: var(--primary); }
+    .header h1 .fa-solid { color: var(--primary); margin-right: 8px; }
+    .header .subtitle { font-size: 0.85rem; color: var(--text-muted); }
 
-    /* ── Screen switching ── */
-    .screen { display: none; }
-    .screen.active { display: block; animation: fadeIn 0.4s ease; }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── Card ── */
-    .card {
-      background: var(--bg-card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 28px 24px;
-      margin-bottom: 20px;
-    }
-
-    /* ── Start Screen ── */
-    .mode-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 14px; margin-top: 20px;
-    }
-    .mode-btn {
-      background: var(--bg-light);
-      border: 3px solid transparent;
-      border-radius: var(--radius-sm);
-      padding: 22px 12px;
-      text-align: center; cursor: pointer;
-      transition: all 0.25s ease;
-      font-family: 'Nunito', sans-serif;
-    }
-    .mode-btn:hover { transform: translateY(-3px); box-shadow: var(--shadow-hover); }
-    .mode-btn.selected { border-color: var(--primary); background: rgba(255,107,107,0.08); }
-    .mode-btn i { font-size: 2rem; display: block; margin-bottom: 8px; }
-    .mode-btn .mode-title { font-weight: 700; font-size: 1.1rem; color: var(--text-dark); }
-    .mode-btn .mode-sub { font-size: 0.85rem; color: var(--text-muted); margin-top: 4px; }
-
-    /* ── Stufen-Buttons (Mal oder Durch) ── */
-    .stufen-row {
-      display: flex; gap: 10px; flex-wrap: wrap;
-      justify-content: center; margin: 18px 0;
-    }
-    .stufi-btn {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1.1rem; font-weight: 700;
-      padding: 10px 18px;
-      border: 2px solid var(--bg-light);
-      border-radius: 50px;
-      background: var(--bg-light);
-      color: var(--text-dark);
-      cursor: pointer;
-      transition: all 0.25s ease;
-    }
-    .stufi-btn:hover { border-color: var(--secondary); transform: scale(1.08); }
-    .stufi-btn.active {
-      background: var(--secondary); color: white;
-      border-color: var(--secondary);
-    }
-    .stufi-btn.mastered {
-      background: var(--success); color: white;
-      border-color: var(--success);
-    }
-
-    /* ── Start Button ── */
-    .start-btn {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-family: 'Fredoka', sans-serif;
-      font-size: 1.3rem; font-weight: 600;
-      padding: 16px 48px;
-      border: none; border-radius: 50px;
-      background: linear-gradient(135deg, var(--primary), #ff8e8e);
-      color: white; cursor: pointer;
-      box-shadow: 0 4px 20px rgba(255,107,107,0.4);
-      transition: all 0.25s ease;
-    }
-    .start-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 30px rgba(255,107,107,0.5); }
-    .start-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
-
-    /* ── Game Screen ── */
+    /* Timer bar */
     .timer-bar {
       display: flex; align-items: center; justify-content: center;
-      gap: 8px; margin-bottom: 16px;
-      font-family: 'Fredoka', sans-serif;
-      font-size: 1.5rem; font-weight: 700;
-      color: var(--primary);
+      gap: 16px; background: var(--bg-card);
+      padding: 12px 20px; border-radius: var(--radius-sm);
+      box-shadow: var(--shadow);
     }
-    .timer-bar i { font-size: 1.2rem; }
+    .timer-display {
+      font-family: 'Fredoka', cursive; font-size: 2rem;
+      font-weight: 700; color: var(--primary);
+      min-width: 100px; text-align: center;
+    }
+    .timer-label { font-size: 0.82rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .best-display {
+      font-family: 'Nunito', sans-serif; font-size: 0.9rem;
+      color: var(--secondary); font-weight: 700;
+    }
+    .best-display .fa-solid { margin-right: 4px; }
 
-    .progress-row {
-      display: flex; justify-content: space-between; align-items: center;
-      margin-bottom: 12px; font-size: 0.9rem; color: var(--text-muted);
+    /* Card */
+    .card {
+      background: var(--bg-card); border-radius: var(--radius);
+      padding: 28px 24px; box-shadow: var(--shadow);
     }
+
+    /* Progress */
     .progress-bar {
-      width: 100%; height: 10px;
-      background: var(--bg-light); border-radius: 10px;
-      margin-bottom: 20px; overflow: hidden;
+      background: #e9ecef; border-radius: 50px; height: 10px; overflow: hidden; margin-bottom: 6px;
     }
     .progress-fill {
-      height: 100%; border-radius: 10px;
-      background: linear-gradient(90deg, var(--secondary), var(--success));
-      transition: width 0.4s ease;
+      height: 100%; background: linear-gradient(90deg, var(--primary), var(--secondary));
+      border-radius: 50px; transition: width 0.5s ease;
+    }
+    .progress-text {
+      text-align: center; font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; font-weight: 600;
     }
 
-    .task-display {
-      text-align: center; padding: 12px 0 20px;
+    /* Mode switch */
+    .mode-switch {
+      display: flex; gap: 10px; margin-bottom: 16px;
     }
-    .task-equation {
-      font-family: 'Fredoka', sans-serif;
-      font-size: 3.5rem; font-weight: 700;
-      color: var(--text-dark); line-height: 1.2;
+    .mode-btn {
+      flex: 1; padding: 12px 8px;
+      font-family: 'Fredoka', cursive; font-size: 1.1rem; font-weight: 600;
+      border: 3px solid #e9ecef; border-radius: var(--radius-xs);
+      background: #f8f9fa; color: var(--text-muted);
+      cursor: pointer; transition: all 0.2s; text-align: center;
     }
-    .task-equation .op { color: var(--primary); }
-    .task-equation .eq { color: var(--text-muted); }
-    .task-equation .answer-slot {
-      display: inline-block; min-width: 60px;
-      border-bottom: 4px solid var(--primary);
-      color: var(--secondary);
+    .mode-btn:hover { border-color: var(--secondary); }
+    .mode-btn.active-mal {
+      border-color: var(--primary); background: var(--primary); color: white;
+      box-shadow: 0 4px 12px rgba(255,107,107,0.35);
     }
-
-    .answer-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin-top: 16px;
-    }
-    .answer-btn {
-      font-family: 'Fredoka', sans-serif;
-      font-size: 1.8rem; font-weight: 700;
-      padding: 18px; text-align: center;
-      border: 3px solid var(--bg-light);
-      border-radius: var(--radius-sm);
-      background: var(--bg-light);
-      color: var(--text-dark);
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .answer-btn:hover { border-color: var(--secondary); transform: scale(1.05); }
-    .answer-btn:active { transform: scale(0.97); }
-    .answer-btn.correct {
-      background: var(--success); color: white;
-      border-color: var(--success);
-      animation: popCorrect 0.4s ease;
-    }
-    .answer-btn.wrong {
-      background: var(--danger); color: white;
-      border-color: var(--danger);
-      animation: shake 0.4s ease;
-    }
-    .answer-btn.disabled { pointer-events: none; opacity: 0.5; }
-    .answer-btn.show-correct {
-      border-color: var(--success);
-      background: rgba(149,225,163,0.3);
+    .mode-btn.active-durch {
+      border-color: var(--secondary); background: var(--secondary); color: white;
+      box-shadow: 0 4px 12px rgba(78,205,196,0.35);
     }
 
-    @keyframes popCorrect {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-      100% { transform: scale(1); }
+    /* Reihe select */
+    .reihe-select {
+      display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; margin-bottom: 16px;
     }
-    @keyframes shake {
-      0%, 100% { transform: translateX(0); }
-      25% { transform: translateX(-8px); }
-      75% { transform: translateX(8px); }
+    .reihe-btn {
+      padding: 10px 4px; font-size: 1rem; font-weight: 700;
+      border: 2px solid #e9ecef; border-radius: var(--radius-xs);
+      background: #f8f9fa; color: var(--text-dark); cursor: pointer; transition: all 0.2s;
+      text-align: center;
     }
+    .reihe-btn:hover { border-color: var(--secondary); }
+    .reihe-btn.selected {
+      background: var(--secondary); border-color: var(--secondary); color: white;
+    }
+    .reihe-mix {
+      grid-column: span 5; font-size: 0.95rem;
+    }
+    .reihe-mix.selected { background: var(--accent); border-color: var(--accent); color: var(--text-dark); }
 
-    /* ── Stat pills ── */
-    .stat-row {
-      display: flex; justify-content: center; gap: 16px;
-      margin-top: 14px; flex-wrap: wrap;
-    }
-    .stat-pill {
-      display: inline-flex; align-items: center; gap: 6px;
-      background: var(--bg-light); border-radius: 50px;
-      padding: 6px 14px; font-size: 0.85rem; font-weight: 600;
-      color: var(--text-muted);
-    }
-    .stat-pill i { font-size: 0.9rem; }
-    .stat-pill .stat-val { color: var(--text-dark); }
-
-    /* ── Done Screen ── */
-    .done-icon { font-size: 4rem; margin-bottom: 12px; }
-    .done-icon.gold i { color: var(--accent); }
-    .done-icon.silver i { color: #aaa; }
-    .done-icon.bronze i { color: #cd7f32; }
-    .done-title {
-      font-family: 'Fredoka', sans-serif;
-      font-size: 2rem; margin-bottom: 8px;
-    }
-    .done-stats {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 10px; margin: 20px 0;
-    }
-    .done-stat {
-      background: var(--bg-light);
-      border-radius: var(--radius-xs);
-      padding: 14px; text-align: center;
-    }
-    .done-stat .label { font-size: 0.8rem; color: var(--text-muted); }
-    .done-stat .value {
-      font-family: 'Fredoka', sans-serif;
-      font-size: 1.6rem; font-weight: 700; color: var(--text-dark);
-    }
-    .done-stat .value.best { color: var(--primary); }
-
-    .btn-row {
-      display: flex; gap: 10px; justify-content: center;
-      margin-top: 20px; flex-wrap: wrap;
-    }
+    /* Start button */
     .btn {
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem; font-weight: 700;
-      padding: 14px 28px;
-      border: none; border-radius: 50px;
-      cursor: pointer; display: inline-flex;
-      align-items: center; gap: 8px;
-      transition: all 0.25s ease;
+      display: inline-flex; align-items: center; justify-content: center;
+      gap: 8px; padding: 14px 28px; border-radius: 50px; border: none;
+      cursor: pointer; font-family: 'Nunito', sans-serif; font-weight: 800;
+      font-size: 1rem; transition: all 0.2s; width: 100%;
     }
-    .btn:hover { transform: translateY(-2px); }
-    .btn-primary { background: linear-gradient(135deg, var(--primary), #ff8e8e); color: white; }
-    .btn-secondary { background: var(--bg-light); color: var(--text-dark); }
+    .btn-primary {
+      background: var(--primary); color: white;
+      box-shadow: 0 4px 16px rgba(255,107,107,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 22px rgba(255,107,107,0.5); }
 
-    /* ── Hidden input for keyboard ── */
-    #hiddenInput {
-      position: absolute; top: -200px; left: -200px;
-      width: 1px; height: 1px; opacity: 0;
+    /* Flashcard */
+    .flashcard-container { perspective: 1000px; margin: 16px 0; }
+    .flashcard {
+      background: linear-gradient(135deg, #fff8f0, #fff);
+      border: 3px solid #f0e6d6;
+      border-radius: 20px; height: 180px;
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Fredoka', cursive; font-size: 3.2rem; font-weight: 700;
+      color: var(--text-dark); transition: all 0.3s; cursor: pointer;
+      position: relative; user-select: none;
+    }
+    .flashcard:hover { transform: scale(1.02); box-shadow: var(--shadow-hover); }
+    .flashcard.revealed {
+      background: linear-gradient(135deg, var(--success), rgba(149,225,163,0.6));
+      border-color: var(--success);
+    }
+    .flashcard .answer { color: white; }
+    .flashcard-tap-hint {
+      position: absolute; bottom: 12px; font-size: 0.75rem;
+      color: var(--text-muted); font-family: 'Nunito', sans-serif; font-weight: 600;
+    }
+
+    /* Self-assessment buttons */
+    .assess-row { display: flex; gap: 10px; }
+    .assess-btn {
+      flex: 1; padding: 14px 8px;
+      font-family: 'Fredoka', cursive; font-size: 1.1rem; font-weight: 600;
+      border: none; border-radius: var(--radius-sm); cursor: pointer; transition: all 0.2s;
+    }
+    .assess-btn:active { transform: scale(0.97); }
+    .btn-knew {
+      background: var(--success); color: #1a5c2a;
+      box-shadow: 0 4px 12px rgba(149,225,163,0.4);
+    }
+    .btn-knew:hover { transform: translateY(-2px); }
+    .btn-didnt {
+      background: var(--danger); color: #8b0000;
+      box-shadow: 0 4px 12px rgba(255,139,148,0.4);
+    }
+    .btn-didnt:hover { transform: translateY(-2px); }
+    .assess-prompt {
+      text-align: center; color: var(--text-muted); font-size: 0.9rem;
+      font-weight: 700; margin-bottom: 10px;
+    }
+
+    /* Done screen */
+    .done { text-align: center; padding: 16px 0; }
+    .done-icon { font-size: 3.5rem; margin-bottom: 12px; color: var(--accent); }
+    .done-icon .fa-solid { color: var(--accent); }
+    .done-title {
+      font-family: 'Fredoka', cursive; font-size: 2.2rem;
+      color: var(--text-dark); margin-bottom: 4px;
+    }
+    .done-sub { color: var(--text-muted); margin-bottom: 20px; }
+    .time-big {
+      font-family: 'Fredoka', cursive; font-size: 3rem;
+      color: var(--primary); margin-bottom: 4px;
+    }
+    .time-label { font-size: 0.85rem; color: var(--text-muted); font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+    .stats-row {
+      display: flex; justify-content: center; gap: 24px; margin: 20px 0;
+    }
+    .stat { text-align: center; }
+    .stat-val { font-size: 1.6rem; font-weight: 700; }
+    .stat-val.green { color: var(--success); }
+    .stat-val.red { color: var(--danger); }
+    .stat-val.best { color: var(--secondary); }
+    .stat-lbl { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* Screens */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* Responsive */
+    @media (max-width: 400px) {
+      .flashcard { font-size: 2.4rem; height: 150px; }
+      .timer-display { font-size: 1.6rem; }
+      .reihe-btn { font-size: 0.9rem; padding: 8px 2px; }
     }
   </style>
 </head>
@@ -304,454 +254,380 @@
   </div>
 
   <div class="container">
-    <header>
+    <div class="header">
       <h1><i class="fa-solid fa-stopwatch"></i> 1x1 Zeit-Trainer</h1>
-    </header>
+      <div class="subtitle">Malnehmen und Teilen — mit Stoppuhr</div>
+    </div>
 
-    <!-- ═══ START SCREEN ═══ -->
-    <div class="screen active" id="screenStart">
-      <div class="card">
-        <h2 style="font-family:'Fredoka',sans-serif;text-align:center;margin-bottom:4px;">Wie willst du ueben?</h2>
-        <p style="text-align:center;color:var(--text-muted);font-size:0.9rem;margin-bottom:16px;">Malnehmen oder Teilen — mit Stoppuhr!</p>
+    <div class="card">
+      <!-- ===== START SCREEN ===== -->
+      <div class="screen active" id="screenStart">
+        <h2 style="font-family:'Fredoka',cursive;font-size:1.4rem;text-align:center;margin-bottom:12px;color:var(--text-dark);">Wie willst du ueben?</h2>
 
-        <div class="mode-grid">
-          <div class="mode-btn selected" id="modeMal" onclick="selectMode('mal')">
-            <i class="fa-solid fa-xmark" style="color:var(--primary);"></i>
-            <div class="mode-title">Malnehmen</div>
-            <div class="mode-sub">3 × 7 = ?</div>
-          </div>
-          <div class="mode-btn" id="modeDurch" onclick="selectMode('durch')">
-            <i class="fa-solid fa-divide" style="color:var(--secondary);"></i>
-            <div class="mode-title">Teilen</div>
-            <div class="mode-sub">21 ÷ 3 = ?</div>
+        <div class="mode-switch">
+          <button class="mode-btn active-mal" id="modeMal" data-mode="mal"><i class="fa-solid fa-xmark"></i> Malnehmen</button>
+          <button class="mode-btn" id="modeDurch" data-mode="durch"><i class="fa-solid fa-divide"></i> Teilen</button>
+        </div>
+
+        <h3 style="font-size:0.9rem;color:var(--text-muted);font-weight:700;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Welche Reihe?</h3>
+        <div class="reihe-select" id="reiheSelect">
+          <button class="reihe-btn selected" data-reihe="0">Alle</button>
+          <button class="reihe-btn" data-reihe="1">1er</button>
+          <button class="reihe-btn" data-reihe="2">2er</button>
+          <button class="reihe-btn" data-reihe="3">3er</button>
+          <button class="reihe-btn" data-reihe="4">4er</button>
+          <button class="reihe-btn" data-reihe="5">5er</button>
+          <button class="reihe-btn" data-reihe="6">6er</button>
+          <button class="reihe-btn" data-reihe="7">7er</button>
+          <button class="reihe-btn" data-reihe="8">8er</button>
+          <button class="reihe-btn" data-reihe="9">9er</button>
+          <button class="reihe-btn" data-reihe="10">10er</button>
+        </div>
+
+        <button class="btn btn-primary" id="btnStart"><i class="fa-solid fa-play"></i> Los gehts!</button>
+      </div>
+
+      <!-- ===== GAME SCREEN ===== -->
+      <div class="screen" id="screenGame">
+        <div class="progress-bar"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+        <div class="progress-text" id="progressText">Karte 1 von 10</div>
+
+        <div class="flashcard-container">
+          <div class="flashcard" id="flashcard">
+            <span id="cardContent">3 x 4</span>
+            <div class="flashcard-tap-hint" id="cardHint">Tippe zum Umdrehen</div>
           </div>
         </div>
 
-        <p style="text-align:center;font-weight:700;color:var(--text-dark);margin-top:20px;">Welche Reihe?</p>
-        <div class="stufen-row" id="reihenRow"></div>
+        <div id="preReveal">
+          <button class="btn btn-primary" id="btnReveal" style="background:var(--secondary);box-shadow:0 4px 16px rgba(78,205,196,0.4);"><i class="fa-solid fa-eye"></i> Loesung zeigen</button>
+        </div>
 
-        <div style="text-align:center;margin-top:24px;">
-          <button class="start-btn" id="btnStart" onclick="startGame()">
-            <i class="fa-solid fa-play"></i> Los gehts!
-          </button>
+        <div id="postReveal" style="display:none;">
+          <div class="assess-prompt">Wusstest du es sofort?</div>
+          <div class="assess-row">
+            <button class="assess-btn btn-knew" id="btnKnew"><i class="fa-solid fa-check"></i> Ja!</button>
+            <button class="assess-btn btn-didnt" id="btnDidnt"><i class="fa-solid fa-xmark"></i> Nein</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== DONE SCREEN ===== -->
+      <div class="screen" id="screenDone">
+        <div class="done">
+          <div class="done-icon"><i class="fa-solid fa-trophy"></i></div>
+          <div class="done-title">Geschafft!</div>
+          <div class="done-sub" id="doneSub">Super gemacht!</div>
+
+          <div class="time-label">Deine Zeit</div>
+          <div class="time-big" id="timeResult">0:42</div>
+
+          <div class="stats-row">
+            <div class="stat">
+              <div class="stat-val green" id="knewCount">8</div>
+              <div class="stat-lbl">Gewusst</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val red" id="didntCount">2</div>
+              <div class="stat-lbl">Ueben</div>
+            </div>
+            <div class="stat">
+              <div class="stat-val best" id="bestTime">--</div>
+              <div class="stat-lbl">Bestzeit</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary" id="btnAgain"><i class="fa-solid fa-rotate-right"></i> Nochmal ueben</button>
         </div>
       </div>
     </div>
 
-    <!-- ═══ GAME SCREEN ═══ -->
-    <div class="screen" id="screenGame">
-      <div class="card">
-        <div class="timer-bar" id="timerBar">
-          <i class="fa-solid fa-stopwatch"></i>
-          <span id="timerDisplay">0:00</span>
-        </div>
-
-        <div class="progress-row">
-          <span id="progressText">Aufgabe 1 von 10</span>
-          <span id="correctCount">0 richtig</span>
-        </div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-
-        <div class="task-display">
-          <div class="task-equation" id="taskEquation"></div>
-        </div>
-
-        <div class="answer-grid" id="answerGrid"></div>
-
-        <div class="stat-row">
-          <div class="stat-pill"><i class="fa-solid fa-fire" style="color:var(--primary);"></i> <span class="stat-val" id="streakDisplay">0</span> Serie</div>
-          <div class="stat-pill"><i class="fa-solid fa-star" style="color:var(--accent);"></i> <span class="stat-val" id="starsDisplay">0</span></div>
-        </div>
+    <!-- Timer always visible -->
+    <div class="timer-bar" id="timerBar" style="display:none;">
+      <div style="text-align:center;">
+        <div class="timer-label">Zeit</div>
+        <div class="timer-display" id="timerDisplay">0:00</div>
       </div>
-      <input type="number" id="hiddenInput" autocomplete="off" aria-hidden="true">
-    </div>
-
-    <!-- ═══ DONE SCREEN ═══ -->
-    <div class="screen" id="screenDone">
-      <div class="card" style="text-align:center;">
-        <div class="done-icon" id="doneIcon"><i class="fa-solid fa-trophy"></i></div>
-        <div class="done-title" id="doneTitle">Super gemacht!</div>
-        <p style="color:var(--text-muted);margin-bottom:8px;" id="doneSub"></p>
-
-        <div class="done-stats">
-          <div class="done-stat">
-            <div class="label">Zeit</div>
-            <div class="value" id="doneTime">—</div>
-          </div>
-          <div class="done-stat">
-            <div class="label">Richtig</div>
-            <div class="value" id="doneCorrect">—</div>
-          </div>
-          <div class="done-stat">
-            <div class="label">Pro Aufgabe</div>
-            <div class="value" id="doneAvg">—</div>
-          </div>
-          <div class="done-stat">
-            <div class="label">Bestzeit</div>
-            <div class="value best" id="doneBest">—</div>
-          </div>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn btn-primary" onclick="startGame()"><i class="fa-solid fa-rotate-right"></i> Nochmal</button>
-          <button class="btn btn-secondary" onclick="showScreen('screenStart')"><i class="fa-solid fa-house"></i> Startseite</button>
-        </div>
+      <div style="text-align:center;">
+        <div class="timer-label"><i class="fa-solid fa-star"></i> Bestzeit</div>
+        <div class="best-display" id="bestDisplay">--</div>
+      </div>
+      <div style="text-align:center;">
+        <div class="timer-label"><i class="fa-solid fa-check"></i> Richtig</div>
+        <div class="best-display" id="knewDisplay" style="color:var(--success);">0</div>
       </div>
     </div>
   </div>
 
   <script>
-    /* ═══════════════════════════════════════════════════
-       STATE
-    ═══════════════════════════════════════════════════ */
-    var STORAGE_KEY = '1x1_zeit_trainer_v1';
+    // === STATE ===
     var state = {
-      mode: 'mal',       // 'mal' oder 'durch'
-      reihe: 0,          // 0 = gemischt (1-10), 1-10 = fest
-      tasks: [],
+      mode: 'mal',       // 'mal' or 'durch'
+      reihe: 0,          // 0 = alle gemischt, 1-10 = feste Reihe
+      cards: [],
       current: 0,
+      knew: 0,
+      didnt: 0,
       total: 10,
-      correct: 0,
-      streak: 0,
-      startTime: 0,
-      elapsed: 0,
-      timerInterval: null
+      revealed: false,
+      timerStart: null,
+      timerInterval: null,
+      elapsed: 0         // seconds
     };
 
-    /* Persisted high scores */
-    var scores = loadScores();
-
-    /* ═══════════════════════════════════════════════════
-       INIT
-    ═══════════════════════════════════════════════════ */
-    function init() {
-      buildReihenRow();
-      selectReihe(0);
-      document.body.addEventListener('click', function(){ document.getElementById('hiddenInput').focus(); });
-      document.getElementById('hiddenInput').addEventListener('input', handleKeyboard);
+    // === STORAGE ===
+    function getBestKey() {
+      var m = state.mode === 'mal' ? 'mal' : 'durch';
+      var r = state.reihe === 0 ? 'alle' : state.reihe + 'er';
+      return 'zeit_trainer_best_' + m + '_' + r;
     }
 
-    function buildReihenRow() {
-      var row = document.getElementById('reihenRow');
-      row.innerHTML = '';
+    function loadBest() {
+      try {
+        var val = localStorage.getItem(getBestKey());
+        return val ? parseFloat(val) : null;
+      } catch(e) { return null; }
+    }
 
-      /* Alle (gemischt) */
-      var btn0 = document.createElement('button');
-      btn0.className = 'stufi-btn active';
-      btn0.textContent = 'Alle';
-      btn0.dataset.reihe = '0';
-      btn0.onclick = function(){ selectReihe(0); };
-      row.appendChild(btn0);
+    function saveBest(seconds) {
+      try { localStorage.setItem(getBestKey(), seconds.toString()); } catch(e) {}
+    }
 
-      for (var i = 1; i <= 10; i++) {
-        var btn = document.createElement('button');
-        btn.className = 'stufi-btn';
-        btn.textContent = i;
-        btn.dataset.reihe = String(i);
-        var key = state.mode + '_' + i;
-        if (scores[key] && scores[key].mastered) btn.classList.add('mastered');
-        (function(num){
-          btn.onclick = function(){ selectReihe(num); };
-        })(i);
-        row.appendChild(btn);
+    function formatTime(sec) {
+      var m = Math.floor(sec / 60);
+      var s = sec % 60;
+      return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    // === TIMER ===
+    function startTimer() {
+      state.timerStart = Date.now();
+      state.elapsed = 0;
+      updateTimerDisplay();
+      state.timerInterval = setInterval(function() {
+        state.elapsed = Math.floor((Date.now() - state.timerStart) / 1000);
+        updateTimerDisplay();
+      }, 500);
+    }
+
+    function stopTimer() {
+      if (state.timerInterval) {
+        clearInterval(state.timerInterval);
+        state.timerInterval = null;
       }
+      state.elapsed = Math.floor((Date.now() - state.timerStart) / 1000);
     }
 
-    function selectReihe(n) {
-      state.reihe = n;
-      var btns = document.querySelectorAll('.stufi-btn');
-      btns.forEach(function(b){
-        b.classList.remove('active');
-        if (parseInt(b.dataset.reihe) === n) b.classList.add('active');
-      });
+    function updateTimerDisplay() {
+      document.getElementById('timerDisplay').textContent = formatTime(state.elapsed);
     }
 
-    function selectMode(mode) {
-      state.mode = mode;
-      document.getElementById('modeMal').classList.toggle('selected', mode === 'mal');
-      document.getElementById('modeDurch').classList.toggle('selected', mode === 'durch');
-      buildReihenRow();
-      selectReihe(state.reihe || 0);
+    // === SCREENS ===
+    function showScreen(id) {
+      var screens = document.querySelectorAll('.screen');
+      for (var i = 0; i < screens.length; i++) screens[i].classList.remove('active');
+      document.getElementById(id).classList.add('active');
     }
 
-    /* ═══════════════════════════════════════════════════
-       GAME LOGIC
-    ═══════════════════════════════════════════════════ */
-    function generateTasks() {
-      state.tasks = [];
+    // === SHUFFLE ===
+    function shuffle(arr) {
+      var a = arr.slice();
+      for (var i = a.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var t = a[i]; a[i] = a[j]; a[j] = t;
+      }
+      return a;
+    }
+
+    // === GENERATE CARDS ===
+    function generateCards() {
       var pool = [];
 
       if (state.mode === 'durch') {
-        /* Division: a ÷ reihe = b, also product ÷ divisor = quotient */
         if (state.reihe === 0) {
-          /* Gemischt: beliebige Divisionsaufgaben */
+          // Alle gemischt: beliebige Divisionsaufgaben
           for (var i = 1; i <= 10; i++) {
             for (var j = 1; j <= 10; j++) {
               pool.push({ question: (i * j) + ' \u00F7 ' + i, answer: j });
             }
           }
         } else {
-          /* Feste Reihe: alle Aufgaben der Reihe N */
-          /* z.B. Reihe 3: 3÷3=1, 6÷3=2, 9÷3=3 ... 30÷3=10 */
+          // Feste Reihe: z.B. 3er-Reihe Durch = 3\xF73=1, 6\xF73=2, ...
           for (var k = 1; k <= 10; k++) {
             pool.push({ question: (state.reihe * k) + ' \u00F7 ' + state.reihe, answer: k });
           }
         }
-        shuffle(pool);
-        state.tasks = pool.slice(0, state.total);
       } else {
-        /* Multiplikation */
+        // Malnehmen
         if (state.reihe === 0) {
           for (var m = 1; m <= 10; m++) {
             for (var n = 1; n <= 10; n++) {
-              pool.push({ a: m, b: n });
+              pool.push({ question: m + ' \u00D7 ' + n, answer: m * n });
             }
           }
         } else {
           for (var p = 1; p <= 10; p++) {
-            pool.push({ a: state.reihe, b: p });
+            pool.push({ question: state.reihe + ' \u00D7 ' + p, answer: state.reihe * p });
           }
         }
-        shuffle(pool);
-        state.tasks = pool.slice(0, state.total).map(function(t){
-          return { question: t.a + ' \u00D7 ' + t.b, answer: t.a * t.b };
-        });
       }
 
-      /* Wenn weniger als total Aufgaben, wiederhole */
-      while (state.tasks.length < state.total) {
-        var extra = state.tasks.slice(0);
-        shuffle(extra);
-        state.tasks = state.tasks.concat(extra);
+      pool = shuffle(pool);
+
+      // If fewer than total, repeat
+      state.cards = [];
+      while (state.cards.length < state.total) {
+        state.cards = state.cards.concat(pool.slice(0));
       }
-      state.tasks = state.tasks.slice(0, state.total);
+      state.cards = state.cards.slice(0, state.total);
     }
 
-    function shuffle(arr) {
-      for (var i = arr.length - 1; i > 0; i--) {
-        var j = Math.floor(Math.random() * (i + 1));
-        var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
-      }
-    }
-
+    // === START GAME ===
     function startGame() {
-      generateTasks();
+      generateCards();
       state.current = 0;
-      state.correct = 0;
-      state.streak = 0;
-      state.startTime = Date.now();
-      state.elapsed = 0;
+      state.knew = 0;
+      state.didnt = 0;
+      state.revealed = false;
+
+      // Show timer bar
+      document.getElementById('timerBar').style.display = 'flex';
+      var best = loadBest();
+      document.getElementById('bestDisplay').textContent = best ? formatTime(best) : '--';
+      document.getElementById('knewDisplay').textContent = '0';
 
       showScreen('screenGame');
-      showTask();
+      showCard();
       startTimer();
     }
 
-    function showTask() {
-      if (state.current >= state.total) {
-        endGame();
-        return;
-      }
+    // === SHOW CARD ===
+    function showCard() {
+      var card = state.cards[state.current];
+      state.revealed = false;
 
-      var task = state.tasks[state.current];
-      var eq = document.getElementById('taskEquation');
-      eq.textContent = task.question + ' = ?';
+      // Progress
+      var pct = (state.current / state.total) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('progressText').textContent = 'Karte ' + (state.current + 1) + ' von ' + state.total;
 
-      document.getElementById('progressText').textContent = 'Aufgabe ' + (state.current + 1) + ' von ' + state.total;
-      document.getElementById('progressFill').style.width = ((state.current) / state.total * 100) + '%';
+      // Flashcard front
+      var fc = document.getElementById('flashcard');
+      fc.classList.remove('revealed');
+      document.getElementById('cardContent').innerHTML = card.question;
+      document.getElementById('cardHint').style.display = 'block';
 
-      /* Generate 4 answer options */
-      var correct = task.answer;
-      var opts = [correct];
-      var offsets = [-5,-4,-3,-2,-1,1,2,3,4,5];
-      shuffle(offsets);
-      for (var i = 0; i < offsets.length && opts.length < 4; i++) {
-        var v = correct + offsets[i];
-        if (v > 0 && opts.indexOf(v) === -1) opts.push(v);
-      }
-      /* Fallback fuer kleine Zahlen */
-      var fallback = [1,2,3,4,5,6,7,8,9,10,12,15,16,18,20,24,25,30,36,40,42,48,49,50,56,60,64,70,72,80,81,90,100];
-      shuffle(fallback);
-      while (opts.length < 4) {
-        var f = fallback.pop();
-        if (opts.indexOf(f) === -1) opts.push(f);
-      }
-      shuffle(opts);
-
-      var grid = document.getElementById('answerGrid');
-      grid.innerHTML = '';
-      opts.forEach(function(opt) {
-        var btn = document.createElement('button');
-        btn.className = 'answer-btn';
-        btn.textContent = opt;
-        btn.onclick = function(){ checkAnswer(opt, correct, btn); };
-        grid.appendChild(btn);
-      });
-
-      document.getElementById('hiddenInput').value = '';
-      document.getElementById('hiddenInput').focus();
+      // Show reveal, hide assess
+      document.getElementById('preReveal').style.display = 'block';
+      document.getElementById('postReveal').style.display = 'none';
     }
 
-    function checkAnswer(chosen, correct, btn) {
-      /* Disable all buttons */
-      var allBtns = document.querySelectorAll('.answer-btn');
-      allBtns.forEach(function(b){ b.classList.add('disabled'); });
+    // === REVEAL CARD ===
+    function revealCard() {
+      if (state.revealed) return;
+      var card = state.cards[state.current];
+      state.revealed = true;
 
-      if (chosen === correct) {
-        btn.classList.add('correct');
-        state.correct++;
-        state.streak++;
-        /* Stern nach je 10 korrekt */
-        addStarsDisplay(1);
+      var fc = document.getElementById('flashcard');
+      fc.classList.add('revealed');
+      document.getElementById('cardContent').innerHTML = card.question + ' = <span class="answer">' + card.answer + '</span>';
+      document.getElementById('cardHint').style.display = 'none';
+
+      document.getElementById('preReveal').style.display = 'none';
+      document.getElementById('postReveal').style.display = 'block';
+    }
+
+    // === RATE CARD ===
+    function rateCard(knew) {
+      var card = state.cards[state.current];
+      if (knew) {
+        state.knew++;
       } else {
-        btn.classList.add('wrong');
-        state.streak = 0;
-        /* Richtige Antwort hervorheben */
-        allBtns.forEach(function(b){
-          if (parseInt(b.textContent) === correct) b.classList.add('show-correct');
-        });
+        state.didnt++;
+        // Add card back for repetition
+        state.cards.push(card);
+        state.total = state.cards.length;
       }
 
-      updateStats();
+      document.getElementById('knewDisplay').textContent = state.knew;
+      state.current++;
 
-      setTimeout(function(){
-        state.current++;
-        showTask();
-      }, chosen === correct ? 800 : 1400);
+      if (state.current < state.total) {
+        showCard();
+      } else {
+        showDone();
+      }
     }
 
-    function handleKeyboard() {
-      var inp = document.getElementById('hiddenInput');
-      var val = parseInt(inp.value);
-      if (isNaN(val)) return;
-
-      /* Pruefe ob die Eingabe eine der Antwort-Optionen ist */
-      var btns = document.querySelectorAll('.answer-btn');
-      var found = false;
-      btns.forEach(function(b){
-        if (!b.classList.contains('disabled') && parseInt(b.textContent) === val) {
-          b.click();
-          found = true;
-        }
-      });
-    }
-
-    function updateStats() {
-      document.getElementById('correctCount').textContent = state.correct + ' richtig';
-      document.getElementById('streakDisplay').textContent = state.streak;
-    }
-
-    function addStarsDisplay(n) {
-      var el = document.getElementById('starsDisplay');
-      var current = parseInt(el.textContent) || 0;
-      el.textContent = current + n;
-    }
-
-    /* ═══════════════════════════════════════════════════
-       TIMER
-    ═══════════════════════════════════════════════════ */
-    function startTimer() {
-      clearInterval(state.timerInterval);
-      state.startTime = Date.now();
-      updateTimerDisplay();
-      state.timerInterval = setInterval(updateTimerDisplay, 200);
-    }
-
-    function updateTimerDisplay() {
-      var ms = Date.now() - state.startTime;
-      state.elapsed = ms;
-      var secs = Math.floor(ms / 1000);
-      var mins = Math.floor(secs / 60);
-      var s = secs % 60;
-      document.getElementById('timerDisplay').textContent = mins + ':' + (s < 10 ? '0' : '') + s;
-    }
-
-    function stopTimer() {
-      clearInterval(state.timerInterval);
-      state.elapsed = Date.now() - state.startTime;
-      updateTimerDisplay();
-    }
-
-    /* ═══════════════════════════════════════════════════
-       END SCREEN
-    ═══════════════════════════════════════════════════ */
-    function endGame() {
+    // === SHOW DONE ===
+    function showDone() {
       stopTimer();
 
-      var secs = Math.round(state.elapsed / 1000);
-      var mins = Math.floor(secs / 60);
-      var s = secs % 60;
-      var timeStr = mins + ':' + (s < 10 ? '0' : '') + s;
-      var avgStr = (secs / state.total).toFixed(1) + 's';
-      var pctCorrect = state.correct / state.total;
-
-      /* Bestzeit berechnen */
-      var key = state.mode + '_' + state.reihe;
-      var bestBefore = (scores[key] && scores[key].time) ? scores[key].time : null;
-      var isNewBest = !bestBefore || secs < bestBefore;
-      if (!scores[key]) scores[key] = {};
-      scores[key].time = isNewBest ? secs : (bestBefore || secs);
-      if (pctCorrect >= 0.9) scores[key].mastered = true;
-      saveScores();
-
-      /* Done screen fuellen */
-      document.getElementById('doneTime').textContent = timeStr;
-      document.getElementById('doneCorrect').textContent = state.correct + '/' + state.total;
-      document.getElementById('doneAvg').textContent = avgStr;
-      document.getElementById('doneBest').textContent = isNewBest ? timeStr + ' \u2728' : formatTime(scores[key].time);
-
-      var icon = document.getElementById('doneIcon');
-      icon.className = 'done-icon';
-      var title = document.getElementById('doneTitle');
-
-      if (pctCorrect >= 0.9) {
-        icon.classList.add('gold');
-        title.textContent = 'Super gemacht!';
-      } else if (pctCorrect >= 0.7) {
-        icon.classList.add('silver');
-        title.textContent = 'Weiter so!';
-      } else {
-        icon.classList.add('bronze');
-        title.textContent = 'Uebung macht den Meister!';
+      // Save best time
+      var best = loadBest();
+      var isNewBest = false;
+      if (!best || state.elapsed < best) {
+        saveBest(state.elapsed);
+        isNewBest = true;
+        best = state.elapsed;
       }
 
-      var sub = document.getElementById('doneSub');
-      if (isNewBest && pctCorrect >= 0.7) {
-        sub.textContent = 'Neue Bestzeit!';
-      } else {
-        sub.textContent = state.mode === 'mal' ? '1x1 Malnehmen' : '1x1 Teilen';
-      }
+      // Progress bar full
+      document.getElementById('progressBar').style.width = '100%';
+
+      // Fill done screen
+      var pct = state.total > 0 ? Math.round((state.knew / state.total) * 100) : 0;
+      var msg = '';
+      if (pct === 100) msg = 'Perfekt! Alles im Kopf!';
+      else if (pct >= 80) msg = 'Super! Fast alles gewusst!';
+      else if (pct >= 60) msg = 'Gut! Weiter ueben!';
+      else msg = 'Uebung macht den Meister!';
+
+      document.getElementById('doneSub').textContent = msg;
+      document.getElementById('timeResult').textContent = formatTime(state.elapsed);
+      document.getElementById('knewCount').textContent = state.knew;
+      document.getElementById('didntCount').textContent = state.didnt;
+      document.getElementById('bestTime').textContent = formatTime(best) + (isNewBest ? ' \u2605' : '');
 
       showScreen('screenDone');
     }
 
-    function formatTime(totalSecs) {
-      var m = Math.floor(totalSecs / 60);
-      var s = totalSecs % 60;
-      return m + ':' + (s < 10 ? '0' : '') + s;
-    }
+    // === MODE SWITCH ===
+    document.getElementById('modeMal').addEventListener('click', function() {
+      state.mode = 'mal';
+      this.className = 'mode-btn active-mal';
+      document.getElementById('modeDurch').className = 'mode-btn';
+    });
+    document.getElementById('modeDurch').addEventListener('click', function() {
+      state.mode = 'durch';
+      this.className = 'mode-btn active-durch';
+      document.getElementById('modeMal').className = 'mode-btn';
+    });
 
-    /* ═══════════════════════════════════════════════════
-       PERSISTENCE
-    ═══════════════════════════════════════════════════ */
-    function loadScores() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-      } catch(e) { return {}; }
-    }
-    function saveScores() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(scores));
-    }
+    // === REIHE SELECT ===
+    document.getElementById('reiheSelect').addEventListener('click', function(e) {
+      var btn = e.target.closest('.reihe-btn');
+      if (!btn) return;
+      var btns = document.querySelectorAll('.reihe-btn');
+      for (var i = 0; i < btns.length; i++) btns[i].classList.remove('selected');
+      btn.classList.add('selected');
+      state.reihe = parseInt(btn.getAttribute('data-reihe'));
+    });
 
-    /* ═══════════════════════════════════════════════════
-       SCREEN NAV
-    ═══════════════════════════════════════════════════ */
-    function showScreen(id) {
-      document.querySelectorAll('.screen').forEach(function(s){ s.classList.remove('active'); });
-      document.getElementById(id).classList.add('active');
-    }
+    // === BUTTONS ===
+    document.getElementById('btnStart').addEventListener('click', startGame);
+    document.getElementById('btnReveal').addEventListener('click', revealCard);
+    document.getElementById('btnKnew').addEventListener('click', function() { rateCard(true); });
+    document.getElementById('btnDidnt').addEventListener('click', function() { rateCard(false); });
+    document.getElementById('btnAgain').addEventListener('click', function() {
+      document.getElementById('timerBar').style.display = 'none';
+      showScreen('screenStart');
+    });
 
-    init();
+    // Click flashcard to reveal
+    document.getElementById('flashcard').addEventListener('click', function() {
+      if (!state.revealed) revealCard();
+    });
   </script>
 </body>
 </html>
