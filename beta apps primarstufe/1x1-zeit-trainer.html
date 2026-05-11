@@ -256,16 +256,16 @@
   <div class="container">
     <div class="header">
       <h1><i class="fa-solid fa-stopwatch"></i> 1x1 Zeit-Trainer</h1>
-      <div class="subtitle">Malnehmen und Teilen — mit Stoppuhr</div>
+      <div class="subtitle">Malrechnen und Teilen — mit Stoppuhr</div>
     </div>
 
     <div class="card">
       <!-- ===== START SCREEN ===== -->
       <div class="screen active" id="screenStart">
-        <h2 style="font-family:'Fredoka',cursive;font-size:1.4rem;text-align:center;margin-bottom:12px;color:var(--text-dark);">Wie willst du ueben?</h2>
+        <h2 style="font-family:'Fredoka',cursive;font-size:1.4rem;text-align:center;margin-bottom:12px;color:var(--text-dark);">Wie willst du üben?</h2>
 
         <div class="mode-switch">
-          <button class="mode-btn active-mal" id="modeMal" data-mode="mal"><i class="fa-solid fa-xmark"></i> Malnehmen</button>
+          <button class="mode-btn active-mal" id="modeMal" data-mode="mal"><i class="fa-solid fa-xmark"></i> Malrechnen</button>
           <button class="mode-btn" id="modeDurch" data-mode="durch"><i class="fa-solid fa-divide"></i> Teilen</button>
         </div>
 
@@ -329,7 +329,7 @@
             </div>
             <div class="stat">
               <div class="stat-val red" id="didntCount">2</div>
-              <div class="stat-lbl">Ueben</div>
+              <div class="stat-lbl">Üben</div>
             </div>
             <div class="stat">
               <div class="stat-val best" id="bestTime">--</div>
@@ -337,7 +337,7 @@
             </div>
           </div>
 
-          <button class="btn btn-primary" id="btnAgain"><i class="fa-solid fa-rotate-right"></i> Nochmal ueben</button>
+          <button class="btn btn-primary" id="btnAgain"><i class="fa-solid fa-rotate-right"></i> Nochmal üben</button>
         </div>
       </div>
     </div>
@@ -580,8 +580,8 @@
       var msg = '';
       if (pct === 100) msg = 'Perfekt! Alles im Kopf!';
       else if (pct >= 80) msg = 'Super! Fast alles gewusst!';
-      else if (pct >= 60) msg = 'Gut! Weiter ueben!';
-      else msg = 'Uebung macht den Meister!';
+      else if (pct >= 60) msg = 'Gut! Weiter üben!';
+      else msg = 'Übung macht den Meister!';
 
       document.getElementById('doneSub').textContent = msg;
       document.getElementById('timeResult').textContent = formatTime(state.elapsed);
