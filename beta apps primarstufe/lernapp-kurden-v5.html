@@ -1,6 +1,29 @@
 <!doctype html>
 <html lang="de" dir="ltr">
-<head>
+<head><script data-od-sandbox-shim>(function(){
+  function makeStore(){
+    var data = {};
+    var api = {
+      getItem: function(k){ return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null; },
+      setItem: function(k, v){ data[k] = String(v); },
+      removeItem: function(k){ delete data[k]; },
+      clear: function(){ data = {}; },
+      key: function(i){ return Object.keys(data)[i] || null; }
+    };
+    Object.defineProperty(api, 'length', { get: function(){ return Object.keys(data).length; } });
+    return api;
+  }
+  function tryShim(name){
+    var works = false;
+    try { works = !!window[name] && typeof window[name].getItem === 'function'; void window[name].length; }
+    catch (_) { works = false; }
+    if (works) return;
+    try { Object.defineProperty(window, name, { configurable: true, value: makeStore() }); }
+    catch (_) { try { window[name] = makeStore(); } catch (__) {} }
+  }
+  tryShim('localStorage');
+  tryShim('sessionStorage');
+})();</script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Die Kurden im Mittelalter — Lernlust</title>
@@ -105,20 +128,20 @@ parentTask:'Frage deine Eltern oder Grosseltern: Welche Geschichten haben sie ü
 
 {title:'Randlage und bergige Unzugänglichkeit',
 text:'Das heisst aber nicht, dass die Menschen in diesen Gebieten (Kurdistan, Armenien, Mesopotamien, Persien) wirklich «unterworfen» wurden und in näheren Kontakt zu den neuen Herren kamen. Die Angriffe der Muslime hatten vielmehr Expeditionscharakter. Sie verweilten nicht länger als irgend nötig in den Bergregionen Irans. Die Bergwelt Kurdistans war für die beduinischen Araber und ihre Tiere (<strong>Kamele</strong>) für einen längeren Aufenthalt nicht geeignet. Zudem sahen sie die Notwendigkeit nicht, das dünn besiedelte und schwer zugängliche Bergland dauerhaft in Besitz zu nehmen. Zur Errichtung einer direkten Herrschaft hätte es eines gewaltigen militärischen Aufgebots bedurft; darüber hinaus gab es hier — im Gegensatz zu den Städten — keine Reichtümer zu «erwerben». Das Beute-Machen, ein traditioneller Zug beduinischen Lebens, der mit Eroberungsideologie gepaart war, stellte einen bedeutsamen Anreiz bei der Eroberung weiter Teile des Vorderen Orients dar.',
-glossary:[{kw:'Beduinen',tr:'bedewî'},{kw:'Kamele',tr:'ştêr'},{kw:'Expedition',tr:'sefer'},{kw:'Bergland',tr:'çiyayî'}],
+glossary:[{kw:'Beduinen',tr:'bedewî'},{kw:'Kamele',tr:'ştûr'},{kw:'Expedition',tr:'sefer'},{kw:'Bergland',tr:'çiyayî'}],
 questions:[{q:'Warum blieben die Araber nicht im kurdischen Bergland?',correct:'Es war zu unwirtlich, und es gab keine reichen Städte zu erbeuten',wrong:['Die Kurden waren militärisch zu stark','Der Koran verbot es','Es gab keine Wasserquellen'],kurmanji:'çiyayî = Bergland'},{q:'Was war ein Hauptanreiz für die arabischen Eroberungen?',correct:'Das Beute-Machen in den wohlhabenden Städten',wrong:['Die Verbreitung von Demokratie','Der Bau von Moscheen','Die_landwirtschaftliche Kolonisation'],kurmanji:'sefer = Expedition'}],
 parentTask:'Frage deine Eltern: Wie heisst die Stadt oder das Dorf, aus dem unsere Familie stammt? War das eher in den Bergen oder in der Ebene?'},
 
 {title:'Kurdistan als Peripherie',
 text:'Die Eroberer waren vielmehr von den wohlhabenden, städtischen Zentren fasziniert, in deren Nachbarschaft sie ihre Lager (<em>amsar</em>) aufschlugen. <strong>Kurdistan blieb in einer Randlage</strong>, es bildete die Peripherie von Reichen, deren Zentren und Verwaltungen anderswo lagen. Die Umayyaden mit der Hauptstadt Damaskus und die sie ablösende Dynastie der Abbasiden-Kalifen (749–1258) mit Bagdad als Sitz begnügten sich wohl damit, dass die Kurden die Grundsteuer bezahlten, für deren Einziehung die Führer der Nomadenstämme verantwortlich waren. Die Wirtschaft der Kurden — vor allem <strong>Nomadismus mit Schaf- und Ziegenherden</strong> — wurde durch die Araber kaum beeinträchtigt. Vereinzelt verpflichteten sich die Muslime sogar vertraglich dazu, die Wanderungen nicht zu stören.',
-glossary:[{kw:'Damaskus',tr:'Şam'},{kw:'Bagdad',tr:'Bexda'},{kw:'Steuer',tr:'bace'},{kw:'Nomade',tr:'koçer'}],
-questions:[{q:'Warum begnügten sich die Abbasiden mit der Steuerzahlung der Kurden?',correct:'Kurdistan lag am Rand des Reiches, die Zentren waren anderswo',wrong:['Die Kurden waren militärisch zu stark','Der Kalif wollte die Kurden beschützen','Die Steuern waren so hoch, dass mehr nicht nötig war'],kurmanji:'bace = Steuer'},{q:'Wie lebten die meisten Kurden zu dieser Zeit?',correct:'Als Nomaden mit Schaf- und Ziegenherden',wrong:['Als Händler in grossen Städten','Als Bauern auf festem Land','Als Krieger im Heer der Araber'],kurmanji:'koçer = Nomade'}],
+glossary:[{kw:'Damaskus',tr:'Şam'},{kw:'Bagdad',tr:'Bexda'},{kw:'Steuer',tr:'bac'},{kw:'Nomade',tr:'koçer'}],
+questions:[{q:'Warum begnügten sich die Abbasiden mit der Steuerzahlung der Kurden?',correct:'Kurdistan lag am Rand des Reiches, die Zentren waren anderswo',wrong:['Die Kurden waren militärisch zu stark','Der Kalif wollte die Kurden beschützen','Die Steuern waren so hoch, dass mehr nicht nötig war'],kurmanji:'bac = Steuer'},{q:'Wie lebten die meisten Kurden zu dieser Zeit?',correct:'Als Nomaden mit Schaf- und Ziegenherden',wrong:['Als Händler in grossen Städten','Als Bauern auf festem Land','Als Krieger im Heer der Araber'],kurmanji:'koçer = Nomade'}],
 parentTask:'Frage deine Eltern: Wie lebten die Kurden früher? Was wisst ihr über die nomadische Lebensweise?'},
 
 {title:'Islamisierung der Kurden',
 text:'Die wichtigste Folge der arabischen Eroberung war die <strong>Islamisierung</strong> der Kurden. Leider sind unsere Kenntnisse über diesen Prozess äusserst dürftig. Vermutlich nahmen zunächst nur einige kurdische Große den Islam an, die in Beziehungen zu den Umayyaden-Kalifen in Damaskus traten. Die Übernahme des Islams dürfte vor allem damit zu erklären sein, dass er den Mentalitäten und den Normen der Kurden entsprach — und dass <strong>Muslime weniger Steuern zahlten</strong>. Gewiss hat es eine Abwehr der Einheimischen gegeben, die zum Teil mit der Tatsache zu erklären ist, dass Kurden dem Heer der Sassaniden angehörten. Aber die These von der «gewaltsamen Islamisierung» lässt sich nur mit der Einschränkung aufrechterhalten, dass die Ausbreitung des Islams allein unter den Nicht-Muslimen in Kurdistan zwingend vorgeschrieben war (<em>dschihad</em>). Die heutige Existenz von Nicht-Muslimen in Kurdistan deutet darauf hin, dass die Expansion des Islams zumal in abgelegenere Regionen begrenzt war.',
 glossary:[{kw:'Islam',tr:'Îslam'},{kw:'Dschihad',tr:'cihad'},{kw:'Christen',tr:'Xirîstiyan'},{kw:'Zoroastrier',tr:'Zerdeştî'}],
-questions:[{q:'Wie wurde die Islamisierung der Kurden beschrieben?',correct:'Allmählich und meist freiwillig — nicht mit Gewalt',wrong:['Mit Zwang und Feuer','Über Nacht alle gleichzeitig','Nur die Oberschicht wurde muslimisch'],kurmanji:'Îslam = Islam'},{q:'Warum nahmen viele Kurden den Islam an?',correct:'Er passte zu ihrer Lebensweise und Muslime zahlten weniger Steuern',wrong:['Sie wurden dazu gezwungen','Es gab keine andere Religion','Sie wollten Arabisch sprechen'],kurmanji:'bace = Steuer'}],
+questions:[{q:'Wie wurde die Islamisierung der Kurden beschrieben?',correct:'Allmählich und meist freiwillig — nicht mit Gewalt',wrong:['Mit Zwang und Feuer','Über Nacht alle gleichzeitig','Nur die Oberschicht wurde muslimisch'],kurmanji:'Îslam = Islam'},{q:'Warum nahmen viele Kurden den Islam an?',correct:'Er passte zu ihrer Lebensweise und Muslime zahlten weniger Steuern',wrong:['Sie wurden dazu gezwungen','Es gab keine andere Religion','Sie wollten Arabisch sprechen'],kurmanji:'bac = Steuer'}],
 parentTask:'Frage deine Eltern: Wie wird in eurer Familie über den Islam gesprochen? Welche Bedeutung hat der Glaube im Alltag?'},
 
 {title:'Dhimmi — Schutzfür Nicht-Muslime',
@@ -177,8 +200,8 @@ parentTask:'Frage deine Eltern: Jerusalem ist für Muslime, Christen und Juden e
 sections:[
 {title:'Die Mongolen',
 text:'Die mongolische Invasion des 13. Jahrhunderts veränderte die politische Landschaft des Vorderen Orients grundlegend. 1258 eroberten die <strong>Mongolen</strong> unter Hülegü Bagdad und beendeten das Abbasiden-Kalifat. Kurdistan wurde in das <strong>Il-Khanat</strong> eingegliedert, die mongolische Herrschaft über Persien und Mesopotamien. Die Mongolen setzten auf ein System indirekter Herrschaft, bei dem lokale Dynasten als Vasallen fungierten, solange sie Steuern entrichteten und Truppen stellten. Für die kurdischen Bevölkerungen bedeutete die mongolische Herrschaft eine Zeit der Unsicherheit und der wechselnden Loyalitäten. Die mongolische Herrschaft führte auch zu <strong>Zerstörungen von Bewässerungssystemen und landwirtschaftlicher Infrastruktur</strong>, was die wirtschaftlichen Grundlagen der Region nachhaltig schädigte.',
-glossary:[{kw:'Mongolen',tr:'Mongol'},{kw:'Hülegü',tr:'Hûlagû'},{kw:'Il-Khanat',tr:'Îlxan'},{kw:'Vasall',tr:'binemal'}],
-questions:[{q:'Wer eroberte Bagdad 1258?',correct:'Die Mongolen unter Hülegü',wrong:['Die Araber','Die Seldschuken','Die Kreuzfahrer'],kurmanji:'Hûlagû = Hülegü'},{q:'Wie herrschten die Mongolen über Kurdistan?',correct:'Indirekt — kurdische Dynasten blieben als Vasallen an der Macht',wrong:['Sie vertrieben alle Kurden','Sie herrschten direkt aus Bagdad','Sie ignorierten Kurdistan komplett'],kurmanji:'binemal = Vasall'}],
+glossary:[{kw:'Mongolen',tr:'Mongol'},{kw:'Hülegü',tr:'Hûlagû'},{kw:'Il-Khanat',tr:'Îlxan'},{kw:'Vasall',tr:'bindest'}],
+questions:[{q:'Wer eroberte Bagdad 1258?',correct:'Die Mongolen unter Hülegü',wrong:['Die Araber','Die Seldschuken','Die Kreuzfahrer'],kurmanji:'Hûlagû = Hülegü'},{q:'Wie herrschten die Mongolen über Kurdistan?',correct:'Indirekt — kurdische Dynasten blieben als Vasallen an der Macht',wrong:['Sie vertrieben alle Kurden','Sie herrschten direkt aus Bagdad','Sie ignorierten Kurdistan komplett'],kurmanji:'bindest = Vasall'}],
 parentTask:'Frage deine Eltern: Habt ihr Geschichten über die Mongolen gehört? Gibt es in eurer Heimatstadt alte Burgen oder Festungen?'},
 
 {title:'Kurdische Kleinfürstentümer nach dem Il-Khanat',
@@ -213,14 +236,14 @@ parentTask:'Frage deine Eltern: Was wisst ihr über die osmanischen Reformen und
 
 {title:'Das 19. Jahrhundert — neue Identitäten',
 text:'Das 19. Jahrhundert war für Kurdistan eine Periode tiefgreifender Umbrüche. Die osmanischen Reformen veränderten die traditionellen Machtverhältnisse, und die zunehmende Einbindung des Osmanischen Reiches in das europäische Staatensystem hatte auch für die kurdischen Gebiete weitreichende Konsequenzen. Die Einführung des Titels eines «<strong>Kurden-Gouverneurs</strong>» (<em>Mutasarrif</em>) in einigen Provinzen war ein Versuch, die kurdische Bevölkerung enger an die osmanische Zentrale zu binden. Gleichzeitig entstanden neue kurdische Identitätsentwürfe, die sich nicht mehr ausschliesslich auf Stammeszugehörigkeit und lokale Fürstentümer bezogen, sondern ein kurdisches Nationalbewusstsein zu entwickeln begannen. Die ersten <strong>kurdischen Zeitungen und Organisationen</strong> entstanden in der zweiten Hälfte des 19. Jahrhunderts, zunächst im Exil in Istanbul und in europäischen Städten. Die wirtschaftliche Modernisierung erreichte Kurdistan nur zögerlich. Die Region blieb überwiegend agrarisch geprägt.',
-glossary:[{kw:'Mutasarrif',tr:'mutesarif'},{kw:'Nationalbewusstsein',tr:'hişyarîya neteweyî'},{kw:'Zeitung',tr:'rochnama'},{kw:'Organisation',tr:'rganîzasyon'}],
-questions:[{q:'Was entstand zum ersten Mal in der zweiten Hälfte des 19. Jahrhunderts?',correct:'Kurdische Zeitungen und Organisationen',wrong:['Ein kurdischer Staat','Die kurdische Sprache','Der Islam in Kurdistan'],kurmanji:'rochnama = Zeitung'},{q:'Was war der Titel «Kurden-Gouverneur» (Mutasarrif)?',correct:'Ein Versuch, die Kurden enger an die osmanische Zentrale zu binden',wrong:['Ein unabhängiger kurdischer Herrscher','Ein religiöser Titel','Ein militärischer Rang'],kurmanji:'mutesarif = Gouverneur'}],
+glossary:[{kw:'Mutasarrif',tr:'mutesarif'},{kw:'Nationalbewusstsein',tr:'hişyarîya neteweyî'},{kw:'Zeitung',tr:'rojname'},{kw:'Organisation',tr:'rêxistin'}],
+questions:[{q:'Was entstand zum ersten Mal in der zweiten Hälfte des 19. Jahrhunderts?',correct:'Kurdische Zeitungen und Organisationen',wrong:['Ein kurdischer Staat','Die kurdische Sprache','Der Islam in Kurdistan'],kurmanji:'rojname = Zeitung'},{q:'Was war der Titel «Kurden-Gouverneur» (Mutasarrif)?',correct:'Ein Versuch, die Kurden enger an die osmanische Zentrale zu binden',wrong:['Ein unabhängiger kurdischer Herrscher','Ein religiöser Titel','Ein militärischer Rang'],kurmanji:'mutesarif = Gouverneur'}],
 parentTask:'Frage deine Eltern: Was wisst ihr über die Anfänge des kurdischen Nationalbewusstseins? Gibt es in eurer Familie Geschichten über diese Zeit?'},
 
 {title:'Erster Weltkrieg und Sèvres',
 text:'Der Ausbruch des <strong>Ersten Weltkriegs</strong> 1914 brachte das Ende des Osmanischen Reiches in Sichtweite. Die Jungtürken, die seit 1908 die Geschicke des Reiches bestimmten, hatten Kurdistan in die militärische Mobilisierung einbezogen und die kurdische Bevölkerung mit Rekrutierungen und Requisitionen stark belastet. Der <strong>Vertrag von Sèvres 1920</strong> sah die Schaffung eines unabhängigen kurdischen Staates vor, zumindest in einer vagen Formulierung, die eine Volksabstimmung über die Unabhängigkeit Kurdistans in Aussicht stellte. Doch der Vertrag von Sèvres wurde nie ratifiziert.',
-glossary:[{kw:'Jungtürken',tr:'Cewentirkan'},{kw:'Erster Weltkrieg',tr:'Şerê Cîhanê yê Yekem'},{kw:'Sèvres',tr:'Sêvr'},{kw:'Volksabstimmung',tr:'referandûm'}],
-questions:[{q:'Was sah der Vertrag von Sèvres 1920 vor?',correct:'Einen unabhängigen kurdischen Staat — zumindest in einer vagen Formulierung',wrong:['Die Teilung Kurdistans','Die Islamisierung der Kurden','Die Vertreibung der Kurden'],kurmanji:'Sêvr = Sèvres'},{q:'Warum wurde Sèvres nie ratifiziert?',correct:'Die türkische Nationalbewegung unter Mustafa Kemal leistete Widerstand',wrong:['Die Kurden lehnten ihn ab','Die Briten wollten ihn nicht','Der Papst intervenierte'],kurmanji:'Cewentirkan = Jungtürken'}],
+glossary:[{kw:'Jungtürken',tr:'Ciwantirkan'},{kw:'Erster Weltkrieg',tr:'Şerê Cîhanî yê Yekem'},{kw:'Sèvres',tr:'Sêvr'},{kw:'Volksabstimmung',tr:'referandûm'}],
+questions:[{q:'Was sah der Vertrag von Sèvres 1920 vor?',correct:'Einen unabhängigen kurdischen Staat — zumindest in einer vagen Formulierung',wrong:['Die Teilung Kurdistans','Die Islamisierung der Kurden','Die Vertreibung der Kurden'],kurmanji:'Sêvr = Sèvres'},{q:'Warum wurde Sèvres nie ratifiziert?',correct:'Die türkische Nationalbewegung unter Mustafa Kemal leistete Widerstand',wrong:['Die Kurden lehnten ihn ab','Die Briten wollten ihn nicht','Der Papst intervenierte'],kurmanji:'Ciwantirkan = Jungtürken'}],
 parentTask:'Frage deine Eltern: Was wisst ihr über den Ersten Weltkrieg und seine Folgen für Kurdistan? Habt ihr Geschichten von Grosseltern darüber gehört?'},
 
 {title:'Lausanne 1923 — Kurdistan wird aufgeteilt',
@@ -300,8 +323,8 @@ function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor
 function ans(btn,ok){
 if(S.answered)return;S.answered=true;
 const btns=document.querySelectorAll('#ans-grid .ans-btn');btns.forEach(b=>b.disabled=true);
-if(ok){btn.classList.add('correct');S.streak++;S.results.push(true);document.getElementById('fb-ok').classList.add('show');playAudio('audio/richtig.mp3')}
-else{btn.classList.add('wrong');S.streak=0;S.results.push(false);btns.forEach(b=>{if(b.dataset.c==='true')b.classList.add('revealed')});document.getElementById('fb-ko').classList.add('show');playAudio('audio/leider-falsch.mp3');}
+if(ok){btn.classList.add('correct');S.streak++;S.results.push(true);document.getElementById('fb-ok').classList.add('show');speak('Richtig!')}
+else{btn.classList.add('wrong');S.streak=0;S.results.push(false);btns.forEach(b=>{if(b.dataset.c==='true')b.classList.add('revealed')});document.getElementById('fb-ko').classList.add('show');speak('Leider falsch.');}
 document.getElementById('nq-btn').style.display='flex';save();}
 
 function nextQ(){const sec=MODULES[S.mi].sections[S.si];S.qi++;S.answered=false;if(S.qi>=sec.questions.length){S.screen='parent'}save();render()}
@@ -322,19 +345,16 @@ if(allDone){S.screen='allDone'}else{S.mi=S.mi<MODULES.length-1?S.mi+1:0;S.si=0;S
 
 function saveParent(){const key=`${S.mi}-${S.si}`;const ta=document.getElementById('parent-input');if(ta){S.parentSaved[key]=ta.value;save()}}
 
-let _audio=null;
-function playAudio(src){
-  if(_audio){_audio.pause();_audio=null}
-  _audio=new Audio(src);_audio.play().catch(()=>{});
-  document.querySelectorAll('.tts-btn').forEach(b=>b.classList.add('speaking'));
-  _audio.onended=()=>{document.querySelectorAll('.tts-btn').forEach(b=>b.classList.remove('speaking'));_audio=null};
-  _audio.onerror=()=>{document.querySelectorAll('.tts-btn').forEach(b=>b.classList.remove('speaking'));_audio=null};
-}
-function secIdx(){let idx=0;for(let i=0;i<S.mi;i++)idx+=MODULES[i].sections.length;return idx+S.si}
-function speakText(){playAudio('audio/v5-sec'+String(secIdx()).padStart(2,'0')+'.mp3')}
-function speakQ(){playAudio('audio/v5-sec'+String(secIdx()).padStart(2,'0')+'.mp3')}
-function speakFullSec(mi,si){let idx=0;for(let i=0;i<mi;i++)idx+=MODULES[i].sections.length;playAudio('audio/v5-sec'+String(idx+si).padStart(2,'0')+'.mp3')}
-function speak(text){/* fallback: replaced by pre-generated audio */}
+function speakText(){const sec=MODULES[S.mi].sections[S.si];speak(sec.text.replace(/<[^>]+>/g,''))}
+function speakQ(){speak(MODULES[S.mi].sections[S.si].questions[S.qi].q)}
+function speakFullSec(mi,si){const sec=MODULES[mi].sections[si];speak(sec.text.replace(/<[^>]+>/g,''))}
+
+function speak(text){
+if(!window.speechSynthesis)return;window.speechSynthesis.cancel();
+const u=new SpeechSynthesisUtterance(text);u.lang='de-CH';u.rate=0.85;
+u.onstart=()=>document.querySelectorAll('.tts-btn').forEach(b=>b.classList.add('speaking'));
+u.onend=()=>document.querySelectorAll('.tts-btn').forEach(b=>b.classList.remove('speaking'));
+window.speechSynthesis.speak(u)}
 
 load();render();
 </script>
