@@ -270,6 +270,7 @@ case 'parent':app.innerHTML=rParent();break;
 case 'result':app.innerHTML=rResult();break;
 case 'allDone':app.innerHTML=rAllDone();break;
 case 'fulltext':app.innerHTML=rFulltext();break;
+case 'methodik':app.innerHTML=rMethodik();break;
 default:app.innerHTML=rStart();}
 window.scrollTo(0,0);
 }
@@ -277,7 +278,7 @@ window.scrollTo(0,0);
 function rStart(){
 const has=S.visited&&Object.keys(S.visited).length>0;
 const totalSec=MODULES.reduce((a,m)=>a+m.sections.length,0);
-return `<div class="screen active fade-in"><div class="start-hero"><div class="start-tag">Geschichte Sek II</div><h1>Die Kurden im<br>Mittelalter</h1><div class="sub">Lies die Originaltexte, teste dein Wissen — und sprich mit deinen Eltern darüber.</div></div><div class="start-box">${MODULES.length} Module · ${totalSec} Abschnitte · Originaltexte<br>Mit Vorlesefunktion, Kurmanji-Glossar<br>und Elternaufgaben</div><button class="btn btn-primary" onclick="go('modules')"><i class="fa-solid fa-book-open"></i> Loslegen</button><button class="btn btn-tertiary" onclick="go('fulltext')"><i class="fa-solid fa-scroll"></i> Gesamttext lesen</button>${has?`<button class="btn btn-secondary" onclick="resetAll()" style="margin-top:4px"><i class="fa-solid fa-rotate-left"></i> Neu starten</button>`:''}</div>`;}
+return `<div class="screen active fade-in"><div class="start-hero"><div class="start-tag">Geschichte Sek II</div><h1>Die Kurden im<br>Mittelalter</h1><div class="sub">Lies die Originaltexte, teste dein Wissen — und sprich mit deinen Eltern darüber.</div></div><div class="start-box">${MODULES.length} Module · ${totalSec} Abschnitte · Originaltexte<br>Mit Vorlesefunktion, Kurmanji-Glossar<br>und Elternaufgaben</div><button class="btn btn-primary" onclick="go('modules')"><i class="fa-solid fa-book-open"></i> Loslegen</button><button class="btn btn-tertiary" onclick="go('fulltext')"><i class="fa-solid fa-scroll"></i> Gesamttext lesen</button><button class="btn btn-accent" onclick="go('methodik')" style="margin-top:4px"><i class="fa-solid fa-graduation-cap"></i> Methodik & Didaktik</button>${has?`<button class="btn btn-secondary" onclick="resetAll()" style="margin-top:4px"><i class="fa-solid fa-rotate-left"></i> Neu starten</button>`:''}</div>`;}
 
 function rModules(){
 const d=S.visited||{};
@@ -311,6 +312,225 @@ mod.sections.forEach((sec,si)=>{html+=`<div style="margin-bottom:24px${si<mod.se
 html+=`</div>`;});
 html+=`<button class="btn btn-primary" onclick="go('modules')"><i class="fa-solid fa-brain"></i> Zu den Modulen & Quiz</button><button class="btn btn-secondary" onclick="go('start')" style="margin-top:4px"><i class="fa-solid fa-arrow-left"></i> Zurück zum Start</button></div>`;
 return html;}
+
+function rMethodik(){
+return `<div class="screen active fade-in"><div class="topbar"><button class="topbar-back" onclick="go('start')"><i class="fa-solid fa-arrow-left"></i> Start</button><div class="topbar-title">Methodik & Didaktik</div><div class="topbar-right"></div></div>
+
+<div style="border:var(--border-thick);border-left:8px solid var(--color-accent);background:rgba(114,9,183,.04);padding:24px;margin-bottom:24px;margin-top:12px">
+<div class="eyebrow" style="color:var(--color-accent)">Kurzübersicht für die Praxis</div>
+<h2 style="text-transform:none;margin-top:8px">Zielgruppe & Kernbefund</h2>
+<p>Zielgruppe: lernschwache SuS Sek II, Nordirak, kurdische Herkunft.</p>
+<p><strong>Kernbefund aus der Praxis: Der SuS erkennt sich und seine Familie in der Geschichte wieder.</strong></p>
+</div>
+
+<h2 style="text-transform:none;font-size:1.3rem">1. Biographisches Lernen / Identitätslernen</h2>
+<p><strong>Beobachtung:</strong> Der Schüler entdeckte im Zoroastrier-Abschnitt den Begriff <em>Zerdeştî</em> — und erkannte ihn als den Spitznamen, den seine Grossmutter ihm gegeben hatte. Dieser Überraschungsmoment erzeugte echte Neugier: <em>Bin ich nach einer alten Religion benannt?</em></p>
+<p><strong>Methodisches Prinzip:</strong> Wenn Lernende sich selbst in historischen Inhalten wiederfinden, entsteht intrinsische Motivation ohne Belohnungssystem. Der Inhalt wird nicht mehr «gelernt», sondern «erlebt».</p>
+<p><strong>Didaktische Konsequenz:</strong> Texte nicht vereinfachen, sondern mit Anknüpfungspunkten zur Eigenbiographie versehen. Fachbegriffe in der Herkunftssprache des SuS sind nicht Hilfsmittel — sie sind Identitätsbrücken.</p>
+
+<h2 style="text-transform:none;font-size:1.3rem">2. Sprachliche Brücken als kognitive Anker</h2>
+<p><strong>Beobachtung:</strong> Der Name <em>Koçer</em> ist der zweite Familienname des Schülers. Im Text bedeutet es «Nomade». Das löste eine Kette von Fragen aus: <em>Warum heisst meine Familie so? Was bedeutet Nomade?</em></p>
+<p><strong>Methodisches Prinzip:</strong> Das Kurmanji-Glossar fungiert nicht als Übersetzungshilfe, sondern als <strong>Identitätsresonanz</strong>. Ein Wort in der Muttersprache aktiviert Vorwissen, das im Schulunterricht sonst unsichtbar bleibt.</p>
+<p><strong>Didaktische Konsequenz:</strong> Herkunftssprache als Lernressource ernst nehmen. Der SuS bringt Vorwissen mit, das kein Lehrbuch kennt.</p>
+
+<h2 style="text-transform:none;font-size:1.3rem">3. Oral History & Familie als Lerngemeinschaft</h2>
+<p><strong>Beobachtung:</strong> Die Elternaufgaben haben funktioniert. Der Schüler stellte zu Hause aktiv Fragen — zu Surdash, zu Peschmerga, zu Stammesnamen. Die Eltern wurden zur Wissensquelle, nicht nur zur Lernkontrolle.</p>
+<p><strong>Methodisches Prinzip (Community of Practice):</strong> Lernen geschieht nicht nur in der Schule. Familienwissen (Oral History, Herkunftsort, Stammesnamen) ist eine eigenständige Wissensform — gleichwertig zum Buchwissen, nicht nachrangig.</p>
+<p><strong>Didaktische Konsequenz:</strong> Elternaufgaben nicht als Hausaufgaben-Ersatz formulieren, sondern als echte Forschungsaufträge: <em>Was weiss deine Familie, was im Buch nicht steht?</em></p>
+
+<h2 style="text-transform:none;font-size:1.3rem">4. Das 3-Phasen-Modell der App</h2>
+<div style="border:var(--border-medium);padding:16px 20px;background:var(--color-surface);margin:12px 0;font-family:var(--font-mono);font-size:13px;line-height:2">
+<div style="color:var(--color-primary);font-weight:700">LESEN (Originaltext)</div>
+<div style="padding-left:16px;color:#555">↓ TTS-Unterstützung, Glossar, keine Zeitlimits</div>
+<div style="color:var(--color-primary);font-weight:700;margin-top:4px">VERSTEHEN (2 Quiz-Fragen pro Abschnitt)</div>
+<div style="padding-left:16px;color:#555">↓ sofortiges fehlerfreundliches Feedback, keine Strafe</div>
+<div style="color:var(--color-primary);font-weight:700;margin-top:4px">TRANSFER (Elternaufgabe)</div>
+<div style="padding-left:16px;color:#555">↓ Verbindung Schulwissen ↔ Familienwissen</div>
+</div>
+<p>Jede Phase ist optional ablösbar: Gesamttext-Modus für reines Lesen, Modul-Modus für strukturiertes Lernen.</p>
+
+<h2 style="text-transform:none;font-size:1.3rem">5. Lernmethodische Besonderheiten</h2>
+<div style="border:var(--border-thick);overflow:hidden">
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-medium)">
+<div style="padding:10px 14px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff;border-right:var(--border-medium)">Prinzip</div>
+<div style="padding:10px 14px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff">Umsetzung in der App</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Fehlerfreundlichkeit</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Falschantwort zeigt sofort die richtige — kein Zurückwurf</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Chunking</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">~16 Abschnitte à 5–7 Min, kein Druck alles auf einmal</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Multimodalität</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Lesen + TTS + Antworten auswählen + schriftlicher Transfer</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Sichtbarer Fortschritt</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Streak, Sterne, Score — keine Note, kein Vergleich</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Respekt vor dem SuS</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Originaltext statt Vereinfachung, Fachbegriffe erklärt</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Kulturelle Anschlussfähigkeit</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Glossar in Herkunftssprache, Inhalt direkt relevant</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Discovery-Boxen</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">In-Text-Verweise auf biographische Entdeckungen</div>
+</div>
+</div>
+
+<h2 style="text-transform:none;font-size:1.3rem;margin-top:24px">6. Offene Fragen für die didaktische Weiterentwicklung</h2>
+<div style="border:var(--border-thin);border-color:var(--color-accent);padding:16px 20px;margin:12px 0">
+<p style="margin-bottom:8px"><strong>1. Dokumentation der Entdeckungen:</strong> Könnten die Schülerantworten (Elternaufgaben) als Klassen-Portfolio gesammelt werden?</p>
+<p style="margin-bottom:8px"><strong>2. Peer-Learning:</strong> Könnte der SuS seine Entdeckungen (Zerdeştî, Koçer, Surdash) der Klasse erklären? Er ist hier der Experte.</p>
+<p style="margin-bottom:8px"><strong>3. Validierung Kurmanji:</strong> Alle Glossar-Einträge sollten von einer Kurmanji-sprechenden Fachperson geprüft werden.</p>
+<p style="margin-bottom:0"><strong>4. Übertragbarkeit:</strong> Dasselbe Modell für syrische, eritreische oder afghanische Schüler — andere Inhalte, gleiches Prinzip.</p>
+</div>
+
+<h2 style="text-transform:none;font-size:1.3rem">Fazit</h2>
+<p>Die wichtigste Erkenntnis aus der Praxis: <strong>Der SuS ist kein leeres Gefäss.</strong></p>
+<p>Er bringt eine Geschichte mit, die im Klassenzimmer unsichtbar ist — aber im Text plötzlich auftaucht.</p>
+<p>Die App ist dann am wirksamsten, wenn sie diese Geschichte sichtbar macht: durch Sprache, durch Fragen an die Familie, durch Inhalte, die ihn selbst betreffen.</p>
+
+<div style="border:var(--border-thick);border-top:8px solid var(--color-primary);padding:20px;margin:24px 0 12px">
+<div class="eyebrow">Theoretische Vertiefung</div>
+<h2 style="text-transform:none;margin-top:8px">Biographisches Lernen als ressourcenorientierte Didaktik</h2>
+<p style="color:#555;font-size:14px">Ein methodisches Planungsdokument für die Arbeit mit Jugendlichen mit Flucht- und Migrationserfahrung.</p>
+</div>
+
+<h2 style="text-transform:none;font-size:1.2rem;margin-top:20px">Zur Entstehung</h2>
+<p>Dieses Planungsdokument ist aus einer konkreten Praxiserfahrung entstanden. Im Rahmen der Entwicklung einer digitalen Lernapp zur Geschichte Kurdistans im Mittelalter beobachteten wir bei einem Schüler der Sekundarstufe mit kurdischem Hintergrund aus dem Nordirak eine Reihe von Reaktionen, die wir so nicht antizipiert hatten.</p>
+<p>Der Schüler trug den Vornamen Zerdeş. Im Glossar der App stiess er auf den Begriff Zerdeštî, die kurdische Bezeichnung für den Zoroastrismus. Die Übersetzung erinnerte ihn an die Art, wie seine Grossmutter seinen Namen ausgesprochen hatte. Die Entdeckung löste eine Frage aus, die er zunächst im Unterricht, dann zu Hause weiterverfolgte. Seinen Familiennamen Koçer identifizierte er als historische Bezeichnung für nomadische Wanderhirten. Seinen Herkunftsort Surdash fand er als historisch dokumentiertes Rückzugsgebiet des kurdischen Widerstands. Die Eltern wurden zur Wissensquelle. Das Familienwissen floss in den nächsten Unterricht zurück.</p>
+<p>Was wir beobachteten, war kein geplantes didaktisches Arrangement, sondern ein emergenter Prozess: Lerninhalte und Biographie trafen aufeinander und erzeugten eine Motivation, die wir mit keinem der üblichen Mittel hätten herstellen können.</p>
+
+<h2 style="text-transform:none;font-size:1.2rem;margin-top:20px">Teil 1 — Theoretische Verortung</h2>
+
+<h3 style="text-transform:none">1.1 Epistemisches Kapital und schulische Unsichtbarkeit</h3>
+<p>Pierre Bourdieus Konzept des kulturellen Kapitals beschreibt, wie Bildungsinstitutionen bestimmte Wissensformen anerkennen und andere systematisch entwerten. Jugendliche mit Flucht- und Migrationserfahrung verfügen über Wissensbestände, die im Regelunterricht weder abgefragt noch gewürdigt werden: Kenntnisse über Herkunftsgeschichte, Stammeszugehörigkeit, religiöse Traditionen, mehrsprachige Kompetenz und familiäre Oral History bleiben institutionell unsichtbar.</p>
+
+<h3 style="text-transform:none">1.2 Anerkennungspädagogik als normative Rahmung</h3>
+<p>Annedore Prengels Pädagogik der Vielfalt formuliert Anerkennung als grundlegendes pädagogisches Prinzip, das über Toleranz hinausgeht. Die Geschichte einer kurdischen Familie wird nicht als folklores Beiwerk behandelt, sondern als genuiner Lerngegenstand. Wolfgang Welschs Transkulturalität ergänzt: Jugendliche mit Migrationsbiographie sind keine Träger fremder Kulturen, sondern Subjekte mit mehrfach verorteten Identitäten.</p>
+
+<h3 style="text-transform:none">1.3 Radikalisierungsprävention als strukturelle Aufgabe</h3>
+<p>Der BICC Policy Brief (Allroggen et al., 2025) zeigt: Radikalisierungsverläufe sind nicht monokausal aus Migrations- oder Fluchterfahrungen erklärbar. Zentrale Risikofaktoren sind Marginalisierungserfahrungen, fehlende gesellschaftliche Teilhabe und mangelnde psychische Resilienz. Schutzfaktoren sind gesellschaftliche Integration, stabile Familienstrukturen und das Erleben von Selbstwirksamkeit.</p>
+<p>Biographisches Lernen adressiert universelle Schutzmechanismen, die für alle Lernenden gelten — ohne stigmatisierende Zielgruppenlogiken zu reproduzieren.</p>
+
+<h2 style="text-transform:none;font-size:1.2rem;margin-top:20px">Teil 2 — Didaktische Grundprinzipien</h2>
+
+<h3 style="text-transform:none">2.1 Biographisches Lernen nach Krüger und Marotzki</h3>
+<p>Biographisches Lernen beginnt nicht beim Stoff und fragt, wie dieser vermittelt werden kann, sondern bei der Person und fragt, welche Stellen im Stoff für diese Person bedeutsam sind. Das Familienwissen wurde durch die Begegnung mit dem Lernmaterial plötzlich als historisch bedeutsam erfahren.</p>
+
+<h3 style="text-transform:none">2.2 Community of Practice und Familie als Lerngemeinschaft</h3>
+<p>Etienne Wengers Konzept der Community of Practice beschreibt Lerngemeinschaften, die sich um geteilte Praktiken bilden. Die Familie wird nicht als Kontrollorgan schulischer Lernleistungen verstanden, sondern als eigenständige Wissensgemeinschaft. Die Lernenden werden zu Expertinnen und Experten für einen Wissensbestand, den weder die Lehrperson noch das Lehrbuch kennt.</p>
+
+<h3 style="text-transform:none">2.3 Sprachsensibler Unterricht und Mehrsprachigkeit als Ressource</h3>
+<p>Glossare in der Herkunftssprache dienen nicht primär als Übersetzungshilfe, sondern als Identitätsresonanz: Ein Begriff in der Muttersprache aktiviert Vorwissen und emotionale Bedeutsamkeit, die ein deutschsprachiger Fachbegriff allein nicht erzeugen kann.</p>
+
+<h2 style="text-transform:none;font-size:1.2rem;margin-top:20px">Teil 3 — Unterrichtsplanung</h2>
+
+<h3 style="text-transform:none">3.1 Lernziele (revidierte Bloomsche Taxonomie)</h3>
+<p><strong>Wissen und Verstehen:</strong> Historische Zusammenhänge der Herkunftsregion benennen und erläutern. Verbindungen zwischen historischen Begriffen und der eigenen Familiengeschichte herstellen.</p>
+<p><strong>Anwendung und Analyse:</strong> Familienwissen als historische Quelle einordnen. Biographische Erfahrungen in grössere historische Kontexte einbetten.</p>
+<p><strong>Reflexion und Bewertung:</strong> Die eigene Identität als historisch gewordene verstehen. Den Wert von Oral History als Wissensform einschätzen.</p>
+
+<h3 style="text-transform:none">3.2 Phasierung einer Unterrichtseinheit</h3>
+<div style="border:var(--border-thick);overflow:hidden;margin:12px 0">
+<div style="display:grid;grid-template-columns:auto 1fr;border-bottom:var(--border-medium)">
+<div style="padding:10px 14px;font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff;border-right:var(--border-medium);white-space:nowrap">Phase</div>
+<div style="padding:10px 14px;font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff">Funktion</div>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin);white-space:nowrap;color:var(--color-primary)">1. Erschliessung</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Originaltext lesen (TTS, Glossar, keine Zeitlimits). Entscheidung gegen Vereinfachung = Respekt vor den Lernenden.</div>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin);white-space:nowrap;color:var(--color-primary)">2. Vertiefung</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">2–3 Fragen pro Abschnitt, sofortiges fehlerfreundliches Feedback. Falsch = zeigt richtige Antwort, kein Rückwurf.</div>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin);white-space:nowrap;color:var(--color-primary)">3. Transfer</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Forschungsauftrag: Familie befragen. Ergebnisse in nächster Stunde einbringen. SuS wird zum Experten.</div>
+</div>
+</div>
+
+<h3 style="text-transform:none">3.3 Kriterien für die Themenauswahl</h3>
+<div style="border:var(--border-thin);border-color:var(--color-primary);padding:16px 20px;margin:12px 0">
+<p style="margin-bottom:6px"><strong>Biographische Anschlussfähigkeit:</strong> Thema muss Berührungspunkte mit eigener Familiengeschichte aufweisen.</p>
+<p style="margin-bottom:6px"><strong>Inhaltliche Tiefe:</strong> Historische, kulturelle und sprachliche Schichten, die Identifikationsebenen ermöglichen.</p>
+<p style="margin-bottom:0"><strong>Würde des Dargestellten:</strong> Geschichte muss als handlungsmächtig erzählt werden, nicht als Opfer-Narrativ.</p>
+</div>
+
+<h3 style="text-transform:none">3.4 Übertragung auf andere Herkunftskontexte</h3>
+<div style="border:var(--border-thick);overflow:hidden;margin:12px 0">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:var(--border-medium)">
+<div style="padding:8px 10px;font-family:var(--font-mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff;border-right:var(--border-thin)">Kontext</div>
+<div style="padding:8px 10px;font-family:var(--font-mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff;border-right:var(--border-thin)">Mögliche Inhalte</div>
+<div style="padding:8px 10px;font-family:var(--font-mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff;border-right:var(--border-thin)">Glossar</div>
+<div style="padding:8px 10px;font-family:var(--font-mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff">Anker</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:var(--border-thin)">
+<div style="padding:8px 10px;font-size:13px;border-right:var(--border-thin)">Syrien</div>
+<div style="padding:8px 10px;font-size:13px;color:#555;border-right:var(--border-thin)">Levante, Aleppo/Damaskus, religiöse Gemeinschaften</div>
+<div style="padding:8px 10px;font-size:13px;border-right:var(--border-thin)">Arabisch</div>
+<div style="padding:8px 10px;font-size:13px;color:#555">Herkunftsstädte, Familiennamen</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;border-bottom:var(--border-thin)">
+<div style="padding:8px 10px;font-size:13px;border-right:var(--border-thin)">Eritrea/Äthiopien</div>
+<div style="padding:8px 10px;font-size:13px;color:#555;border-right:var(--border-thin)">Horn von Afrika, orthodoxe Kirche, Unabhängigkeitskampf</div>
+<div style="padding:8px 10px;font-size:13px;border-right:var(--border-thin)">Tigrinya</div>
+<div style="padding:8px 10px;font-size:13px;color:#555">Stammesnamen, religiöse Bez.</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr">
+<div style="padding:8px 10px;font-size:13px;border-right:var(--border-thin)">Afghanistan</div>
+<div style="padding:8px 10px;font-size:13px;color:#555;border-right:var(--border-thin)">Zentralasien, persische Literatur, Seidenstrasse</div>
+<div style="padding:8px 10px;font-size:13px;border-right:var(--border-thin)">Dari/Paschtu</div>
+<div style="padding:8px 10px;font-size:13px;color:#555">Herkunftsregionen, Sprachen</div>
+</div>
+</div>
+
+<h2 style="text-transform:none;font-size:1.2rem;margin-top:20px">Teil 4 — Wirkungsevaluation</h2>
+
+<h3 style="text-transform:none">4.1 Gegenstandsangemessenheit</h3>
+<p>Kausale Wirkungsnachweise (randomisierte Kontrollgruppen) sind im Feld nonformaler politischer Bildung nicht realisierbar. Das angemessene Gütekriterium ist die Gegenstandsangemessenheit: Erklären, wie, für wen und unter welchen Bedingungen ein Ansatz wirkt.</p>
+
+<h3 style="text-transform:none">4.2 Beobachtbare Indikatoren</h3>
+<div style="border:var(--border-thick);overflow:hidden;margin:12px 0;font-size:14px">
+<div style="display:grid;grid-template-columns:auto 1fr;border-bottom:var(--border-medium)">
+<div style="padding:8px 12px;background:var(--color-black);color:#fff;font-family:var(--font-mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;border-right:var(--border-thin);white-space:nowrap">Ebene</div>
+<div style="padding:8px 12px;background:var(--color-black);color:#fff;font-family:var(--font-mono);font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px">Indikatoren</div>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr;border-bottom:var(--border-thin)">
+<div style="padding:8px 12px;font-weight:700;border-right:var(--border-thin);white-space:nowrap">Motivation</div>
+<div style="padding:8px 12px;color:#555">Selbst initiierte Fragen, Qualität der Transferaufgaben, Bereitschaft Wissen einzubringen</div>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr;border-bottom:var(--border-thin)">
+<div style="padding:8px 12px;font-weight:700;border-right:var(--border-thin);white-space:nowrap">Identität</div>
+<div style="padding:8px 12px;color:#555">Art des Sprechens über Herkunft, Verbindungen Unterricht↔Biographie, Rückmeldungen Elternhaus</div>
+</div>
+<div style="display:grid;grid-template-columns:auto 1fr">
+<div style="padding:8px 12px;font-weight:700;border-right:var(--border-thin);white-space:nowrap">Soziale Einbindung</div>
+<div style="padding:8px 12px;color:#555">Qualität wenn SuS Expertenwissen einbringt, Schule-Elternhaus-Beziehung</div>
+</div>
+</div>
+
+<h2 style="text-transform:none;font-size:1.2rem;margin-top:20px">Schlussbemerkung</h2>
+<p>Die beschriebenen Prinzipien — biographisches Lernen, Ressourcenorientierung, Anerkennungspädagogik und Community of Practice — sind keine feststehenden Methoden, sondern Haltungen, die in unterschiedlichen Kontexten unterschiedliche Formen annehmen.</p>
+<p style="border-left:4px solid var(--color-primary);padding-left:12px;margin:16px 0;font-weight:700">Die entscheidende Voraussetzung für das Gelingen dieses Ansatzes ist nicht technischer, sondern pädagogischer Natur: die Überzeugung, dass jede Schülerin und jeder Schüler etwas weiss, das kein Lehrbuch kennt.</p>
+
+<div style="border:var(--border-thin);padding:16px 20px;margin-top:24px;background:var(--color-surface)">
+<div class="eyebrow">Literatur</div>
+<p style="font-size:13px;color:#555;line-height:1.8;margin-bottom:0">Allroggen, M. et al. (2025): Wie die deutsche Politik Radikalisierung indirekt fördert. BICC Policy Brief.<br>Anderson, L. W. und Krathwohl, D. R. (2001): A Taxonomy for Learning, Teaching, and Assessing.<br>Bourdieu, P. (1983): Ökonomisches Kapital, kulturelles Kapital, soziales Kapital.<br>Krüger, H.-H. und Marotzki, W. (2006): Handbuch erziehungswissenschaftliche Biographieforschung.<br>Leisen, J. (2013): Handbuch Sprachförderung im Fach.<br>Mecheril, P. (2004): Einführung in die Migrationspädagogik.<br>Prengel, A. (2006): Pädagogik der Vielfalt.<br>Transfer für Bildung e.V. (2026): Gegenstandsangemessene Wirkungsevaluation.<br>Welsch, W. (1995): Transkulturalität.<br>Wenger, E. (1998): Communities of Practice.</p>
+</div>
+
+<button class="btn btn-primary" onclick="go('modules')" style="margin-top:16px"><i class="fa-solid fa-book-open"></i> Zur Lernapp</button>
+<button class="btn btn-secondary" onclick="go('start')" style="margin-top:4px"><i class="fa-solid fa-arrow-left"></i> Zurück zum Start</button>
+</div>`;}
 
 function go(s){S.screen=s;S.answered=false;save();render()}
 function startMod(i){S.mi=i;S.si=0;S.screen='read';save();render()}
