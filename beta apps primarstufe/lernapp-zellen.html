@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zellen-Profi · lernlust</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+:root {
+    --primary:   #FF6B6B;
+    --secondary: #4ECDC4;
+    --accent:    #FFE66D;
+    --success:   #95E1A3;
+    --danger:    #FF8B94;
+    --purple:    #C3A6FF;
+    --bg-light:  #FFF9F0;
+    --bg-card:   #FFFFFF;
+    --text-dark: #2D3436;
+    --text-muted: #636E72;
+    --shadow: 0 8px 32px rgba(0,0,0,0.10);
+    --radius: 24px;
+    --radius-sm: 16px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg-light);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+h1, h2, h3 { font-family: 'Fredoka', sans-serif; }
+
+/* Animierter Hintergrund */
+.bg-circle { position: fixed; border-radius: 50%; opacity: .35; z-index: 0; pointer-events: none; }
+.bg-circle.c1 { width: 280px; height: 280px; background: var(--secondary); top: -90px; left: -90px; animation: float 9s ease-in-out infinite; }
+.bg-circle.c2 { width: 220px; height: 220px; background: var(--accent); bottom: -70px; right: -70px; animation: float 11s ease-in-out infinite reverse; }
+.bg-circle.c3 { width: 160px; height: 160px; background: var(--purple); top: 45%; right: -80px; animation: float 13s ease-in-out infinite; }
+@keyframes float {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(20px, 30px); }
+}
+
+.app { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 24px 20px 40px; }
+.screen { display: none; }
+.screen.active { display: block; }
+
+/* Start */
+.logo { text-align: center; margin: 24px 0 8px; font-size: 3.2rem; }
+.start h1 { text-align: center; font-size: 2rem; margin-bottom: 6px; }
+.start .sub { text-align: center; color: var(--text-muted); margin-bottom: 28px; font-weight: 700; }
+.level-btn {
+    display: flex; align-items: center; gap: 16px;
+    width: 100%; min-height: 72px; padding: 16px 20px; margin-bottom: 14px;
+    background: var(--bg-card); border: 3px solid transparent;
+    border-radius: var(--radius); box-shadow: var(--shadow);
+    font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 800;
+    color: var(--text-dark); cursor: pointer; text-align: left;
+    transition: transform .15s, border-color .15s;
+}
+.level-btn:active, .level-btn:hover { transform: translateY(-3px); }
+.level-btn .dot { width: 48px; height: 48px; min-width: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; color: #fff; }
+.level-btn.l1 .dot { background: var(--secondary); }
+.level-btn.l2 .dot { background: var(--primary); }
+.level-btn.l3 .dot { background: var(--purple); }
+.level-btn.chosen { border-color: var(--primary); }
+.level-btn .stars { margin-left: auto; color: var(--accent); font-size: 1.05rem; text-shadow: 0 1px 2px rgba(0,0,0,.15); white-space: nowrap; }
+.level-btn small { display: block; font-weight: 700; color: var(--text-muted); font-size: .85rem; }
+
+/* Pill-Buttons */
+.pill {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    min-height: 56px; padding: 14px 32px;
+    border: none; border-radius: 50px;
+    background: var(--primary); color: #fff;
+    font-family: 'Nunito', sans-serif; font-size: 1.1rem; font-weight: 800;
+    cursor: pointer; box-shadow: var(--shadow);
+    transition: transform .15s;
+}
+.pill:active, .pill:hover { transform: translateY(-3px); }
+.pill.teal { background: var(--secondary); }
+.pill.full { width: 100%; }
+
+/* Spiel-Screen */
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.topbar .home-btn {
+    width: 48px; height: 48px; border-radius: 50%; border: none;
+    background: var(--bg-card); box-shadow: var(--shadow);
+    color: var(--text-muted); font-size: 1.1rem; cursor: pointer;
+}
+.streak {
+    background: var(--bg-card); border-radius: 50px; box-shadow: var(--shadow);
+    padding: 10px 18px; font-weight: 800; font-size: 1rem;
+}
+.dots { display: flex; gap: 8px; justify-content: center; margin-bottom: 18px; }
+.dots span { width: 14px; height: 14px; border-radius: 50%; background: #E8E0D5; }
+.dots span.ok { background: var(--success); }
+.dots span.no { background: var(--danger); }
+.dots span.now { background: var(--accent); }
+
+.task-card {
+    background: var(--bg-card); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 28px 24px; text-align: center;
+}
+.task-tools { display: flex; justify-content: center; gap: 12px; margin-bottom: 14px; }
+.tool-btn {
+    width: 52px; height: 52px; border-radius: 50%; border: none;
+    background: var(--bg-light); color: var(--text-dark);
+    font-size: 1.2rem; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    transition: transform .15s;
+}
+.tool-btn:active, .tool-btn:hover { transform: translateY(-3px); }
+.tool-btn.speaking { background: var(--secondary); color: #fff; }
+.question { font-size: 1.35rem; font-weight: 800; line-height: 1.4; margin-bottom: 8px; }
+.hint-box {
+    display: none; background: var(--accent); border-radius: var(--radius-sm);
+    padding: 12px 16px; margin: 10px 0 4px; font-weight: 700; font-size: .98rem;
+}
+.hint-box.show { display: block; }
+.answers { margin-top: 20px; display: flex; flex-direction: column; gap: 12px; }
+.answer-btn {
+    min-height: 56px; padding: 14px 18px;
+    border: 3px solid #F0E8DC; border-radius: var(--radius-sm);
+    background: var(--bg-light);
+    font-family: 'Nunito', sans-serif; font-size: 1.08rem; font-weight: 800;
+    color: var(--text-dark); cursor: pointer; transition: transform .12s, background .15s, border-color .15s;
+}
+.answer-btn:active:not(:disabled), .answer-btn:hover:not(:disabled) { transform: translateY(-3px); border-color: var(--secondary); }
+.answer-btn.right { background: var(--success); border-color: var(--success); }
+.answer-btn.wrong { background: var(--danger); border-color: var(--danger); }
+.answer-btn:disabled { cursor: default; }
+
+.feedback { min-height: 64px; margin-top: 16px; font-weight: 800; font-size: 1.15rem; }
+.feedback .emo { font-size: 1.6rem; display: block; margin-bottom: 2px; }
+.feedback .solution { font-size: 1rem; color: var(--text-muted); font-weight: 700; }
+#nextBtn { margin-top: 8px; display: none; }
+
+/* Ende */
+.end-card {
+    background: var(--bg-card); border-radius: var(--radius);
+    box-shadow: var(--shadow); padding: 36px 24px; text-align: center;
+}
+.end-card .big { font-size: 3.4rem; margin-bottom: 10px; }
+.end-card h2 { font-size: 1.6rem; margin-bottom: 6px; }
+.end-card .score-line { font-size: 1.2rem; font-weight: 800; margin-bottom: 6px; }
+.end-card .stars-big { font-size: 2.2rem; color: var(--accent); text-shadow: 0 2px 4px rgba(0,0,0,.12); margin-bottom: 18px; letter-spacing: 6px; }
+.end-card .stars-big .off { color: #E8E0D5; text-shadow: none; }
+.end-card .pill { margin: 6px 4px; }
+
+@keyframes pop { 0% { transform: scale(.6); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+.pop { animation: pop .35s ease; }
+</style>
+</head>
+<body>
+<div class="bg-circle c1"></div>
+<div class="bg-circle c2"></div>
+<div class="bg-circle c3"></div>
+
+<div class="app">
+
+    <!-- START / STUFENWAHL -->
+    <div class="screen start active" id="screenStart">
+        <div class="logo">🔬</div>
+        <h1>Zellen-Profi</h1>
+        <p class="sub">8 Fragen pro Runde. Du schaffst das!</p>
+        <button class="level-btn l1" onclick="startRound('leicht')">
+            <span class="dot"><i class="fa-solid fa-seedling"></i></span>
+            <span>Leicht<small>Die Organellen kennen</small></span>
+            <span class="stars" id="starsLeicht"></span>
+        </button>
+        <button class="level-btn l2" onclick="startRound('mittel')">
+            <span class="dot"><i class="fa-solid fa-microscope"></i></span>
+            <span>Mittel<small>Zellkern &amp; Zelltypen</small></span>
+            <span class="stars" id="starsMittel"></span>
+        </button>
+        <button class="level-btn l3" onclick="startRound('schwer')">
+            <span class="dot"><i class="fa-solid fa-dna"></i></span>
+            <span>Schwer<small>Energie &amp; Mitose</small></span>
+            <span class="stars" id="starsSchwer"></span>
+        </button>
+    </div>
+
+    <!-- SPIEL -->
+    <div class="screen" id="screenGame">
+        <div class="topbar">
+            <button class="home-btn" onclick="goStart()" aria-label="Zur Stufenwahl"><i class="fa-solid fa-house"></i></button>
+            <span class="streak">🔥 <span id="streakNum">0</span></span>
+        </div>
+        <div class="dots" id="dots"></div>
+        <div class="task-card">
+            <div class="task-tools">
+                <button class="tool-btn" id="ttsBtn" onclick="speakTask()" aria-label="Vorlesen"><i class="fa-solid fa-volume-high"></i></button>
+                <button class="tool-btn" id="hintBtn" onclick="toggleHint()" aria-label="Tipp"><i class="fa-solid fa-question"></i></button>
+            </div>
+            <div class="question" id="questionText"></div>
+            <div class="hint-box" id="hintBox"></div>
+            <div class="answers" id="answers"></div>
+            <div class="feedback" id="feedback"></div>
+            <button class="pill teal full" id="nextBtn" onclick="nextTask()">Weiter <i class="fa-solid fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <!-- ENDE -->
+    <div class="screen" id="screenEnd">
+        <div class="end-card">
+            <div class="big" id="endEmoji">🎉</div>
+            <h2 id="endTitle">Geschafft!</h2>
+            <div class="score-line" id="endScore"></div>
+            <div class="stars-big" id="endStars"></div>
+            <button class="pill" onclick="startRound(currentLevel)"><i class="fa-solid fa-rotate-right"></i> Nochmal</button>
+            <button class="pill teal" onclick="goStart()"><i class="fa-solid fa-layer-group"></i> Stufenwahl</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ===== AUFGABEN =====
+// Format: { question, correct, wrong: [...], hint }
+const tasks = {
+    leicht: [
+        { question: 'Wie heisst das Kraftwerk der Zelle?', correct: 'Mitochondrium', wrong: ['Zellkern', 'Vakuole', 'Zellwand'], hint: 'Es stellt die Energie her.' },
+        { question: 'Welches Organell steuert die Zelle?', correct: 'Zellkern', wrong: ['Zellmembran', 'Vakuole', 'Cytoplasma'], hint: 'Es enthält die DNA.' },
+        { question: 'Welches Organell schützt die Zelle und grenzt sie ab?', correct: 'Zellmembran', wrong: ['Zellkern', 'Mitochondrium', 'Vakuole'], hint: 'Es ist die äussere Haut der Zelle.' },
+        { question: 'Welches Organell speichert Wasser in der Pflanzenzelle?', correct: 'Vakuole', wrong: ['Zellkern', 'Zellmembran', 'Mitochondrium'], hint: 'Es ist wie ein grosser Wassertank.' },
+        { question: 'Wo kommen Mitochondrien vor?', correct: 'in Tier- und Pflanzenzellen', wrong: ['nur in Pflanzenzellen', 'nur in Tierzellen'], hint: 'Beide Zelltypen brauchen Energie.' },
+        { question: 'Wo ist die DNA gespeichert?', correct: 'Zellkern', wrong: ['Vakuole', 'Zellwand', 'Zellmembran'], hint: 'In der Steuerzentrale der Zelle.' },
+        { question: 'Welches Organell macht Fotosynthese?', correct: 'Chloroplast', wrong: ['Mitochondrium', 'Vakuole', 'Zellkern'], hint: 'Es braucht Sonnenlicht.' },
+        { question: 'Was stellt das Mitochondrium her?', correct: 'ATP', wrong: ['DNA', 'Cellulose', 'Wasser'], hint: 'Das ist die Energie der Zelle.' },
+        { question: 'Woraus besteht die Zellwand?', correct: 'Cellulose', wrong: ['Glukose', 'ATP', 'Wasser'], hint: 'Der Stoff beginnt mit C.' },
+        { question: 'Welche Zelle hat eine Zellwand?', correct: 'Pflanzenzelle', wrong: ['Tierzelle'], hint: 'Die Tierzelle hat keine Zellwand.' }
+    ],
+    mittel: [
+        { question: 'Welcher Teil des Zellkerns ist wie eine Stadtmauer?', correct: 'Kernhülle', wrong: ['Kernporen', 'Chromatin', 'Nukleolus'], hint: 'Sie schützt den Kern aussen.' },
+        { question: 'Welcher Teil des Zellkerns ist wie ein Stadttor?', correct: 'Kernporen', wrong: ['Kernhülle', 'Chromatin', 'Nukleolus'], hint: 'Hier gehen Stoffe rein und raus.' },
+        { question: 'Welcher Teil des Zellkerns speichert die Erbinformation?', correct: 'Chromatin', wrong: ['Kernhülle', 'Kernporen', 'Nukleolus'], hint: 'Wie eine Bibliothek der Stadt.' },
+        { question: 'Was produziert der Nukleolus?', correct: 'Ribosomen', wrong: ['ATP', 'Cellulose', 'Sauerstoff'], hint: 'Er ist die Fabrik der Stadt.' },
+        { question: 'Was hat nur die Pflanzenzelle?', correct: 'Zellwand', wrong: ['Zellkern', 'Zellmembran', 'Mitochondrium'], hint: 'Sie besteht aus Cellulose.' },
+        { question: 'Was hat die Tierzelle nicht?', correct: 'Chloroplasten', wrong: ['Zellkern', 'Zellmembran', 'Cytoplasma'], hint: 'Tiere machen keine Fotosynthese.' },
+        { question: 'Welche Zelle hat eine grosse, zentrale Vakuole?', correct: 'Pflanzenzelle', wrong: ['Tierzelle', 'Bakterienzelle', 'keine Zelle'], hint: 'Sie speichert viel Wasser.' },
+        { question: 'Haben Prokaryoten einen echten Zellkern?', correct: 'Nein', wrong: ['Ja'], hint: 'Ihre DNA liegt frei im Zellplasma.' },
+        { question: 'Welche Lebewesen sind Prokaryoten?', correct: 'Bakterien', wrong: ['Pflanzen', 'Tiere', 'Menschen'], hint: 'Sie sind winzig klein.' },
+        { question: 'Wo liegt die DNA bei Prokaryoten?', correct: 'frei im Zellplasma', wrong: ['im Zellkern', 'in der Vakuole', 'in der Zellwand'], hint: 'Sie haben keinen echten Kern.' },
+        { question: 'Was sind Tier- und Pflanzenzellen?', correct: 'Eukaryoten', wrong: ['Prokaryoten', 'Bakterien', 'Viren'], hint: 'Sie haben einen echten Zellkern.' }
+    ],
+    schwer: [
+        { question: 'Was ist ATP?', correct: 'die Energiewährung der Zelle', wrong: ['ein Organell', 'ein Zucker', 'eine Zellart'], hint: 'Die Zelle bezahlt damit alle Lebensvorgänge.' },
+        { question: 'Was braucht das Mitochondrium für die Zellatmung?', correct: 'Glukose und Sauerstoff', wrong: ['Wasser und Salz', 'Licht und CO₂', 'DNA und Ribosomen'], hint: 'Zucker plus Luft zum Atmen.' },
+        { question: 'Was entsteht bei der Zellatmung?', correct: 'Kohlenstoffdioxid und ATP', wrong: ['Glukose und Sauerstoff', 'Wasser und Salz', 'Cellulose und DNA'], hint: 'Energie plus ein Gas zum Ausatmen.' },
+        { question: 'Welche Mitosephase kommt zuerst?', correct: 'Prophase', wrong: ['Metaphase', 'Anaphase', 'Telophase'], hint: 'Pro – Meta – Ana – Telo.' },
+        { question: 'Welche Phase kommt nach der Metaphase?', correct: 'Anaphase', wrong: ['Prophase', 'Telophase'], hint: 'Pro – Meta – Ana – Telo.' },
+        { question: 'Welche Mitosephase kommt am Schluss?', correct: 'Telophase', wrong: ['Prophase', 'Metaphase', 'Anaphase'], hint: 'Pro – Meta – Ana – Telo.' },
+        { question: 'Was entsteht am Ende der Mitose?', correct: 'zwei identische Tochterzellen', wrong: ['vier verschiedene Zellen', 'eine grosse Zelle', 'keine neuen Zellen'], hint: 'Beide haben genau dieselbe DNA.' },
+        { question: 'Warum sind die Tochterzellen genetisch identisch?', correct: 'Die DNA wurde vorher verdoppelt.', wrong: ['Sie sind gleich gross.', 'Sie haben keine DNA.', 'Sie teilen sich eine Zellwand.'], hint: 'Erst kopieren, dann fair aufteilen.' },
+        { question: 'Wann braucht der Körper Zellteilung?', correct: 'bei Wachstum und Wundheilung', wrong: ['nur beim Schlafen', 'nur beim Essen', 'nie'], hint: 'Neue Zellen für neue Haut.' },
+        { question: 'Was machen Chloroplasten?', correct: 'Fotosynthese', wrong: ['Zellatmung', 'Zellteilung', 'Stofftransport'], hint: 'Aus Licht, CO₂ und Wasser wird Zucker.' },
+        { question: 'Was brauchen Chloroplasten für die Fotosynthese?', correct: 'Sonnenlicht, CO₂ und Wasser', wrong: ['Glukose und Sauerstoff', 'ATP und DNA', 'Salz und Zucker'], hint: 'Damit stellen sie Zucker und Sauerstoff her.' },
+        { question: 'Was hält die Vakuole in der Zelle aufrecht?', correct: 'den Druck', wrong: ['die Temperatur', 'das Licht', 'die DNA'], hint: 'Sie ist prall gefüllt mit Wasser.' },
+        { question: 'Was waren die ersten Lebewesen?', correct: 'Bakterien', wrong: ['Menschen', 'Pflanzen', 'Fische'], hint: 'Vor etwa 3,5 Milliarden Jahren.' },
+        { question: 'Aus wie vielen Zellen besteht der Mensch?', correct: 'etwa 37 Billionen', wrong: ['etwa 100', 'etwa 1 Million', 'etwa 37 Milliarden'], hint: 'Eine Billion ist tausend Milliarden.' }
+    ]
+};
+
+const ROUND_SIZE = 8;
+const praise = ['Super!', 'Stark!', 'Genau!', 'Top!', 'Richtig!', 'Sehr gut!'];
+const praiseEmo = ['🎉', '⭐', '💪', '👍', '✨', '🙌'];
+
+// ===== STATE =====
+// Sichere Speicher-Helfer: localStorage kann im Privatmodus blockiert sein
+function storeGet(key) { try { return localStorage.getItem(key); } catch (e) { return null; } }
+function storeSet(key, val) { try { localStorage.setItem(key, val); } catch (e) {} }
+function stopSpeech() { if ('speechSynthesis' in window) speechSynthesis.cancel(); }
+
+let currentLevel = storeGet('zellen_stufe') || 'leicht';
+let round = [], idx = 0, correctCount = 0, streak = 0, results = [];
+
+// ===== HELPERS =====
+const $ = id => document.getElementById(id);
+function shuffle(arr) {
+    const a = [...arr];
+    for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+}
+function show(id) {
+    ['screenStart', 'screenGame', 'screenEnd'].forEach(s => $(s).classList.toggle('active', s === id));
+}
+function starsFor(score) { return score >= 8 ? 3 : score >= 6 ? 2 : score >= 4 ? 1 : 0; }
+function starString(n) {
+    let s = '';
+    for (let i = 0; i < 3; i++) s += i < n ? '★' : '☆';
+    return s;
+}
+function renderStartStars() {
+    const map = { leicht: 'starsLeicht', mittel: 'starsMittel', schwer: 'starsSchwer' };
+    Object.keys(map).forEach(lv => {
+        const best = parseInt(storeGet('zellen_stars_' + lv) || '0');
+        $(map[lv]).textContent = starString(best);
+    });
+}
+
+// ===== TTS =====
+function speak(text) {
+    if (!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'de-CH';
+    u.rate = 0.8;
+    const btn = $('ttsBtn');
+    btn.classList.add('speaking');
+    u.onend = () => btn.classList.remove('speaking');
+    speechSynthesis.speak(u);
+}
+function speakTask() {
+    const t = round[idx];
+    const opts = [...$('answers').children].map(b => b.textContent).join('. ');
+    speak(t.question + ' ... ' + opts);
+}
+
+// ===== GAME =====
+function startRound(level) {
+    currentLevel = level;
+    storeSet('zellen_stufe', level);
+    round = shuffle(tasks[level]).slice(0, ROUND_SIZE);
+    idx = 0; correctCount = 0; streak = 0; results = [];
+    $('streakNum').textContent = '0';
+    show('screenGame');
+    renderTask();
+}
+function goStart() {
+    stopSpeech();
+    renderStartStars();
+    show('screenStart');
+}
+function renderDots() {
+    const d = $('dots');
+    d.innerHTML = '';
+    for (let i = 0; i < ROUND_SIZE; i++) {
+        const s = document.createElement('span');
+        if (results[i] === true) s.className = 'ok';
+        else if (results[i] === false) s.className = 'no';
+        else if (i === idx) s.className = 'now';
+        d.appendChild(s);
+    }
+}
+function renderTask() {
+    const t = round[idx];
+    renderDots();
+    $('questionText').textContent = t.question;
+    $('hintBox').textContent = '💡 ' + t.hint;
+    $('hintBox').classList.remove('show');
+    $('hintBtn').style.display = t.hint ? '' : 'none';
+    $('feedback').innerHTML = '';
+    $('nextBtn').style.display = 'none';
+    const box = $('answers');
+    box.innerHTML = '';
+    shuffle([t.correct, ...t.wrong]).forEach(opt => {
+        const b = document.createElement('button');
+        b.className = 'answer-btn';
+        b.textContent = opt;
+        b.onclick = () => choose(b, opt === t.correct, t);
+        box.appendChild(b);
+    });
+}
+function toggleHint() { $('hintBox').classList.toggle('show'); }
+function choose(btn, isCorrect, t) {
+    [...$('answers').children].forEach(b => {
+        b.disabled = true;
+        if (b.textContent === t.correct) b.classList.add('right');
+    });
+    results[idx] = isCorrect;
+    renderDots();
+    const fb = $('feedback');
+    if (isCorrect) {
+        correctCount++;
+        streak++;
+        const n = Math.floor(Math.random() * praise.length);
+        fb.innerHTML = '<span class="emo pop">' + praiseEmo[n] + '</span>' + praise[n];
+    } else {
+        streak = 0;
+        btn.classList.add('wrong');
+        fb.innerHTML = '<span class="emo">🧐</span>Schau gut hin:<div class="solution">Richtig ist: <b>' + t.correct + '</b></div>';
+    }
+    $('streakNum').textContent = streak;
+    $('nextBtn').style.display = 'inline-flex';
+}
+function nextTask() {
+    stopSpeech();
+    idx++;
+    if (idx < round.length) { renderTask(); return; }
+    finishRound();
+}
+function finishRound() {
+    const stars = starsFor(correctCount);
+    const bestKey = 'zellen_stars_' + currentLevel;
+    const best = parseInt(storeGet(bestKey) || '0');
+    if (stars > best) storeSet(bestKey, stars);
+    $('endEmoji').textContent = stars === 3 ? '🏆' : stars === 2 ? '🎉' : stars === 1 ? '💪' : '🌱';
+    $('endTitle').textContent = stars === 3 ? 'Perfekt!' : stars === 2 ? 'Stark gemacht!' : stars === 1 ? 'Gut dabei!' : 'Dranbleiben!';
+    $('endScore').textContent = correctCount + ' von ' + ROUND_SIZE + ' richtig';
+    const el = $('endStars');
+    el.innerHTML = '';
+    for (let i = 0; i < 3; i++) {
+        const s = document.createElement('span');
+        s.textContent = '★';
+        if (i >= stars) s.className = 'off';
+        el.appendChild(s);
+    }
+    show('screenEnd');
+}
+
+renderStartStars();
+</script>
+</body>
+</html>
