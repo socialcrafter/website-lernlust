@@ -1,0 +1,527 @@
+<!doctype html>
+<html lang="de" dir="ltr">
+<head><script data-od-sandbox-shim>(function(){
+  function makeStore(){
+    var data = {};
+    var api = {
+      getItem: function(k){ return Object.prototype.hasOwnProperty.call(data, k) ? data[k] : null; },
+      setItem: function(k, v){ data[k] = String(v); },
+      removeItem: function(k){ delete data[k]; },
+      clear: function(){ data = {}; },
+      key: function(i){ return Object.keys(data)[i] || null; }
+    };
+    Object.defineProperty(api, 'length', { get: function(){ return Object.keys(data).length; } });
+    return api;
+  }
+  function tryShim(name){
+    var works = false;
+    try { works = !!window[name] && typeof window[name].getItem === 'function'; void window[name].length; }
+    catch (_) { works = false; }
+    if (works) return;
+    try { Object.defineProperty(window, name, { configurable: true, value: makeStore() }); }
+    catch (_) { try { window[name] = makeStore(); } catch (__) {} }
+  }
+  tryShim('localStorage');
+  tryShim('sessionStorage');
+})();</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Die Kurden im 20. Jahrhundert — Teil 3 — Lernlust</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+:root{
+  --color-bg:#ffffff;--color-surface:#fef6e4;--color-black:#000000;--color-text:#000000;
+  --color-primary:#e67e22;--color-secondary:#f72585;--color-tertiary:#4cc9f0;--color-accent:#7209b7;
+  --border-thick:4px solid var(--color-black);--border-medium:3px solid var(--color-black);--border-thin:2px solid var(--color-black);
+  --shadow-brutal:8px 8px 0 var(--color-black);--shadow-medium:6px 6px 0 var(--color-black);--shadow-small:4px 4px 0 var(--color-black);
+  --font-sans:-apple-system,BlinkMacSystemFont,"Arial Black","Arial",sans-serif;
+  --font-body:'Source Sans 3','Source Sans Pro',-apple-system,BlinkMacSystemFont,sans-serif;
+  --font-mono:"Courier New",Courier,monospace;--font-display:"Arial Black","Arial",sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:var(--font-body);font-size:18px;line-height:1.6;color:var(--color-text);background:var(--color-bg);overflow-x:hidden}
+h1,h2,h3,h4{font-family:var(--font-display);font-weight:900;line-height:1.1;margin-bottom:1rem;text-transform:uppercase;letter-spacing:-0.02em}
+h1{font-size:clamp(2rem,6vw,3rem)}h2{font-size:clamp(1.4rem,3vw,2rem)}h3{font-size:clamp(1.1rem,2vw,1.4rem)}
+p{margin-bottom:1rem;font-weight:500}
+.app{width:100%;max-width:540px;min-height:100vh;margin:0 auto;padding:0 16px 48px;position:relative}
+.topbar{position:sticky;top:0;z-index:50;background:var(--color-surface);border-bottom:var(--border-thick);padding:12px 0;display:flex;align-items:center;justify-content:space-between;margin:0 -16px;padding-left:16px;padding-right:16px}
+.topbar-back{background:none;border:none;font-family:var(--font-sans);font-size:14px;font-weight:900;color:var(--color-black);cursor:pointer;display:flex;align-items:center;gap:6px;text-transform:uppercase;letter-spacing:.5px}
+.topbar-back:hover{color:var(--color-primary)}
+.topbar-title{font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:var(--color-primary)}
+.topbar-right{font-family:var(--font-mono);font-size:12px;color:var(--color-black);font-weight:700}
+.progress-track{height:6px;background:#e0e0e0;border-bottom:var(--border-medium);margin:0 -16px}
+.progress-fill{height:100%;background:var(--color-primary);transition:width .4s ease}
+.screen{display:none;flex-direction:column;gap:16px;padding-top:20px}
+.screen.active{display:flex}
+.eyebrow{font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--color-primary)}
+.card{background:var(--color-bg);border:var(--border-thick);padding:24px;box-shadow:var(--shadow-brutal)}
+.card-surface{background:var(--color-surface);border:var(--border-thick);padding:24px;box-shadow:var(--shadow-brutal)}
+.read-text{font-family:var(--font-body);font-size:19px;line-height:1.85;color:var(--color-text);font-weight:400}
+.read-text strong{color:var(--color-primary);font-weight:700;text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:3px}
+.read-text em{font-style:italic;color:#555}
+.tts-btn{display:inline-flex;align-items:center;gap:8px;background:var(--color-bg);border:var(--border-medium);padding:8px 14px;color:var(--color-black);font-size:13px;font-weight:900;cursor:pointer;transition:all .15s;font-family:var(--font-sans);text-transform:uppercase;letter-spacing:.5px;box-shadow:var(--shadow-small)}
+.tts-btn:hover{transform:translate(3px,3px);box-shadow:0 0 0 var(--color-black)}
+.tts-btn.speaking{background:var(--color-primary);color:var(--color-black)}
+.glossary{border:var(--border-thick);border-color:var(--color-accent);background:rgba(114,9,183,.06);padding:14px 16px}
+.glossary-label{font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--color-accent);margin-bottom:8px}
+.glossary-row{font-size:15px;color:var(--color-text);display:flex;gap:6px;align-items:baseline;line-height:1.8}
+.glossary-row .kw{font-weight:900;color:var(--color-text)}.glossary-row .eq{color:#999;font-family:var(--font-mono);font-size:13px}.glossary-row .tr{color:var(--color-accent);font-weight:700;font-family:var(--font-mono)}
+.btn{border:var(--border-thick);font-family:var(--font-sans);font-size:15px;font-weight:900;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .15s;width:100%;padding:14px 20px;text-transform:uppercase;letter-spacing:.5px;box-shadow:var(--shadow-medium)}
+.btn:hover{transform:translate(3px,3px);box-shadow:3px 3px 0 var(--color-black)}
+.btn-primary{background:var(--color-primary);color:var(--color-black)}.btn-secondary{background:var(--color-bg);color:var(--color-black)}
+.btn-accent{background:var(--color-accent);color:#fff}.btn-accent:hover{background:#5a0791}
+.btn-tertiary{background:var(--color-tertiary);color:var(--color-black)}.btn-green{background:#2d6b3a;color:#fff}
+.module-card{background:var(--color-bg);border:var(--border-thick);padding:24px;cursor:pointer;transition:all .15s;display:flex;flex-direction:column;gap:8px;box-shadow:var(--shadow-brutal)}
+.module-card:hover{transform:translate(4px,4px);box-shadow:4px 4px 0 var(--color-black)}
+.module-card .num{font-family:var(--font-display);font-size:48px;font-weight:900;color:var(--color-primary);line-height:1}
+.module-card h2{font-size:19px}.module-card p{font-size:14px;color:#555;line-height:1.5;font-family:var(--font-body)}
+.module-card.done{border-color:#2d6b3a}.module-card.done .num{color:#2d6b3a}
+.parent-task{border:var(--border-thick);border-color:var(--color-secondary);background:rgba(247,37,133,.06);padding:20px;box-shadow:var(--shadow-medium)}
+.parent-task .pt-icon{font-size:28px;margin-bottom:4px}
+.parent-task .pt-label{font-family:var(--font-mono);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--color-secondary);margin-bottom:8px}
+.parent-task .pt-text{font-family:var(--font-body);font-size:17px;line-height:1.7;color:var(--color-text);font-weight:500}
+.parent-answer{border:2px dashed var(--color-secondary);background:rgba(247,37,133,.04);padding:12px 14px;margin-top:8px}
+.parent-answer textarea{width:100%;border:var(--border-medium);padding:10px;font-family:var(--font-body);font-size:16px;line-height:1.6;resize:vertical;min-height:70px;background:var(--color-bg)}
+.parent-answer textarea:focus{outline:none;box-shadow:var(--shadow-small)}
+.chunk-nav{display:flex;gap:8px;justify-content:center;margin:4px 0;flex-wrap:wrap}
+.chunk-dot{width:10px;height:10px;background:var(--color-bg);border:2px solid var(--color-black);cursor:pointer;transition:all .15s}
+.chunk-dot.on{background:var(--color-primary);border-color:var(--color-primary);transform:scale(1.2)}.chunk-dot.visited{background:var(--color-black)}
+.question-text{font-family:var(--font-display);font-size:20px;font-weight:900;color:var(--color-text);line-height:1.3;text-transform:none}
+.ans-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.ans-btn{background:var(--color-bg);border:var(--border-medium);padding:14px 10px;font-family:var(--font-body);font-size:16px;font-weight:700;color:var(--color-text);cursor:pointer;min-height:66px;display:flex;align-items:center;justify-content:center;text-align:center;line-height:1.3;transition:all .1s;box-shadow:var(--shadow-small)}
+.ans-btn:hover:not(:disabled){transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--color-black)}
+.ans-btn:active:not(:disabled){transform:translate(2px,2px);box-shadow:1px 1px 0 var(--color-black)}
+.ans-btn.correct{background:#2d6b3a;border-color:#2d6b3a;color:#fff;box-shadow:var(--shadow-small)}
+.ans-btn.wrong{background:var(--color-secondary);border-color:var(--color-secondary);color:#fff;box-shadow:var(--shadow-small);animation:shake .3s ease}
+.ans-btn.revealed{background:#e8f5e9;border-color:#2d6b3a;color:#1b5e20;box-shadow:var(--shadow-small)}
+.feedback{border:var(--border-thick);padding:14px 16px;font-size:15px;font-weight:700;display:none;gap:10px;align-items:flex-start;line-height:1.5;font-family:var(--font-body)}
+.feedback.show{display:flex}.feedback.ok{background:#e8f5e9;border-color:#2d6b3a;color:#1b5e20}.feedback.ko{background:#ffebee;border-color:var(--color-secondary);color:#880e4f}
+.kurmanji-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(114,9,183,.08);border:2px solid var(--color-accent);padding:3px 10px;font-family:var(--font-mono);font-size:12px;font-weight:700;color:var(--color-accent)}
+.streak{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-mono);font-size:13px;font-weight:700;background:var(--color-surface);border:var(--border-medium);padding:4px 10px;box-shadow:var(--shadow-small)}
+.result-stars{display:flex;gap:4px;justify-content:center;margin:16px 0}.result-stars .star{font-size:36px;color:#e0e0e0;transition:color .3s}.result-stars .star.earned{color:var(--color-primary)}
+.score-text{font-family:var(--font-display);font-size:56px;font-weight:900;color:var(--color-primary);text-align:center}
+.score-label{text-align:center;color:#555;font-size:14px;font-weight:900;text-transform:uppercase;letter-spacing:1px}
+.start-hero{padding:40px 0 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:12px}
+.start-hero .sub{font-size:16px;color:var(--color-black);line-height:1.65;max-width:440px;font-weight:600}
+.start-box{border:var(--border-thick);background:var(--color-surface);padding:20px;text-align:center;box-shadow:var(--shadow-brutal);font-size:15px;color:var(--color-black);line-height:1.7;font-weight:600}
+.start-tag{background:var(--color-black);color:var(--color-surface);padding:4px 12px;font-weight:900;text-transform:uppercase;font-size:11px;letter-spacing:2px;border:var(--border-thin);display:inline-block;margin-bottom:4px}
+.fulltext-mod{border:var(--border-thick);border-left:8px solid var(--color-primary);background:var(--color-surface);padding:24px;margin-bottom:24px}
+.fulltext-mod.mod-2{border-left-color:var(--color-secondary)}.fulltext-mod.mod-3{border-left-color:var(--color-tertiary)}
+.parent-task.reflect{border-color:var(--color-accent);background:rgba(114,9,183,.06)}
+.parent-task.reflect .pt-label{color:var(--color-accent)}
+.parent-answer.reflect{border-color:var(--color-accent);background:rgba(114,9,183,.04)}
+.parent-task.transfer{border-color:var(--color-tertiary);background:rgba(76,201,240,.08)}
+.parent-task.transfer .pt-label{color:#0e7490}
+.parent-answer.transfer{border-color:var(--color-tertiary);background:rgba(76,201,240,.05)}
+.fulltext-mod.mod-4{border-left-color:var(--color-accent)}.fulltext-mod.mod-5{border-left-color:#2d6b3a}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeIn .25s ease}
+@media(max-width:400px){.ans-grid{grid-template-columns:1fr}h1{font-size:1.8rem}.read-text{font-size:17px}.module-card:hover{transform:translate(2px,2px);box-shadow:6px 6px 0 var(--color-black)}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+const MODULES=[
+{id:'tuerkei1',title:'Die Türkei: Aufstände und Verbote',desc:'1923 bis 1960 — Scheich Said, Dersim, Assimilation',
+sections:[
+{title:'Lausanne und die «zwei Mustafa Kemals»',
+text:'Im Befreiungskrieg hatten viele Kurden aufseiten der kemalistischen Bewegung gekämpft — Mustafa Kemal hatte versprochen, Kalifat, Sultanat und Religion zu schützen. Doch nach dem Sieg blieb von den Versprechen wenig übrig: Das <strong>Kalifat, das wichtigste Bindeglied zwischen Türken und Kurden, wurde 1924 abgeschafft</strong>. Der <strong>Vertrag von Lausanne</strong> (1923) gewährte Minderheitenrechte nur den nicht-muslimischen Gruppen — Griechen, Armeniern und Juden — eine Folge des osmanischen Millet-Systems. Die Kurden erhielten als Muslime <strong>keinen Minderheitenstatus</strong>. Als der Soziologe Ismail Beşikçi Jahrzehnte später einen alten kurdischen Bauern nach Mustafa Kemal fragte, bekam er zur Antwort: «Nach welchem von beiden fragst du? Es gibt zwei Mustafa Kemal. Einen, der im Feldzug Religion und Glauben schützen wollte und die Stammesführer um Hilfe bat. Und einen anderen, der nach dem Feldzug den Padischah verjagte und unserer Religion keine Beachtung mehr schenkte.»',
+glossary:[{kw:'Lausanne',tr:'Lozan'},{kw:'Minderheit',tr:'kêmanî'},{kw:'Kalifat',tr:'xelîfetî'},{kw:'Versprechen',tr:'soz'}],
+questions:[{q:'Wer erhielt im Vertrag von Lausanne Minderheitenrechte?',correct:'Nur Nicht-Muslime: Griechen, Armenier und Juden',wrong:['Alle Völker der Türkei','Die Kurden und Araber','Niemand'],kurmanji:'kêmanî = Minderheit'},{q:'Warum sprach der alte Bauer von «zwei Mustafa Kemals»?',correct:'Vor dem Sieg versprach Kemal, die Religion zu schützen — danach brach er die Versprechen',wrong:['Mustafa Kemal hatte einen Zwillingsbruder','Es gab zwei Politiker mit demselben Namen','Der Bauer kannte ihn nicht'],kurmanji:'soz = Versprechen'}],
+task:{type:'reflect',text:'«Es gibt zwei Mustafa Kemal», sagte der alte Bauer. Was meinte er damit? Kennst du andere Beispiele aus Geschichte oder Alltag, in denen Versprechen nach einem Sieg gebrochen wurden? Schreib deine Gedanken auf.'}},
+
+{title:'Azadi und der Scheich-Said-Aufstand 1925',
+text:'Schon 1923 — noch vor den Säkularisierungs-Gesetzen — wurde die Geheimorganisation <strong>Azadi</strong> («Freiheit») gegründet, mit Zentrum um Erzurum. Unter den Mitgliedern waren Stammesführer und Offiziere wie Ihsan Nuri und Halid Cibran, die in der osmanischen Armee gedient hatten. Der kurdische Widerstand war also nicht allein ein Kampf gegen die Religionspolitik Ankaras. Azadi hatte massgeblichen Anteil an einer Koalition, deren Führung der Naqschbandi-Scheich <strong>Said aus Palu</strong> übernahm. Sein Aufstand war ein <strong>nationalistischer Aufstand in religiösem Gewand</strong>: Erst in der Massenmobilisierung setzte Said seine religiöse Autorität ein und erliess Gutachten (<em>fetva</em>), welche die Regierung in Ankara als Feind der Religion brandmarkten. Im Februar 1925 wurde der Aufstand durch einen Zwischenfall vorzeitig ausgelöst. Anfangs hatten die Kurden Erfolge: 10&thinsp;000 bis 15&thinsp;000 Bewaffnete nahmen Orte wie Lice, Maden, Palu und Bingöl ein; die Regierungstruppen zogen sich in die Garnisonen von Diyarbakır und Erzurum zurück.',
+glossary:[{kw:'Azadi',tr:'azadî (Freiheit)'},{kw:'Scheich',tr:'şêx'},{kw:'Aufstand',tr:'serhildan'},{kw:'Gutachten',tr:'fetwa'}],
+questions:[{q:'Wie lässt sich der Scheich-Said-Aufstand am besten beschreiben?',correct:'Ein nationalistischer Aufstand in religiösem Gewand',wrong:['Ein rein religiöser Aufstand','Ein kommunistischer Aufstand','Ein Aufstand für den Sultan'],kurmanji:'serhildan = Aufstand'},{q:'Was zeigt die Gründung von Azadi bereits 1923?',correct:'Der kurdische Widerstand begann vor den Säkularisierungs-Gesetzen — es ging nicht nur um Religion',wrong:['Die Kurden waren gegen jede Regierung','Azadi wurde von den Briten gegründet','Der Widerstand begann erst 1925'],kurmanji:'azadî = Freiheit'}],
+task:null},
+
+{title:'Die Niederschlagung und ihre Folgen',
+text:'Ihr wichtigstes Ziel, die Eroberung der grossen Städte, erreichten die Aufständischen nicht. Über die Eisenbahn wurden Truppen nach Ost-Anatolien gebracht; die Rebellen wurden zwischen Bingöl und Lice eingekreist und geschlagen. Bemerkenswert: Es war nicht in erster Linie das türkische Militär, das die Aufständischen bekämpfte, sondern <strong>andere kurdische Stämme</strong> — vor allem die Zaza-sprachigen Hormek, die noch alte Rechnungen mit den Cibran offen hatten. <strong>Scheich Said wurde im April 1925 gefangen genommen und im Juni mit Dutzenden Mitstreitern hingerichtet.</strong> Die Regierung scherte alle Kurden über einen Kamm und unterschied nicht zwischen regierungstreuen und aufständischen — das löste auch bei Unbeteiligten Verbitterung aus. Der Aufstand lieferte den Vorwand für das Gesetz zur «Aufrechterhaltung von Ruhe und Ordnung»: Unabhängigkeitsgerichte übten politische Justiz, die Presse wurde an die Kandare genommen, Stämme wurden entwaffnet, ganze Dörfer in den Westen deportiert.',
+glossary:[{kw:'Gericht',tr:'dadgeh'},{kw:'Strafe',tr:'ceza'},{kw:'Stamm',tr:'eşîr'},{kw:'Rache',tr:'tolhildan'}],
+questions:[{q:'Wer kämpfte vor allem gegen die Aufständischen?',correct:'Auch kurdische Stämme wie die Hormek — wegen alter Stammesrivalitäten',wrong:['Nur das türkische Militär','Britische Truppen','Armenische Milizen'],kurmanji:'eşîr = Stamm'},{q:'Wozu nutzte die Regierung den Aufstand?',correct:'Als Vorwand für Notstandsgesetze, politische Justiz und Deportationen',wrong:['Um den Kurden Autonomie zu geben','Um Wahlen auszurufen','Um das Kalifat wieder einzuführen'],kurmanji:'dadgeh = Gericht'}],
+task:{type:'reflect',text:'Kurdische Stämme kämpften gegen kurdische Rebellen — wegen alter Rivalitäten. Was sagt das über die Idee einer «kurdischen Einheit» in dieser Zeit? Hältst du Einheit für selbstverständlich, wenn Menschen dieselbe Sprache sprechen?'}},
+
+{title:'Choibun und der Ararat-Aufstand 1930',
+text:'Viele kurdische Nationalisten mussten nach der Gründung der Republik ins Exil. 1927 trafen sie sich in der Nähe von Beirut und gründeten die Allianz <strong>Choibun</strong> — der erste Versuch, intellektuelle, militärische, religiöse und tribale Führer zu koordinieren. Choibun arbeitete mit armenischen Nationalisten zusammen und hoffte, die kurdische Frage vor den Völkerbund zu bringen. 1930 organisierte Choibun den <strong>Aufstand am Ararat</strong> unter Führung von Ihsan Nuri: Die Region sollte «befreit» und eine kurdische Regierung eingesetzt werden. Der Aufstand misslang — die kurdischen Kräfte kämpften nur an einer Front, und <strong>Iran schloss mit der Türkei ein Abkommen</strong>, das die Grenze dichtmachte und die Flucht- und Versorgungswege abschnitt. Erfolgreicher war Choibun auf kulturellem Gebiet: Die Brüder Celadet und Kamuran Bedir Chan leisteten in den dreissiger Jahren Pionierarbeit für die kurdische Sprache; Celadet erteilte Atatürk in einem offenen Brief eine Lektion über die Eigenständigkeit des Kurdischen.',
+glossary:[{kw:'Ararat',tr:'Agirî'},{kw:'Hoffnung',tr:'hêvî'},{kw:'Grenze',tr:'sînor'},{kw:'Bündnis',tr:'hevalbendî'}],
+questions:[{q:'Was war Choibun?',correct:'Ein Bündnis kurdischer Exil-Organisationen, das den Widerstand koordinieren wollte',wrong:['Eine türkische Partei','Eine religiöse Bruderschaft','Ein kurdischer Stamm'],kurmanji:'hevalbendî = Bündnis'},{q:'Warum scheiterte der Ararat-Aufstand?',correct:'Iran schloss ein Abkommen mit der Türkei — Flucht- und Versorgungswege wurden abgeschnitten',wrong:['Die Kurden hatten zu viele Waffen','Die Armenier verrieten die Kurden','Es gab einen strengen Winter'],kurmanji:'sînor = Grenze'}],
+task:{type:'parent',text:'Der Berg Ararat (Çiyayê Agirî) ist ein wichtiges Symbol. Frage deine Eltern: Welche Berge sind für eure Familie oder eure Herkunftsregion wichtig? Kennt ihr Lieder oder Geschichten über Berge?'}},
+
+{title:'Umsiedlung und Dersim 1937/38',
+text:'1934 trat ein Gesetz in Kraft, das — ohne sie beim Namen zu nennen — auf die Kurden zielte: <strong>«Personen ohne Verbundenheit mit türkischer Kultur»</strong> sollten umgesiedelt werden, sodass die Türken überall die Bevölkerungsmehrheit bildeten. Stammesführer und Scheichs sollten von ihren Gefolgschaften getrennt werden. Der letzte grosse Aufstand fand 1937/38 in <strong>Dersim</strong> (heute Tunceli) statt: Die alevitischen Kurden der Region strebten unter dem Geistlichen <strong>Seyyid Rıza</strong> Selbstverwaltung an. Drei Armeekorps gingen mit äusserster Härte vor; viele Dörfer wurden dem Erdboden gleichgemacht, Hilferufe verhallten ungehört. Das Scheitern von Dersim markierte den Beginn einer rund <strong>zwanzig Jahre dauernden Phase des erzwungenen Schweigens</strong>: Das Wort «Kurde» geriet in Acht und Bann; mitunter sprach man von «Bergtürken». Erst 2011 entschuldigte sich Ministerpräsident Erdoğan öffentlich für das Dersim-Massaker.',
+glossary:[{kw:'Dersim',tr:'Dêrsim'},{kw:'Alevit',tr:'Elewî'},{kw:'Verbannung',tr:'sirgûn'},{kw:'Schweigen',tr:'bêdengî'}],
+questions:[{q:'Worauf zielte das Umsiedlungsgesetz von 1934?',correct:'Die Türken sollten überall die Bevölkerungsmehrheit bilden',wrong:['Kurden sollten eigene Provinzen erhalten','Alle Nomaden sollten Häuser bekommen','Armenier sollten zurückkehren dürfen'],kurmanji:'sirgûn = Verbannung'},{q:'Was folgte auf die Niederschlagung von Dersim?',correct:'Rund zwanzig Jahre erzwungenes Schweigen — das Wort «Kurde» war verbannt',wrong:['Eine kurdische Autonomie','Freie Wahlen im Osten','Die Rückkehr des Kalifats'],kurmanji:'bêdengî = Schweigen'}],
+task:{type:'reflect',text:'Nach Dersim durfte das Wort «Kurde» jahrzehntelang nicht öffentlich verwendet werden — man sagte «Bergtürken». Was bedeutet es für Menschen, wenn sie ihre eigene Identität nicht nennen dürfen? Schreib drei Gedanken auf.'}},
+
+{title:'Vom Einparteienstaat zum Mehrparteiensystem',
+text:'Bis 1945 herrschte die Republikanische Volkspartei (CHP) allein. Ab 1946 brachte das <strong>Mehrparteiensystem</strong> frischen Wind: Die Demokratische Partei (DP) mobilisierte als erste die Bevölkerung des Ostens. Agas und Scheichs — trotz aller Gesetze keineswegs verschwunden — kehrten in die Politik zurück; sogar ein Enkel von Scheich Said wurde DP-Abgeordneter. Die <strong>medresen</strong>, religiöse Schulen und Kristallisationspunkte kurdischer Sprache, lebten im Verborgenen wieder auf. Die fünfziger Jahre brachten Erleichterungen: weniger Militärkontrollen, etwas Infrastruktur. Doch nach dem <strong>Militärputsch vom 27. Mai 1960</strong> folgten erneut Deportationen von Führungspersonen und eine Kampagne gegen die kurdische Kultur. Staatspräsident Gürsel schrieb, es gebe <strong>keine eigenständige kurdische Identität</strong> — das «Kurdentum» werde von feindlichen Mächten aufgehetzt, um die nationale Einheit zu erschüttern. Die Leugnung der Kurden wurde zur Staatsdoktrin.',
+glossary:[{kw:'medrese',tr:'medrese'},{kw:'Wahl',tr:'hilbijartin'},{kw:'Partei',tr:'partî'},{kw:'Leugnung',tr:'înkar'}],
+questions:[{q:'Was änderte sich ab 1946?',correct:'Mehrparteiensystem — kurdische Eliten wurden in die Parteipolitik integriert',wrong:['Die Kurden erhielten Autonomie','Die CHP verbot alle Parteien','Die Türkei wurde Monarchie'],kurmanji:'hilbijartin = Wahl'},{q:'Was behauptete Staatspräsident Gürsel nach dem Putsch von 1960?',correct:'Es gebe keine eigenständige kurdische Identität — das «Kurdentum» sei von Feinden aufgehetzt',wrong:['Die Kurden sollten einen eigenen Staat erhalten','Kurdisch werde Amtssprache','Die Armee schütze die kurdische Kultur'],kurmanji:'înkar = Leugnung'}],
+task:{type:'parent',text:'Frage deine Eltern oder Grosseltern: Gab es in eurer Familie melas oder medresen-Schüler? Wo haben deine Grosseltern Lesen und Schreiben gelernt — und in welcher Sprache?'}}
+]},
+
+{id:'tuerkei2',title:'Die Türkei: PKK und der lange Krieg',desc:'1960 bis heute — linke Bewegung, PKK, Friedensprozess',
+sections:[
+{title:'Die Ost-Versammlungen und die linke Bewegung',
+text:'Ab Mitte der sechziger Jahre wurden grössere Teile der kurdischen Bevölkerung politisch mobilisiert. Auf den <strong>«Ost-Versammlungen»</strong> (Doğu mitingleri) von 1967 wurden Forderungen laut nach mehr Schulen, wirtschaftlicher Entwicklung und einem Ende der Repression — «Der Osten ist eine Schande für die Türkei des 20. Jahrhunderts», hiess es. Kurdische Intellektuelle und Studenten hielten Ansprachen auf Kurdisch; einige fanden sich in den <strong>«Revolutionären Ost-Kulturklubs» (DDKO)</strong> zusammen — der ersten legalen Organisation mit einem klaren Bekenntnis zur kurdischen Identität, 1971 nach der Militärintervention geschlossen. In Zeitschriften wie <em>Barış Dünyası</em> wurde diskutiert, dass das «Ostproblem» nicht mit Verboten oder Gewalt zu lösen sei. Da das Wort Kurdistan tabu war, sprach man vom <strong>«Doğu»</strong>, dem Osten. Auftrieb gab auch der Irak: Als Barzani dort Autonomie forderte, war dies Wasser auf die Mühlen kurdischer Studenten in der Türkei.',
+glossary:[{kw:'Osten',tr:'rojhilat'},{kw:'Zeitung',tr:'rojname'},{kw:'Student',tr:'xwendekar'},{kw:'Gedicht',tr:'helbest'}],
+questions:[{q:'Was forderten die Ost-Versammlungen von 1967?',correct:'Schulen, wirtschaftliche Entwicklung und ein Ende der Repression',wrong:['Einen unabhängigen Staat','Den Anschluss an den Irak','Die Rückkehr des Sultans'],kurmanji:'rojhilat = Osten'},{q:'Wie umgingen Zeitschriften das Tabu-Wort Kurdistan?',correct:'Sie sprachen vom «Doğu» — dem Osten',wrong:['Sie schrieben auf Englisch','Sie benutzten Geheimschrift','Sie schwiegen ganz'],kurmanji:'rojname = Zeitung'}],
+task:null},
+
+{title:'Die Gründung der PKK',
+text:'Nach dem Militärputsch von 1980 wurden alle radikalen Gruppierungen zerschlagen — nur die <strong>PKK</strong> (Arbeiterpartei Kurdistans) wurde schnell wieder aktiv: Ihre Kader waren <strong>nach Syrien geflohen</strong> und nahmen von dort den bewaffneten Kampf auf. Die Partei war ganz auf ihren Vorsitzenden <strong>Abdullah Öcalan</strong> zugeschnitten und folgte marxistisch-leninistischen Prinzipien; sie begriff Kurdistan als eine <strong>türkische Kolonie</strong>, die durch bewaffneten Kampf befreit werden müsse. Im August 1984 begannen die ersten Angriffe in den Provinzen Hakkari und Şırnak. Der Krieg forderte <strong>über 30&thinsp;000 Tote</strong>; mehrere tausend Dörfer wurden zwangsevakuiert oder verlassen. Beide Seiten erzählten denselben Krieg verschieden: Für den Staat war es ein Kampf gegen «separatistische Terroristen», für die PKK ein Kampf gegen «Kolonialisten» und «Staatsterror». Später rückte die PKK von der Forderung nach einem unabhängigen Staat ab und spricht seither von «demokratischem Konföderalismus».',
+glossary:[{kw:'Guerilla',tr:'gerîla'},{kw:'Krieg',tr:'şer'},{kw:'Partei',tr:'partî'},{kw:'Führung',tr:'serokatî'}],
+questions:[{q:'Warum konnte die PKK nach dem Putsch von 1980 weitermachen?',correct:'Ihre Kader waren nach Syrien geflohen und kämpften von dort',wrong:['Sie war vom Militär erlaubt','Sie hatte im Parlament Sitze','Sie versteckte sich in Istanbul'],kurmanji:'partî = Partei'},{q:'Wie begriff die PKK Kurdistan in ihrer Ideologie?',correct:'Als türkische Kolonie, die durch bewaffneten Kampf befreit werden müsse',wrong:['Als autonome Region der Türkei','Als Teil des Irak','Als religiöses Zentrum'],kurmanji:'şer = Krieg'}],
+task:{type:'reflect',text:'Über 30&thinsp;000 Menschen starben in diesem Krieg — Soldaten, Kämpferinnen und Kämpfer, Zivilisten. Der Staat nennt ihn «Kampf gegen Terroristen», die PKK «Befreiungskampf». Warum ist es wichtig, beide Erzählungen zu kennen, bevor man urteilt?'}},
+
+{title:'Die Dorfwächter (korucu)',
+text:'1985 änderte die Regierung ihre Strategie und bildete in den kurdischen Dörfern eine Miliz gegen die PKK: die <strong>Dorfwächter</strong> (türkisch <em>korucu</em>, kurdisch <em>cerdevan</em>), bezahlt aus der Staatskasse. In einigen Gegenden standen sie unter der Führung eines Stammesführers, andere wurden direkt von der Armee instruiert. Das System erinnert an die <strong>Hamidiye-Regimenter</strong> des 19. Jahrhunderts — eine erstaunliche Kontinuität im staatlichen Umgang mit der Kurdenfrage: Kurden gegen Kurden. Die Folge war eine <strong>Vertiefung der Spaltung</strong> in der Bevölkerung — Dorf gegen Dorf, Familie gegen Familie. Die Haltung zur PKK wurde kompliziert: Mitunter sympathisierten Dorfwächter insgeheim mit der PKK und unterstützten sie sogar. Für die PKK-Kämpfer bürgerte sich der vorsichtige Ausdruck <em>dagdakiler</em> ein — «die in den Bergen».',
+glossary:[{kw:'Dorfwächter',tr:'cerdevan'},{kw:'Dorf',tr:'gund'},{kw:'Waffe',tr:'çek'},{kw:'Spaltung',tr:'dubendî'}],
+questions:[{q:'Was war das korucu-System?',correct:'Eine staatlich bezahlte Dorfmiliz aus Kurden — gegen die PKK',wrong:['Eine PKK-Jugendorganisation','Eine Schulreform','Ein Bewässerungsprojekt'],kurmanji:'cerdevan = Dorfwächter'},{q:'An welche frühere Einrichtung erinnert das System?',correct:'An die Hamidiye-Regimenter — Kurden wurden gegen Kurden eingesetzt',wrong:['An die Janitscharen','An die Unabhängigkeitsgerichte','An die medresen'],kurmanji:'dubendî = Spaltung'}],
+task:{type:'parent',text:'Im Irak gab es ähnliche Milizen (Dschahsch). Frage deine Eltern: Kennen sie Geschichten von Menschen, die zwischen den Fronten standen — beim Staat angestellt und doch mit den Kurden verbunden? Wie denken sie darüber?'}},
+
+{title:'Das Dorf Sisin — ein Fallbeispiel',
+text:'Ein Ethnologe beschreibt das Bergdorf <strong>Sisin in der Provinz Hakkari</strong>: 1982 lebten dort rund 250 Personen in 23 Haushalten — von Kleinvieh und vom «illegalen» Grenzhandel mit dem Irak und Iran. Mit der Gendarmerie verband die Bauern eine Art <strong>erzwungene Symbiose</strong>: Man misstraute sich, war aber im Bergwinter aufeinander angewiesen. Ab 1986 wurden die Männer von Sisin <strong>Dorfwächter</strong> — fast als erste ihres Stammes, wofür sie kritisiert wurden. Im Juni 1994 kam es zu einer schweren Auseinandersetzung mit der PKK; ein junger Dorfwächter fiel, vier wurden als Geiseln genommen. Der Kommandeur verlor das «Vertrauen» in das Dorf: Die Bewohner mussten die <strong>Waffen abgeben und das Dorf verlassen</strong> — die Häuser rissen sie selbst ab, um die Balken mitzunehmen. <strong>Sisin existiert nicht mehr.</strong> Die Lehre des Ethnologen: Menschen können nicht einfach als «PKK-Anhänger» oder «Verräter» einsortiert werden — sie handeln pragmatisch und versuchen, den Krieg zu überleben.',
+glossary:[{kw:'Dorf',tr:'gund'},{kw:'Schmuggel',tr:'qaçax'},{kw:'Grenze',tr:'sînor'},{kw:'Leben',tr:'jiyan'}],
+questions:[{q:'Warum mussten die Bewohner Sisin 1994 verlassen?',correct:'Nach Kämpfen mussten sie die Waffen abgeben — und durften nicht unbewaffnet bleiben',wrong:['Wegen eines Erdbebens','Sie wanderten freiwillig nach Istanbul aus','Die PKK kaufte das Dorf'],kurmanji:'gund = Dorf'},{q:'Was zeigt das Beispiel Sisin?',correct:'Menschen zwischen den Fronten handeln pragmatisch — um zu überleben, nicht aus Ideologie',wrong:['Alle Dorfbewohner waren PKK-Anhänger','Alle Dorfbewohner waren regierungstreu','Das Dorfleben war unpolitisch'],kurmanji:'jiyan = Leben'}],
+task:{type:'reflect',text:'«Personen können nicht einfach als PKK-Anhänger oder Verräter gesehen werden. Sie versuchen, den Krieg zu überleben.» Was bedeutet dieser Satz für dich? Wie schnell urteilen wir über Menschen in einem Konflikt — und was übersehen wir dabei?'}},
+
+{title:'Özal und die kurdischen Parteien',
+text:'Die Jahre 1991/92 brachten eine Aufweichung der verhärteten Fronten. Ministerpräsident Demirel sprach davon, die <strong>«kurdische Realität»</strong> müsse anerkannt werden. Konkreter wurde Staatspräsident <strong>Özal</strong>: Auf seine Initiative wurde das Sprachverbotsgesetz von 1983 im Jahr <strong>1991 aufgehoben</strong> — der mündliche Gebrauch des Kurdischen war wieder legal. Özal wagte sogar das Wort «Föderation». Gleichzeitig begann die Verbotskette der prokurdischen Parteien: Die <strong>HEP</strong> kam 1991 huckepack mit den Sozialdemokraten ins Parlament und wurde verboten; die Nachfolgerin <strong>DEP</strong> wurde 1994 aufgelöst, sieben Abgeordnete — darunter <strong>Leyla Zana</strong> — wurden zu langen Haftstrafen verurteilt. Die <strong>HADEP</strong> scheiterte 1995 mit 4,2% an der 10-Prozent-Hürde. Der Konflikt wurde zugleich unübersichtlicher: Militär, Geheimapparate, PKK, Parteien, Menschenrechtsvereine — und mafiöse Strukturen, die vom Krieg profitierten.',
+glossary:[{kw:'Sprache',tr:'ziman'},{kw:'Verbot',tr:'qedexe'},{kw:'Parlament',tr:'parlamento'},{kw:'Realität',tr:'rastî'}],
+questions:[{q:'Was wurde 1991 auf Initiative Özals aufgehoben?',correct:'Das Sprachverbotsgesetz — der mündliche Gebrauch des Kurdischen wurde legal',wrong:['Die Verfassung','Das Parteienverbot der PKK','Die Wehrpflicht'],kurmanji:'ziman = Sprache'},{q:'Was geschah mit den prokurdischen Parteien HEP und DEP?',correct:'Sie wurden verboten — Abgeordnete wie Leyla Zana kamen ins Gefängnis',wrong:['Sie gewannen die Wahlen','Sie regierten mit der CHP','Sie wurden nie gegründet'],kurmanji:'qedexe = Verbot'}],
+task:null},
+
+{title:'Friedensprozess, HDP und die Lage heute',
+text:'1999 wurde <strong>Öcalan</strong> verhaftet; die Bilder des Gefesselten lösten unter Kurden das Gefühl einer kollektiven Erniedrigung aus. Das Todesurteil wurde 2002 in eine lebenslange Haftstrafe umgewandelt. Unter der AKP gab es — auch im Zug der EU-Beitrittsverhandlungen — eine grössere Offenheit: die «Kurdische Öffnung» von 2009, Geheimgespräche in Oslo, ab Ende 2012 Verhandlungen mit Öcalan, im <strong>März 2013 offizielle Friedensgespräche</strong> und ein Waffenstillstand, der bis Juli 2015 weitgehend hielt. Im Juni 2015 übersprang die <strong>HDP die 10-Prozent-Hürde</strong> und wurde drittgrösste Partei — der Beweis, dass eine prokurdische Partei auch für Nicht-Kurden wählbar ist. Danach eskalierte der Konflikt erneut: Krieg in kurdischen Städten wie Silopi, Cizre und Nusaybin; beide Seiten warfen sich den Bruch des Waffenstillstands vor. Von einer Verleugnung kurdischer Identität kann heute kaum mehr die Rede sein — laut einer KONDA-Studie leben über 11 Millionen Kurden in der Türkei. Eine politische Lösung aber steht weiter aus.',
+glossary:[{kw:'Frieden',tr:'aştî'},{kw:'Waffenstillstand',tr:'agirbest'},{kw:'Wahl',tr:'hilbijartin'},{kw:'Hoffnung',tr:'hêvî'}],
+questions:[{q:'Was begann im März 2013?',correct:'Offizielle Friedensgespräche mit der PKK — mit Waffenstillstand bis Juli 2015',wrong:['Der Beitritt der Türkei zur EU','Ein neuer Militärputsch','Die Unabhängigkeit Kurdistans'],kurmanji:'aştî = Frieden'},{q:'Was bewies das HDP-Ergebnis vom Juni 2015?',correct:'Eine prokurdische Partei kann landesweit überzeugen — auch für Nicht-Kurden',wrong:['Die Kurden boykottierten die Wahl','Nur Kurden wählten die HDP','Die HDP scheiterte an der Hürde'],kurmanji:'hilbijartin = Wahl'}],
+task:{type:'reflect',text:'Zweimal schien der Frieden nah — Anfang der neunziger Jahre und 2013 — und beide Male kam der Krieg zurück. Was braucht es deiner Meinung nach für einen dauerhaften Frieden? Notiere drei Bedingungen.'}}
+]},
+
+{id:'irak',title:'Der Irak: Von Scheich Mahmud zur Autonomie',desc:'1918 bis heute — Briten, Barzani, Anfal, De-facto-Staat',
+sections:[
+{title:'Die Briten und die Mosul-Frage',
+text:'Das britische Interesse an Mesopotamien beruhte auf seiner strategischen Lage am Weg nach Indien. Im geheimen <strong>Sykes-Picot-Abkommen</strong> von 1916 war die Region um Mosul zunächst Frankreich zugeschlagen worden — ein Zugeständnis, das die Briten bald bereuten: Mosul war der Hauptlieferant von <strong>Weizen</strong> für Bagdad, und das Interesse an seinen <strong>Ölquellen</strong> wuchs. Nur zwei Tage nach dem Waffenstillstand von Mudros (1918) besetzten sie kurzerhand die Provinz. Auf der Konferenz von San Remo (1920) erhielt England das Mandat über Mesopotamien. In Süd-Kurdistan verfolgten die Briten eine Politik <strong>indirekter Herrschaft</strong>: Stammesführer übernahmen Verwaltungsposten mit beträchtlichen Privilegien und mussten dafür Steuern eintreiben. Die Methode war billig — aber ziemlich erfolglos. Experten wie Major Soane, der verkleidet zwei Jahre durch Kurdistan gereist war und mehrere Dialekte sprach, berieten die Verwaltung.',
+glossary:[{kw:'Mosul',tr:'Mûsil'},{kw:'Öl',tr:'neft'},{kw:'Weizen',tr:'genim'},{kw:'Herrschaft',tr:'desthilat'}],
+questions:[{q:'Warum war Mosul für die Briten so wichtig?',correct:'Wegen der Ölquellen und als Weizenlieferant für Bagdad',wrong:['Wegen der schönen Landschaft','Als Badeort am Meer','Wegen der Goldminen'],kurmanji:'neft = Öl'},{q:'Wie herrschten die Briten in Süd-Kurdistan?',correct:'Indirekt — über Stammesführer mit Privilegien',wrong:['Mit einer riesigen Besatzungsarmee','Über gewählte Parlamente','Gar nicht'],kurmanji:'desthilat = Herrschaft'}],
+task:null},
+
+{title:'Scheich Mahmud und Sulaimaniya',
+text:'Ende 1918 ernannten die Briten <strong>Scheich Mahmud Barzandschi</strong>, das Oberhaupt einer dem Qadiriya-Orden verpflichteten Familie, zum Gouverneur von Sulaimaniya. Mahmud verstand sich als Führer aller Kurden und stärkte seine Macht durch Patronage. Schon 1919 erhob er sich gegen die Briten, wurde geschlagen und ins Exil geschickt. 1922 riefen ihn die Briten zurück — als Gegengewicht zur türkischen Kalifatspropaganda. Mahmud akzeptierte keine Beschränkungen, erklärte sich selbst zum <strong>«Herrscher von Kurdistan»</strong> und wurde schliesslich endgültig in die Flucht geschlagen. Seine Stadt blieb besonders: <strong>Sulaimaniya</strong>, einst Zentrum des Baban-Emirats, pflegte eine lebendige Erinnerung an vergangene kurdische Macht. Der <strong>Sorani-Dialekt</strong> wurde hier als offizielle Sprache gefördert, mit Zeitung, Grammatik und Schulbüchern. Der Kurdenexperte Edmonds beschrieb die Überzeugung der Einwohner, ihre Stadt sei dazu bestimmt, <strong>Hauptstadt eines kurdischen Staates</strong> zu werden.',
+glossary:[{kw:'Sulaimaniya',tr:'Silêmanî'},{kw:'Scheich',tr:'şêx'},{kw:'Gouverneur',tr:'walî'},{kw:'Hauptstadt',tr:'paytext'}],
+questions:[{q:'Wozu ernannten die Briten Scheich Mahmud 1918?',correct:'Zum Gouverneur von Sulaimaniya',wrong:['Zum König des Irak','Zum Kalifen','Zum General der türkischen Armee'],kurmanji:'walî = Gouverneur'},{q:'Warum war Sulaimaniya besonders?',correct:'Als Erbin des Baban-Emirats sahen die Einwohner ihre Stadt als künftige Hauptstadt Kurdistans',wrong:['Es war die grösste Stadt der Welt','Dort lebten keine Kurden','Die Briten bauten dort einen Hafen'],kurmanji:'Silêmanî = Sulaimaniya'}],
+task:{type:'parent',text:'In der Nähe von Sulaimaniya (Silêmanî) liegt Surdash. Frage deine Eltern: Was wissen sie über die Stadt und die Region? War jemand aus der Familie dort — und welche Geschichten gibt es darüber?'}},
+
+{title:'Völkerbund, Unabhängigkeit und Extreme',
+text:'Weil die Mosul-Frage auch in Lausanne nicht gelöst wurde, kam sie vor den Völkerbund. Dessen Kommission stellte 1925 fest, dass die meisten Einwohner nicht unter türkischer Herrschaft leben wollten, und sprach <strong>Mosul dem Irak zu</strong> — unter der Bedingung, dass die Wünsche der Kurden Beachtung finden müssten. Der Vertrag zwischen Grossbritannien und dem Irak von 1930 enthielt dann aber <strong>keine Garantien kurdischer Rechte</strong>. In einer Petition an den Völkerbund empörten sich die Kurden, sie seien «der Gnade der Araber» ausgeliefert. 1932 wurde der Irak unabhängig. Die Geschichte der Kurden im Irak ist seither durch <strong>Extreme</strong> gekennzeichnet: Einerseits konnten sie sich — anders als in der Türkei — kulturell und sprachlich frei betätigen und ihnen wurde immer wieder Autonomie zugesagt. Andererseits waren sie in keinem Nachbarstaat einer solchen Repression <strong>bis hin zur Massenvernichtung</strong> ausgesetzt. Und nur hier entstand später ein De-facto-Kurdenstaat.',
+glossary:[{kw:'Vertrag',tr:'peyman'},{kw:'Unabhängigkeit',tr:'serxwebûn'},{kw:'Versprechen',tr:'soz'},{kw:'Anerkennung',tr:'nasîn'}],
+questions:[{q:'Unter welcher Bedingung sprach der Völkerbund Mosul dem Irak zu?',correct:'Die Wünsche der Kurden mussten Beachtung finden',wrong:['Mosul musste türkisch bleiben','Die Kurden mussten auswandern','Der Irak musste das Öl an Frankreich abgeben'],kurmanji:'peyman = Vertrag'},{q:'Was kennzeichnet die Geschichte der Kurden im Irak?',correct:'Extreme: kulturelle Anerkennung einerseits, Repression bis zur Massenvernichtung andererseits',wrong:['Ununterbrochener Frieden','Vollständige Assimilation','Keine politische Rolle'],kurmanji:'serxwebûn = Unabhängigkeit'}],
+task:null},
+
+{title:'Mustafa Barzani',
+text:'<strong>Mulla Mustafa Barzani</strong>, bis zu seinem Tod 1979 die bekannteste Figur der kurdischen Bewegung, stand in einer Tradition charismatischer Scheichs. Nach dem gescheiterten Aufstand seines Bruders Ahmad wurde die Familie 1933 in Sulaimaniya unter Hausarrest gestellt — hier kam Barzani mit nationalistischem Gedankengut in Berührung. 1943 kehrte er heim, führte neue Aufstände und wurde nach Iran vertrieben, wo er zum General der Republik Mahabad wurde. Auf seine Anweisung wurde die <strong>Demokratische Partei Kurdistans (DPK)</strong> gegründet; er liess sich in Abwesenheit zum Vorsitzenden küren. Nach dem Fall Mahabads gelang ihm mit seinen Kämpfern ein abenteuerlicher Marsch in die <strong>Sowjetunion, wo er von 1947 bis 1958 Asyl</strong> fand. Erst der Putsch Qasims öffnete ihm die Rückkehr. Die städtischen Nationalisten steckten in einem Dilemma: Sie mussten Barzani als <strong>nationalen Helden</strong> feiern — und störten sich zugleich an seiner Rolle als traditioneller Stammesscheich, dessen Macht auf seinen Kämpfern beruhte.',
+glossary:[{kw:'Peschmerga',tr:'pêşmerge'},{kw:'Führer',tr:'serok'},{kw:'Exil',tr:'sirgûn'},{kw:'Rückkehr',tr:'vegera'}],
+questions:[{q:'Wo fand Barzani von 1947 bis 1958 Asyl?',correct:'In der Sowjetunion',wrong:['In den USA','In der Türkei','In Ägypten'],kurmanji:'sirgûn = Exil'},{q:'Was war das Dilemma der städtischen kurdischen Nationalisten?',correct:'Sie feierten Barzani als Helden, kritisierten aber seine traditionelle Stammespolitik',wrong:['Sie kannten Barzani nicht','Sie wollten zur Türkei gehören','Sie lehnten die kurdische Sprache ab'],kurmanji:'serok = Führer'}],
+task:{type:'parent',text:'Mulla Mustafa Barzani — frage deine Eltern: Welche Geschichten kennen sie über Barzani und die Peschmerga? Wie wird er in eurer Familie und eurer Region gesehen?'}},
+
+{title:'Das Abkommen von 1970 und die Niederlage 1975',
+text:'Nach der Machtübernahme des Baath gab es zunächst Zuckerbrot: Kurdisch an Schulen, eine Universität in Sulaimaniya, Newroz als Feiertag. Am <strong>11. März 1970</strong> unterzeichneten Barzani und Saddam Husain ein Abkommen: Kurdisch als offizielle Sprache, Teilhabe an der Regierung, Selbstverwaltung — Elemente einer echten <strong>Autonomie</strong>. Doch Bagdad hielt sich nicht daran; auf Barzani wurden Anschläge verübt. Das Muster wiederholte sich immer wieder: <strong>Jede neue Regierung hofierte die Kurden — sass sie fest im Sattel, liess sie sie fallen.</strong> Das Autonomiegesetz von 1974 lehnten die Kurden ab; es kam zum Krieg. Die Kurden waren stark im Guerillakrieg, hatten aber keine schweren Waffen; der Schah von Iran dosierte seine Hilfe genau. Im <strong>März 1975</strong> einigten sich Iran und Irak in Algier über die Grenze im Schatt al-Arab — im Gegenzug stellte Iran die Hilfe ein. Der kurdische Kampf brach <strong>sofort zusammen</strong>; über 100&thinsp;000 Menschen zogen nach Iran. Danach: zerstörte Dörfer, Umsiedlungen, Arabisierung.',
+glossary:[{kw:'Abkommen',tr:'peyman'},{kw:'Autonomie',tr:'xweserî'},{kw:'Verrat',tr:'xiyanet'},{kw:'Flüchtling',tr:'penaber'}],
+questions:[{q:'Was versprach das Abkommen vom März 1970?',correct:'Kurdisch als offizielle Sprache und Selbstverwaltung — es wurde aber nicht umgesetzt',wrong:['Die Unabhängigkeit Kurdistans','Den Anschluss an Iran','Die Abschaffung der Steuern'],kurmanji:'xweserî = Autonomie'},{q:'Warum brach der kurdische Kampf 1975 zusammen?',correct:'Iran stellte nach dem Abkommen von Algier seine Unterstützung ein',wrong:['Die Kurden hatten keine Kämpfer mehr','Barzani wechselte zu Saddam','Die UNO verbot den Kampf'],kurmanji:'penaber = Flüchtling'}],
+task:{type:'reflect',text:'Iran und die USA unterstützten die Kurden — und liessen sie 1975 über Nacht fallen, als es ihren Interessen diente. Warum ist die Abhängigkeit von fremden Mächten so gefährlich? Fällt dir ein aktuelles Beispiel ein?'}},
+
+{title:'Anfal und Halabdscha',
+text:'Im Iran-Irak-Krieg (1980–1988) unterstützte ein Teil der irakischen Kurden Iran. Bagdad vergalt dies mit brutaler Gewalt: Ganze Dörfer wurden dem Erdboden gleichgemacht, Massenverhaftungen und Folter waren an der Tagesordnung. Im <strong>März 1988</strong> setzte das Regime in <strong>Halabdscha Giftgas</strong> gegen die Bevölkerung ein — rund <strong>5000 Menschen, überwiegend Zivilisten, starben</strong>. Halabdscha ist wie Srebrenica zum Synonym für einen Massenmord an der Zivilbevölkerung geworden. Die <strong>«Operation Anfal»</strong> ging weiter: Wer den Angriffen entkam, wurde umzingelt, in Sammellager transportiert oder umgebracht — Kinder nicht ausgenommen. Die Zahl der Toten wird auf <strong>150&thinsp;000 bis 200&thinsp;000</strong> geschätzt; Human Rights Watch stufte die Kampagnen als Genozid ein. Die internationale Gemeinschaft schwieg weitgehend, weil der Irak im Krieg gegen Iran vom Westen unterstützt wurde. Auch deutsche Firmen wurden beschuldigt, Substanzen zur Herstellung chemischer Waffen geliefert zu haben.',
+glossary:[{kw:'Halabdscha',tr:'Helebce'},{kw:'Giftgas',tr:'gaza jehrî'},{kw:'Erinnerung',tr:'bîranîn'},{kw:'Gerechtigkeit',tr:'edalet'}],
+questions:[{q:'Was geschah im März 1988 in Halabdscha?',correct:'Ein Giftgasangriff tötete rund 5000 Menschen, überwiegend Zivilisten',wrong:['Eine Schlacht zwischen PUK und DPK','Ein Erdbeben','Die Stadt wurde unabhängig'],kurmanji:'Helebce = Halabdscha'},{q:'Wie reagierte die internationale Gemeinschaft auf Anfal?',correct:'Sie schwieg weitgehend — der Irak wurde im Krieg gegen Iran vom Westen unterstützt',wrong:['Mit einer sofortigen Militärintervention','Mit der Anerkennung Kurdistans','Mit einem Olympia-Boykott'],kurmanji:'edalet = Gerechtigkeit'}],
+task:{type:'parent',text:'Anfal und Halabdscha sind für viele Familien aus dem irakischen Kurdistan Teil der eigenen Geschichte. Wenn deine Eltern darüber sprechen möchten: Was haben sie damals erlebt oder gehört? Es ist auch in Ordnung, wenn sie nicht darüber sprechen wollen.'}},
+
+{title:'1991 bis heute: Autonomie und De-facto-Staat',
+text:'Nach dem Kuwait-Krieg 1991 entlud sich die Wut der Bevölkerung in einem <strong>Aufstand</strong> — sogar die regierungstreuen Dschahsch-Milizen wechselten die Seite. Auf die Niederschlagung folgte eine Massenflucht in die Türkei und nach Iran. Mit UN-Resolution 688 wurde eine <strong>Sicherheitszone nördlich des 36. Breitengrads</strong> eingerichtet: Zum ersten Mal erreichte ein kurdisches Gebiet eine international geduldete Autonomie. 1992 wählten die Kurden ein Parlament; DPK und PUK teilten alles im Proporz — was Klientelismus förderte und Mitte der neunziger Jahre in einen <strong>Bruderkrieg</strong> mündete, der erst 1998 in Washington beigelegt wurde. Nach dem Sturz Saddam Husains 2003 gehörten die Kurden zu den Gewinnern: <strong>Dschalal Talabani wurde Staatspräsident des Irak, Masud Barzani Präsident der Region Kurdistan</strong>. Es folgten Wirtschaftsboom, aber auch Korruption — gegen die die Bewegung Goran antrat. Ab 2014 wurden die <strong>Peschmerga</strong> im Kampf gegen den IS zum Bollwerk; Deutschland lieferte Waffen, die Region nahm weit über eine Million Flüchtlinge und Vertriebene auf.',
+glossary:[{kw:'Aufstand',tr:'serhildan'},{kw:'Flucht',tr:'revîn'},{kw:'Regierung',tr:'hikûmet'},{kw:'Zukunft',tr:'pêşeroj'}],
+questions:[{q:'Was entstand 1991 unter internationalem Schutz?',correct:'Eine Sicherheitszone — der Beginn der kurdischen Autonomie im Nordirak',wrong:['Ein unabhängiger Staat Kurdistan','Eine türkische Provinz','Eine UN-Kolonie'],kurmanji:'serhildan = Aufstand'},{q:'Welche Rolle spielten die Kurden ab 2014?',correct:'Die Peschmerga wurden zum Bollwerk gegen den IS und international unterstützt',wrong:['Sie verbündeten sich mit dem IS','Sie verliessen den Irak','Sie kämpften gegen die UNO'],kurmanji:'pêşmerge = Peschmerga'}],
+task:{type:'parent',text:'Die Region Kurdistan-Irak — Dohuk, Erbil (Hewlêr), Sulaimaniya — ist heute fast ein eigener Staat. Badinan ist genau die Region eurer Familie. Frage deine Eltern: Wie hat sich die Heimatregion seit ihrer Kindheit verändert?'}}
+]},
+
+{id:'iran-syrien',title:'Iran, Syrien und Mahabad',desc:'Simko, die Republik Mahabad, Rojava — Kurden in den Nachbarländern',
+sections:[
+{title:'Simko und die Schikak',
+text:'Nach dem Ersten Weltkrieg herrschte in Iran Chaos: Die Qadscharen-Dynastie war schwach, fremde Truppen standen im Land. In Kurdistan stieg <strong>Ismail Aga</strong> auf, von den Angehörigen seines Stammes, den <strong>Schikak, Simko genannt</strong>. Er gebot über das Gebiet westlich des Urmiya-Sees und erreichte in den zwanziger Jahren eine weitgehende Selbständigkeit, gestärkt durch die Allianz mit dem Naqschbandi-Scheich Taha. Mal erhielt er Waffen von den Kemalisten, mal verhandelte er mit den Briten. Im Februar 1921 ergriff <strong>Reza Chan</strong> in Teheran die Macht; im Sommer 1922 wurde Simko besiegt und floh. 1924 begnadigt, war er bald wieder obenauf — später schreckte der Staat vor seiner Liquidierung nicht zurück. Simko blieb im Kern ein <strong>Stammeschef und Abenteurer</strong>: Der Zulauf schwand, sobald sich Misserfolge einstellten, und selbst unter den Clanen der Schikak hatte er Gegner. Seine Geringschätzung der städtischen Kultur machte ihn blind für die Schwächen der reinen Stammesbasis.',
+glossary:[{kw:'Aga',tr:'axa'},{kw:'Stamm',tr:'eşîr'},{kw:'Urmiya-See',tr:'Gola Wirmê'},{kw:'Macht',tr:'hêz'}],
+questions:[{q:'Wer war Simko?',correct:'Ismail Aga, Führer des Schikak-Stammes westlich des Urmiya-Sees',wrong:['Ein persischer Schah','Ein britischer Offizier','Ein armenischer Händler'],kurmanji:'axa = Aga'},{q:'Warum verlor Simko immer wieder an Macht?',correct:'Seine Stammesbasis war unbeständig — bei Misserfolgen fielen die Anhänger ab',wrong:['Er hatte kein Geld','Er sprach kein Kurdisch','Er lebte im Ausland'],kurmanji:'hêz = Macht'}],
+task:null},
+
+{title:'Reza Schah: Zentralisierung und Stämme',
+text:'Wie Mustafa Kemal in der Türkei unternahm <strong>Reza Schah Pahlawi</strong> (ab 1925) den Versuch einer sprachlichen und kulturellen Homogenisierung. Am dringlichsten war die <strong>Zentralisierung</strong>: die Unterdrückung der tribalen Autonomie und die Beschränkung des Nomadismus. Die Stämme wurden <strong>entwaffnet</strong> — an den Grenzen am schwierigsten, denn Waffen liessen sich in den Irak schaffen und wieder abholen. Weitere Mittel: Umsiedlungen, Konfiskation von Herden, Beschränkung der Weidewanderungen. Das traf nicht nur das Stammesleben, sondern auch die Wirtschaft: In Städten, die von den Lieferungen der viehzüchtenden Stämme abhingen, kam es zu <strong>Versorgungsengpässen</strong>. Gegen Ende der dreissiger Jahre — fast zeitgleich mit der Türkei — waren die Kurden in Iran weitgehend unterworfen. Die Macht der Stammesführer beruhte nun vor allem auf Landbesitz und guten Verbindungen nach Teheran. Die Grenze blieb ein doppeltes Spiel: Iran und die Briten gewährten gegenseitig den Rebellen der anderen Seite Asyl.',
+glossary:[{kw:'Schah',tr:'şah'},{kw:'Nomade',tr:'koçer'},{kw:'Herde',tr:'kerî'},{kw:'Grenze',tr:'sînor'}],
+questions:[{q:'Was war das dringlichste Ziel Reza Schahs?',correct:'Zentralisierung — tribale Autonomie unterdrücken, Nomadismus beschränken',wrong:['Die Förderung der Stämme','Der Beitritt zum Völkerbund','Die Einführung des Kurdischen als Amtssprache'],kurmanji:'koçer = Nomade'},{q:'Welche Folge hatte die Konfiskation der Herden?',correct:'Versorgungsengpässe in den Städten, die von den Stämmen beliefert wurden',wrong:['Mehr Fleischexporte','Sinkende Preise','Bessere Strassen'],kurmanji:'kerî = Herde'}],
+task:{type:'reflect',text:'Türkei und Iran gingen in den dreissiger Jahren fast gleichzeitig und mit ähnlichen Mitteln gegen die Kurden vor — Entwaffnung, Umsiedlung, Sprachpolitik. Zufall oder System? Was hatten die neuen Nationalstaaten gemeinsam?'}},
+
+{title:'Komala und die Republik Mahabad',
+text:'Im Zweiten Weltkrieg besetzten britische und sowjetische Truppen Iran; Reza Schah musste abdanken. In diesem Machtvakuum gründete eine Gruppe von Beamten, Lehrern, Kleinhändlern und Offizieren in Mahabad die geheime <strong>«Gesellschaft zur Wiedererweckung Kurdistans» (Komala, 1942)</strong> mit der Zeitschrift <em>Nischtiman</em> («Heimat»). 1944 trafen sich kurdische Aktivisten aus Iran, Irak und der Türkei am Berg Dalanpur; eine Karte Gross-Kurdistans wurde 1945 sogar der UNO-Gründungsversammlung vorgelegt. Eine kurdische Oper — eine Mutter als Symbol der Heimat, drangsaliert von drei fremden Männern — stiftete Gemeinschaftsgefühl. Im Herbst 1945 wurde die Komala, nicht ohne sowjetisches Zutun, in die <strong>DPKI</strong> umgewandelt. Am <strong>22. Januar 1946 rief Qadi Muhammad die «Republik Kurdistan»</strong> in Mahabad aus — auf dem Kopf einen Turban, am Leib eine Uniform sowjetischen Stils. Kurdisch wurde offizielle Sprache, eine Druckerei eingerichtet. Barzani stand mit rund tausend Kämpfern bereit; in Mahabad wurde 1946 sein Sohn <strong>Masud</strong> geboren.',
+glossary:[{kw:'Mahabad',tr:'Mehabad'},{kw:'Heimat',tr:'nîştiman'},{kw:'Republik',tr:'komar'},{kw:'Mutter',tr:'dayik'}],
+questions:[{q:'Wann wurde die Republik Kurdistan in Mahabad ausgerufen?',correct:'Am 22. Januar 1946 durch Qadi Muhammad',wrong:['1923 durch Atatürk','1958 durch Qasim','1979 durch Chomeini'],kurmanji:'komar = Republik'},{q:'Was waren die wichtigsten Leistungen der Republik?',correct:'Kulturelle: Kurdisch als offizielle Sprache, Schulen, eine kurdische Druckerei',wrong:['Militärische Eroberungen bis Bagdad','Der Bau von Fabriken','Ein Bündnis mit den USA'],kurmanji:'nîştiman = Heimat'}],
+task:{type:'parent',text:'Die Republik Mahabad ist ein grosses Symbol kurdischer Geschichte. Frage deine Eltern: Kennen sie Lieder, Bilder oder Geschichten über Mahabad und Qadi Muhammad?'}},
+
+{title:'Das Ende von Mahabad',
+text:'Die Republik war kleiner, als der Name vermuten lässt — praktisch ein <strong>Stadtstaat</strong> und zugleich ein Ableger der von den Sowjets geschützten Aserbaidschanischen Volksregierung. Die Sowjets unterstützten nur halbherzig: Es gab eine Druckpresse und Uniformen, aber <strong>so gut wie keine der versprochenen Waffen</strong>. Militärisch hing die Regierung von den Stämmen ab, die stärker waren als ihre kleine Armee — eine problematische Abhängigkeit; die reichen Bazar-Händler blieben reserviert. Im Frühjahr 1946 erhielt die Sowjetunion die geforderten <strong>Ölkonzessionen</strong> — und zog ihre Truppen ab. Damit fiel der Schutzschirm: Im <strong>Dezember 1946 wurde Mahabad kampflos eingenommen</strong>; Qadi Muhammad wurde verhaftet und im <strong>März 1947 hingerichtet</strong>. Barzani schlug sich mit seinen Leuten in die Sowjetunion durch. Mahabad wird oft als einziger kurdischer Staat der Geschichte bezeichnet — die Charakterisierung ist ungenau, doch als <strong>Symbol</strong> wirkt die kurze Republik bis heute.',
+glossary:[{kw:'Ende',tr:'dawî'},{kw:'Gefängnis',tr:'zindan'},{kw:'Held',tr:'leheng'},{kw:'Erinnerung',tr:'bîr'}],
+questions:[{q:'Warum fiel die Republik Mahabad?',correct:'Die Sowjetunion zog nach Erhalt der Ölkonzessionen ihre Truppen ab — der Schutz fiel weg',wrong:['Die Türkei marschierte ein','Eine Hungersnot brach aus','Barzani stürzte Qadi Muhammad'],kurmanji:'dawî = Ende'},{q:'Was geschah mit Qadi Muhammad?',correct:'Er wurde verhaftet und im März 1947 hingerichtet',wrong:['Er floh nach Europa','Er wurde Schah von Iran','Er regierte bis 1979'],kurmanji:'zindan = Gefängnis'}],
+task:{type:'reflect',text:'Die Republik Mahabad bestand kein ganzes Jahr — und ist trotzdem das wichtigste Symbol kurdischer Staatlichkeit. Warum können auch «gescheiterte» Ereignisse so viel Kraft für spätere Generationen haben?'}},
+
+{title:'Die Islamische Republik und die DPKI',
+text:'Den Sturz des Schahs 1979 begrüssten viele Kurden — der Islamischen Republik gegenüber blieben sie skeptisch. Bei einem Treffen verlangte Chomeini von Scheich Hoseini «Sicherheit und Stabilität in Kurdistan»; Hoseini erwiderte: «In Ordnung, aber ich verlange die <strong>Autonomie Kurdistans</strong> von Ihnen.» Es kam zu Kämpfen mit den Revolutionsgarden (<em>pasdaran</em>). Die neue Verfassung lehnte das Konzept ethnischer Minderheiten ab; ihre schiitische Prägung grenzte die sunnitischen Kurden zusätzlich aus. Die <strong>DPKI</strong> unter <strong>Abdul-Rahman Qasemlu</strong>, einem in Prag promovierten Sozialwissenschaftler, vertrat seit 1973 den Slogan: <strong>«Demokratie für Iran, Autonomie für Kurdistan»</strong>. Im Iran-Irak-Krieg wurde sie zerrieben. Als Qasemlu nach Kriegsende Gespräche mit Teheran aufnahm, wurde er <strong>1989 in Wien ermordet</strong>; sein Nachfolger Scharafkindi 1992 in Berlin — das «Mykonos»-Urteil stellte fest, dass iranische Behörden die Morde angeordnet hatten. Bis heute wechseln Repression und vorsichtige Hoffnung — etwa unter den Präsidenten Chatami und Rohani.',
+glossary:[{kw:'Demokratie',tr:'demokrasî'},{kw:'Autonomie',tr:'xweserî'},{kw:'Recht',tr:'maf'},{kw:'Sicherheit',tr:'ewlehî'}],
+questions:[{q:'Was war der Slogan der DPKI unter Qasemlu?',correct:'«Demokratie für Iran, Autonomie für Kurdistan»',wrong:['«Unabhängigkeit oder Tod»','«Ein Volk, ein Reich»','«Alle Macht den Räten»'],kurmanji:'xweserî = Autonomie'},{q:'Wie endeten Qasemlus Verhandlungsversuche?',correct:'Er wurde 1989 in Wien ermordet — die Spur führte nach Teheran',wrong:['Mit einem Autonomieabkommen','Er wurde Präsident Irans','Er zog sich ins Privatleben zurück'],kurmanji:'maf = Recht'}],
+task:null},
+
+{title:'Syrien: Staatenlose im eigenen Land',
+text:'In Syrien leben schätzungsweise 1,2 bis 1,5 Millionen Kurden (8 bis 10% der Bevölkerung), vor allem in der <strong>Dschazira</strong> im Nordosten, der Kornkammer des Landes, sowie in Damaskus und Aleppo. Unter dem französischen Mandat zeitweise gefördert, gerieten sie mit dem Aufstieg des Panarabismus unter Druck. 1962 wurde in der Provinz al-Hasaka ein Sonderzensus durchgeführt: <strong>Zehntausende Kurden verloren die Staatsangehörigkeit</strong> und galten fortan als <em>adschanib</em> — «Fremde» im eigenen Land: ohne Wahlrecht, ohne staatsbürgerliche Rechte, ohne Anspruch auf medizinische Versorgung. Kurdische Schulen waren verboten, kurdische Bücher durften nicht gedruckt, kurdische Namen nicht registriert werden; entlang der türkischen Grenze wurden gezielt arabische Dörfer angesiedelt. Ab den achtzigern duldete das Regime die <strong>PKK</strong> im Land — Kampf für Kurden anderswo statt Rechte für die eigenen. Erst im <strong>April 2011</strong>, zu Beginn des Aufstands, wurde das Gesetz aufgehoben und der Status von Hunderttausenden legalisiert: Assad wollte die Kurden ruhigstellen.',
+glossary:[{kw:'Fremder',tr:'biyanî'},{kw:'Pass',tr:'pasaport'},{kw:'Verbot',tr:'qedexe'},{kw:'Bürger',tr:'hemwelatî'}],
+questions:[{q:'Was bedeutete der Status adschanib?',correct:'«Fremde» im eigenen Land — ohne Wahlrecht und staatsbürgerliche Rechte',wrong:['Ein Adelstitel','Eine Steuerbefreiung','Doppelte Staatsbürgerschaft'],kurmanji:'biyanî = Fremder'},{q:'Warum hob Assad das Gesetz im April 2011 auf?',correct:'Er wollte die Kurden zu Beginn des Aufstands ruhigstellen',wrong:['Die UNO zwang ihn dazu','Aus Überzeugung für Minderheitenrechte','Die Türkei verlangte es'],kurmanji:'hemwelatî = Bürger'}],
+task:{type:'reflect',text:'Stell dir vor, du bist im Land geboren, darfst aber weder wählen noch einen Pass besitzen — wie die adschanib in Syrien. Was würde das für deinen Alltag konkret bedeuten? Notiere drei Folgen.'}},
+
+{title:'Rojava und der Bürgerkrieg',
+text:'Nach Ausbruch des Bürgerkriegs im Frühjahr 2011 zog sich die syrische Armee kampflos aus den kurdischen Gebieten zurück. In das Vakuum stiess die <strong>PYD</strong>, eine 2003 von PKK-nahen Kadern gegründete Partei. Im <strong>Januar 2014</strong> richtete sie eine autonome Verwaltung in den Kantonen <strong>Afrin, Kobane und Cizire</strong> ein — die Region wird <strong>Rojava</strong> («West-Kurdistan») genannt. Ihre Volksverteidigungseinheiten <strong>YPG</strong> wurden weltberühmt durch die erfolgreiche <strong>Verteidigung von Kobane gegen den IS</strong> (September 2014 bis Februar 2015) und durch den Einsatz für die vom IS bedrohten Yeziden am Sindschar. Als verlässlichster Teil der Anti-IS-Koalition genossen die Kurden amerikanische Unterstützung — ein merkwürdiges Zweckbündnis, denn die Schwesterpartei PKK gilt in den USA als Terrororganisation. Die Türkei wiederum will ein zusammenhängendes Rojava verhindern. Innerkurdisch konkurriert die PYD mit dem Barzani-nahen Kurdischen Nationalrat. Klar ist: Ohne die Kurden sind Verhandlungen über Syriens Zukunft sinnlos.',
+glossary:[{kw:'Rojava',tr:'Rojava (Westen)'},{kw:'Verteidigung',tr:'parastin'},{kw:'Volk',tr:'gel'},{kw:'Kobane',tr:'Kobanî'}],
+questions:[{q:'Welche drei Kantone riefen 2014 ihre Autonomie aus?',correct:'Afrin, Kobane und Cizire',wrong:['Mosul, Erbil und Kirkuk','Damaskus, Aleppo und Homs','Diyarbakır, Van und Hakkari'],kurmanji:'Rojava = Westen'},{q:'Wodurch wurde die YPG weltweit bekannt?',correct:'Durch die Verteidigung von Kobane gegen den IS',wrong:['Durch ein Fussballturnier','Durch Ölexporte','Durch die Eroberung von Damaskus'],kurmanji:'parastin = Verteidigung'}],
+task:{type:'parent',text:'Kobane war 2014/15 in allen Nachrichten. Frage deine Eltern: Wie haben sie diese Zeit erlebt? Hat der Krieg in Syrien oder im Irak Verwandte oder Bekannte eurer Familie betroffen?'}}
+]},
+
+{id:'stamm',title:'Stamm, Familie und Gesellschaft',desc:'Mal, Eşiret, Haushalt — wie die kurdische Gesellschaft funktioniert',
+sections:[
+{title:'Mal, Qabile, Eşiret',
+text:'Die Grundeinheit der kurdischen Stammesorganisation heisst <strong>mal</strong> — das Wort bedeutet sowohl Haushalt als auch <em>lineage</em>: eine patrilineare Abstammungsgruppe, die sich auf einen realen oder fiktiven Vorfahren zurückführt. Die Zugehörigkeit zu einem Stamm wird über das mal definiert; je mehr Mitglieder ein mal hat, desto einflussreicher ist es. Die Zugehörigkeit verpflichtet: gemeinsam Weiderechte verteidigen, einander bei Hochzeiten beschenken, im Konfliktfall zusammenstehen. Mehrere mals bilden ein <strong>ocax oder qabile</strong> («Clan», in der Regel 4 bis 8 mals), zurückgeführt auf Brüder oder Vettern. Die höchste Stufe ist die <strong>eşiret</strong> («Stamm»): Ihr wichtigstes Kriterium ist die tatsächliche oder gemeinsam beanspruchte Abstammung — und <strong>allein die eşiret regelt die Nutzung der Weiderechte</strong>. Sie ist damit die einzige territorial festlegbare Einheit der Stammesorganisation. Daneben gab es immer auch Nichtstammesgruppen, etwa abhängige Bauern (<em>reaya</em>).',
+glossary:[{kw:'Haushalt / Lineage',tr:'mal'},{kw:'Clan',tr:'qebîle'},{kw:'Stamm',tr:'eşîret'},{kw:'Familie',tr:'bavik'}],
+questions:[{q:'Was bedeutet das kurdische Wort mal?',correct:'Haushalt und zugleich Abstammungsgruppe — die kleinste Einheit des Stammes',wrong:['Nur ein Gebäude','Eine Steuerart','Ein religiöses Fest'],kurmanji:'mal = Haushalt'},{q:'Was kann allein die eşiret regeln?',correct:'Die Nutzung der Weiderechte — sie ist die einzige territoriale Einheit',wrong:['Hochzeiten','Den Schulunterricht','Die Steuern des Staates'],kurmanji:'eşîret = Stamm'}],
+task:{type:'parent',text:'Frage deine Eltern: Zu welchem mal, welcher qabile und welcher eşiret gehört eure Familie? Welche Namen kennen sie noch — und was bedeuten sie?'}},
+
+{title:'Segmentäre Opposition und Führertypen',
+text:'Die Stammesorganisation beruht auf dem Prinzip der <strong>segmentären Opposition</strong>: Brüder halten zusammen gegen die Vettern, alle Vettern gegen entferntere Verwandte, der ganze Stamm gegen andere Stämme — so die Idealvorstellung. In der Praxis ist das flexibler: Bei Konflikten entscheiden Nähe, Heiratsbeziehungen und das Geschick der Führer, wer sich mit wem verbündet; oft spalten sich Stämme in zwei Blöcke («links»/«rechts»). Auch die <strong>Führertypen</strong> hängen vom Verhältnis zum Staat ab: Wenn Stamm und Staat sich anerkennen, ist der Führer ein <strong>Vermittler</strong>, der Dispute schlichtet. Der <strong>«Bandit»</strong>, der seine Anhänger an Beutezügen beteiligt, entsteht, wenn der Staat stark genug ist, die Autonomie der Stämme zu verhindern — aber zu schwach, den Banditen festzusetzen. Neben den Agas standen religiöse Führer: <strong>Scheichs und Sayyids</strong>. Als im 19. Jahrhundert die kurdischen Fürsten (Mirs) abgeschafft wurden, füllten gerade die Scheichs das Machtvakuum — als Vermittler zwischen den streitenden Stämmen.',
+glossary:[{kw:'Führer',tr:'serok'},{kw:'Aga',tr:'axa'},{kw:'Scheich',tr:'şêx'},{kw:'Streit',tr:'pevçûn'}],
+questions:[{q:'Wann entsteht der «Bandit» als Führertyp?',correct:'Wenn der Staat stark genug ist, Stammesautonomie zu verhindern, aber zu schwach, den Banditen festzusetzen',wrong:['Wenn es keinen Staat gibt','Wenn der Stamm reich ist','Wenn der Führer studiert hat'],kurmanji:'serok = Führer'},{q:'Warum gewannen die Scheichs im 19. Jahrhundert an Macht?',correct:'Nach der Abschaffung der Mirs füllten sie als Vermittler das Machtvakuum',wrong:['Sie kauften sich die Macht','Die Briten ernannten sie','Sie besiegten die Osmanen im Krieg'],kurmanji:'şêx = Scheich'}],
+task:{type:'reflect',text:'Scheich Said, Scheich Mahmud, die Barzanis — auffallend viele kurdische Führer waren religiöse Scheichs. Warum hatten gerade religiöse Führer die Kraft, verfeindete Stämme zu vereinen?'}},
+
+{title:'Haushalt und Familie',
+text:'Das gemeinsame Wohnen im Haushalt ist die <strong>ideale Form des Zusammenlebens</strong> in der kurdischen Gesellschaft. Haushalte durchlaufen einen <strong>Zyklus</strong>: Nach der Heirat bleiben die Söhne mit ihren Frauen zunächst im Haushalt des Vaters — es entstehen Drei-Generationen-Familien. Irgendwann folgt die Teilung, auf Kurmandschi <strong><em>mal cud bûn</em></strong> — ein oft konfliktreicher, schmerzvoller Prozess, denn geteilt werden nicht nur Land, Haus und Vieh, sondern auch das soziale Kapital: Ruf und Ansehen. Die Teilung wird hinausgeschoben, wenn die Produktion viele Arbeitskräfte braucht, etwa für Heuernte und Viehwirtschaft. <strong>Frauen wechseln mit der Heirat den Haushalt</strong> — ihre Mobilität knüpft und pflegt die Verwandtschaftsnetze zwischen Dörfern, Städten und sogar Ländern. Die durchschnittliche Haushaltsgrösse lag in der Türkei bei 4,8 Personen — in der GAP-Region bei 6, in Bergdörfern bis zu 10. In den Städten sind die Haushalte kleiner, aber oft kinderreiche Kernfamilien.',
+glossary:[{kw:'Heirat',tr:'zewac'},{kw:'Haushalt getrennt',tr:'mal cud bûn'},{kw:'Bruder',tr:'bira'},{kw:'Frau',tr:'jin'}],
+questions:[{q:'Was bedeutet mal cud bûn?',correct:'Die Teilung des Haushalts — ein konfliktreicher Prozess, bei dem auch Ansehen geteilt wird',wrong:['Eine Hochzeitsfeier','Der Bau eines neuen Hauses','Ein religiöses Fest'],kurmanji:'mal cud bûn'},{q:'Wann wird die Teilung eines Haushalts hinausgeschoben?',correct:'Wenn die Produktion viele Arbeitskräfte braucht, etwa für Heuernte und Vieh',wrong:['Wenn die Familie reich ist','Wenn der Staat es verbietet','Im Winter'],kurmanji:'bira = Bruder'}],
+task:{type:'parent',text:'Frage deine Eltern oder Grosseltern: Wie gross war der Haushalt, in dem sie aufgewachsen sind? Wer wohnte alles unter einem Dach? Vergleiche es mit eurer Familie heute.'}},
+
+{title:'Nomaden, zoma und die Viehwirtschaft',
+text:'Die wichtigste Existenzgrundlage vieler kurdischer Gebiete war die <strong>seminomadische Weidewirtschaft</strong>, ergänzt durch Getreide- und Gartenanbau: im Sommer auf der Bergweide, im Winter im Dorf. Die Sommersiedlung heisst <strong>zoma</strong> (auch <em>zozan</em>, türkisch <em>yayla</em>); die Weiden werden vom Stamm gemeinsam genutzt, die Stammeszugehörigkeit sichert das Nutzungsrecht, vererbt vom Vater auf den Sohn. zoma-Gruppen sind flexibel und spiegeln die sozialen Allianzen: Im Dorf Sisin spaltete ein Konflikt um einen Brautraub die Gemeinschaft in neue zoma-Gruppen. Seit den achtziger Jahren erlebt diese Lebensform einen <strong>raschen Niedergang</strong>: Urbanisierung und Modernisierung untergruben die Grundlagen; Förderung blieb aus; die schärfere <strong>Grenzkontrolle</strong> beendete den einträglichen Viehhandel mit Irak und Iran; und das <strong>Weideverbot</strong> im Konflikt mit der PKK stürzte die Viehwirtschaft in die Krise. Tiere haben heute oft eher die Funktion einer Absicherung: Bei einer Hochzeit oder in der Not wird verkauft.',
+glossary:[{kw:'Bergweide',tr:'zozan'},{kw:'Kleinvieh',tr:'pez'},{kw:'Sommer',tr:'havîn'},{kw:'Winter',tr:'zivistan'}],
+questions:[{q:'Was ist eine zoma?',correct:'Eine Sommer-Weidesiedlung in den Bergen',wrong:['Ein Wintervorrat','Ein Hochzeitsbrauch','Eine Steuer'],kurmanji:'zozan = Bergweide'},{q:'Warum ging die Viehwirtschaft seit den achtziger Jahren zurück?',correct:'Weideverbot im Konflikt, Grenzkontrollen und fehlende Förderung',wrong:['Die Schafe starben an einer Seuche aus','Fleisch wurde verboten','Die Berge wurden verkauft'],kurmanji:'pez = Kleinvieh'}],
+task:null},
+
+{title:'GAP und die Debatte um die Unterentwicklung',
+text:'Das <strong>Südost-Anatolien-Projekt (GAP)</strong> ist ein gigantisches Bewässerungs- und Energieprojekt in acht Provinzen — über 75&thinsp;000 Quadratkilometer, fast 10% der Türkei, grösser als Belgien, Dänemark, die Niederlande und Luxemburg zusammen. Ziel: das <strong>West-Ost-Gefälle</strong> abbauen. Doch die Zahlen blieben krass: 1996 betrug das jährliche Pro-Kopf-Einkommen in der Türkei 2138 Dollar — <strong>in Diyarbakır 283 Dollar</strong>; fast die Hälfte der Haushalte lag unter dem Mindestlohn. Warum? Der Soziologe <strong>Besikçi</strong> sah eine gezielte Unterdrückung der Kurden als ethnische Gruppe. Kritiker hielten dagegen: Kapitalistische Entwicklung verlaufe ohne Rücksicht auf Ethnizität ungleich — und auch <strong>kurdische Eliten</strong> (Agas, Scheichs, Grossgrundbesitzer) profitierten von der Ausbeutung. Der Soziologe Özer, der selbst im GAP arbeitete, meinte: Die Regierungen hätten die Industrialisierung der Region <strong>bewusst gebremst</strong>, weil sie den kurdischen Nationalismus hätte stärken können; die Gewinne der Energieerzeugung wurden nicht in der Region reinvestiert.',
+glossary:[{kw:'Wasser',tr:'av'},{kw:'Staudamm',tr:'bendav'},{kw:'Armut',tr:'feqîrî'},{kw:'Arbeit',tr:'kar'}],
+questions:[{q:'Was ist das GAP?',correct:'Ein riesiges Bewässerungs- und Energieprojekt in Südost-Anatolien',wrong:['Eine kurdische Partei','Ein Militärbündnis','Ein Schulreform-Programm'],kurmanji:'av = Wasser'},{q:'Worüber stritten Besikçi und seine Kritiker?',correct:'Ob ethnische Unterdrückung oder kapitalistische Entwicklung die Armut des Ostens erklärt',wrong:['Über die Schreibweise des Kurdischen','Über die Hauptstadt Kurdistans','Über Fussballresultate'],kurmanji:'feqîrî = Armut'}],
+task:{type:'reflect',text:'Ist eine Region arm, weil sie vernachlässigt wird — oder wird sie vernachlässigt, weil dort eine Minderheit lebt? Welche Argumente aus dem Text sprechen für welche Sicht? Wo stehst du?'}},
+
+{title:'Migration und Verstädterung',
+text:'Seit den fünfziger Jahren wandern Menschen vom Land in die Städte; ab den achtziger Jahren beschleunigte sich die Bewegung dramatisch. Nach 1990 änderten sich die Gründe: In Diyarbakır nannte fast die <strong>Hälfte der zwangsmigrierten Haushalte den Krieg</strong> als Grund. Die Städte wurden dabei weniger zum Gegenpol des Dorflebens als zu dessen <strong>Fortsetzung</strong>: Verwandtschaft und <strong>hemşerilik</strong> — die Verbundenheit von Menschen aus demselben Herkunftsort — organisieren Wohnen und Arbeit; neben dem Hochhaus steht der traditionelle Backofen (<em>tandır</em>). Die Städte des Südostens sind oft <strong>Sprungbretter</strong> für die Weiterwanderung nach Istanbul, Izmir oder Mersin — die Mehrheit der Kurden lebt aber weiterhin im Osten und Südosten. Wichtigster Grund für den Umzug ist die Hoffnung auf <strong>soziale Mobilität durch Bildung</strong>. Zugleich bleibt die Bindung an die Familie zentral: Wer aufsteigen will, kann es sich kaum leisten, die Verpflichtungen gegenüber Verwandten ganz abzulegen.',
+glossary:[{kw:'Stadt',tr:'bajar'},{kw:'Wanderung',tr:'koçberî'},{kw:'Nachbar',tr:'cîran'},{kw:'Bildung',tr:'perwerde'}],
+questions:[{q:'Was bedeutet hemşerilik?',correct:'Die Verbundenheit von Menschen aus demselben Herkunftsort — Basis für Wohnen und Arbeit in der Stadt',wrong:['Eine Sportart','Ein Steuergesetz','Ein religiöses Amt'],kurmanji:'koçberî = Wanderung'},{q:'Wie änderten sich die Migrationsgründe nach 1990?',correct:'Krieg und Vertreibung wurden zum Hauptgrund der Migration',wrong:['Alle zogen wegen des Klimas um','Es gab keine Migration mehr','Nur Reiche wanderten aus'],kurmanji:'bajar = Stadt'}],
+task:{type:'parent',text:'Auch eure Familie hat Migration erlebt. Frage deine Eltern: Wer hat beim Ankommen am neuen Ort geholfen? Gab es Verwandte oder Landsleute — so etwas wie hemşerilik — die wichtig waren?'}}
+]}
+];
+
+let S={screen:'start',mi:0,si:0,qi:0,streak:0,results:[],answered:false,visited:{},notesSaved:{}};
+function load(){try{const s=localStorage.getItem('lernapp-kurden-teil3');if(s){Object.assign(S,JSON.parse(s))}}catch(e){}}
+function save(){try{localStorage.setItem('lernapp-kurden-teil3',JSON.stringify(S))}catch(e){}}
+function resetAll(){S={screen:'start',mi:0,si:0,qi:0,streak:0,results:[],answered:false,visited:{},notesSaved:{}};save();render()}
+
+function render(){
+const app=document.getElementById('app');
+switch(S.screen){
+case 'start':app.innerHTML=rStart();break;
+case 'modules':app.innerHTML=rModules();break;
+case 'read':app.innerHTML=rRead();break;
+case 'quiz':app.innerHTML=rQuiz();break;
+case 'task':app.innerHTML=rTask();break;
+case 'result':app.innerHTML=rResult();break;
+case 'allDone':app.innerHTML=rAllDone();break;
+case 'fulltext':app.innerHTML=rFulltext();break;
+case 'methodik':app.innerHTML=rMethodik();break;
+default:app.innerHTML=rStart();}
+window.scrollTo(0,0);
+}
+
+function rStart(){
+const has=S.visited&&Object.keys(S.visited).length>0;
+const totalSec=MODULES.reduce((a,m)=>a+m.sections.length,0);
+return `<div class="screen active fade-in"><div class="start-hero"><div class="start-tag">Geschichte Sek II · Teil 3</div><h1>Die Kurden im<br>20. Jahrhundert</h1><div class="sub">Türkei, Irak, Iran, Syrien — und die Gesellschaft der Stämme. Lies die Texte, teste dein Wissen, denk nach und sprich mit deinen Eltern.</div></div><div class="start-box">${MODULES.length} Module · ${totalSec} Abschnitte<br>Mit Vorlesefunktion, Kurmanji-Glossar,<br>Elternaufgaben und Reflexionen</div><button class="btn btn-primary" onclick="go('modules')"><i class="fa-solid fa-book-open"></i> Loslegen</button><button class="btn btn-tertiary" onclick="go('fulltext')"><i class="fa-solid fa-scroll"></i> Gesamttext lesen</button><button class="btn btn-accent" onclick="go('methodik')" style="margin-top:4px"><i class="fa-solid fa-graduation-cap"></i> Methodik &amp; Didaktik</button><button class="btn btn-secondary" onclick="location.href='kurden-teil1-2.html'" style="margin-top:4px"><i class="fa-solid fa-backward"></i> Teil 1+2: Mittelalter bis 1923</button>${has?`<button class="btn btn-secondary" onclick="resetAll()" style="margin-top:4px"><i class="fa-solid fa-rotate-left"></i> Neu starten</button>`:''}</div>`;}
+
+function rModules(){
+const d=S.visited||{};
+return `<div class="screen active fade-in"><div class="topbar"><button class="topbar-back" onclick="go('start')"><i class="fa-solid fa-arrow-left"></i> Start</button><div class="topbar-title">Module</div><div class="topbar-right">${MODULES.filter(m=>d[m.id]&&d[m.id].done).length}/${MODULES.length}</div></div>${MODULES.map((m,i)=>{const done=d[m.id]&&d[m.id].done;const stars=done?Math.min(3,Math.round(d[m.id].correct/(m.sections.length*2)*3)):0;return `<div class="module-card ${done?'done':''}" onclick="startMod(${i})"><div class="num">${i+1}</div><h2>${m.title}</h2><p>${m.desc}</p><p style="font-family:var(--font-mono);font-size:12px;color:#777;margin-top:4px">${m.sections.length} Abschnitte · ${m.sections.length*2} Fragen</p>${done?`<div style="display:flex;align-items:center;gap:8px;margin-top:4px;font-family:var(--font-mono);font-size:13px"><span style="color:#2d6b3a;font-weight:900">${d[m.id].correct}/${m.sections.length*2}</span><span>${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span></div>`:''}</div>`;}).join('')}</div>`;}
+
+function rRead(){
+const mod=MODULES[S.mi];const sec=mod.sections[S.si];const total=mod.sections.length;const pct=((S.si+1)/total)*100;
+return `<div class="screen active fade-in"><div class="topbar"><button class="topbar-back" onclick="go('modules')"><i class="fa-solid fa-arrow-left"></i> Module</button><div class="topbar-title">Modul ${S.mi+1}</div><div class="topbar-right">${S.si+1}/${total}</div></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div><div class="eyebrow">${mod.title}</div><h2 style="text-transform:none">${sec.title}</h2><div class="card"><div class="read-text">${sec.text}</div></div><button class="tts-btn" onclick="speakText()"><i class="fa-solid fa-volume-high"></i> Vorlesen</button><div class="glossary"><div class="glossary-label">Kurmanji / کوردی</div>${sec.glossary.map(g=>`<div class="glossary-row"><span class="kw">${g.kw}</span><span class="eq">=</span><span class="tr">${g.tr}</span></div>`).join('')}</div><div class="chunk-nav">${mod.sections.map((_,i)=>`<div class="chunk-dot ${i===S.si?'on':''} ${i<S.si?'visited':''}" onclick="goSec(${i})"></div>`).join('')}</div><button class="btn btn-primary" onclick="startQuiz()"><i class="fa-solid fa-brain"></i> Zum Quiz (${sec.questions.length} Fragen)</button>${S.si>0?`<button class="btn btn-secondary" onclick="prevSec()"><i class="fa-solid fa-arrow-left"></i> Zurück</button>`:''}</div>`;}
+
+function rQuiz(){
+const mod=MODULES[S.mi];const sec=mod.sections[S.si];const q=sec.questions[S.qi];const total=sec.questions.length;const pct=((S.qi+1)/total)*100;const cc=S.results.filter(r=>r).length;
+return `<div class="screen active fade-in"><div class="topbar"><button class="topbar-back" onclick="S.screen='read';S.qi=0;S.results=[];S.answered=false;save();render()"><i class="fa-solid fa-arrow-left"></i> Text</button><div class="topbar-title">Quiz</div><div class="topbar-right">${S.qi+1}/${total}</div></div><div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div><div style="display:flex;align-items:center;justify-content:space-between"><div class="streak"><i class="fa-solid fa-fire" style="color:var(--color-primary)"></i> ${S.streak}</div><div style="font-family:var(--font-mono);font-size:12px;font-weight:700">${cc} von ${S.results.length} richtig</div></div><div class="card-surface"><div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px"><div class="eyebrow" style="margin:0">Frage ${S.qi+1}</div><div class="kurmanji-badge">${q.kurmanji}</div></div><div class="question-text">${q.q}</div><button class="tts-btn" onclick="speakQ()" style="margin-top:8px"><i class="fa-solid fa-volume-high"></i> Vorlesen</button><div class="ans-grid" id="ans-grid" style="margin-top:12px">${shuf([{t:q.correct,ok:true},...q.wrong.map(w=>({t:w,ok:false}))]).map(a=>`<button class="ans-btn" data-c="${a.ok}" onclick="ans(this,${a.ok})">${a.t}</button>`).join('')}</div><div class="feedback ok" id="fb-ok" style="margin-top:12px"><span style="font-size:18px">✓</span><span>Richtig! ${q.kurmanji}</span></div><div class="feedback ko" id="fb-ko" style="margin-top:12px"><span style="font-size:18px">→</span><span>Richtig: <strong>${q.correct}</strong></span></div><button class="btn btn-primary" id="nq-btn" style="display:none;margin-top:12px" onclick="nextQ()">Nächste Frage <i class="fa-solid fa-arrow-right"></i></button></div></div>`;}
+
+const TASK_META={parent:{cls:'',icon:'🏠',label:'Elternaufgabe — zu Hause bearbeiten',title:'Elternaufgabe',ph:'Schreib hier auf, was du herausgefunden hast...'},reflect:{cls:'reflect',icon:'💭',label:'Reflexion — denk nach und notiere',title:'Reflexion',ph:'Schreib hier deine Gedanken auf...'},transfer:{cls:'transfer',icon:'🔍',label:'Forschungsauftrag',title:'Forschung',ph:'Notiere hier deine Ergebnisse...'}};
+
+function rTask(){
+const sec=MODULES[S.mi].sections[S.si];const t=sec.task;const meta=TASK_META[t.type]||TASK_META.parent;const key=`${S.mi}-${S.si}`;const saved=S.notesSaved[key]||'';
+return `<div class="screen active fade-in"><div class="topbar"><button class="topbar-back" onclick="S.screen='read';save();render()"><i class="fa-solid fa-arrow-left"></i> Zurück</button><div class="topbar-title">${meta.title}</div><div class="topbar-right"></div></div><div class="parent-task ${meta.cls}"><div class="pt-icon">${meta.icon}</div><div class="pt-label">${meta.label}</div><div class="pt-text">${t.text}</div></div><div class="parent-answer ${meta.cls}"><div style="font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#555;margin-bottom:6px">Deine Antwort / Notizen:</div><textarea id="task-input" placeholder="${meta.ph}" oninput="saveNote()">${saved}</textarea></div><button class="btn btn-green" onclick="finishSec()"><i class="fa-solid fa-check"></i> Gespeichert — weiter</button><button class="btn btn-secondary" onclick="finishSec()"><i class="fa-solid fa-arrow-right"></i> Überspringen</button></div>`;}
+
+function rResult(){
+const mod=MODULES[S.mi];const sec=mod.sections[S.si];const total=sec.questions.length;const c=S.results.filter(r=>r).length;const pct=Math.round(c/total*100);const s=Math.min(3,Math.round(c/total*3));const isLast=S.si>=mod.sections.length-1;
+return `<div class="screen active fade-in" style="justify-content:center;align-items:center;min-height:80vh"><div class="card" style="text-align:center;padding:36px 24px;max-width:420px"><div class="eyebrow">Abschnitt ${S.si+1}</div><h2 style="margin-bottom:16px;text-transform:none">${sec.title}</h2><div class="result-stars">${[1,2,3].map(i=>`<div class="star ${i<=s?'earned':''}">★</div>`).join('')}</div><div class="score-text">${c}/${total}</div><div class="score-label" style="margin-bottom:8px">${pct}% richtig</div><div style="font-family:var(--font-body);font-size:15px;color:#555;margin-bottom:20px">${c>=total-1?'Sehr gut!':c>=Math.ceil(total/2)?'Gut, weiter so!':'Übe nochmal, du schaffst es!'}</div>${!isLast?`<button class="btn btn-primary" onclick="nextSec()">Nächster Abschnitt <i class="fa-solid fa-arrow-right"></i></button>`:`<button class="btn btn-green" onclick="finishMod()">Modul abschliessen <i class="fa-solid fa-trophy"></i></button>`}<button class="btn btn-secondary" onclick="retrySec()" style="margin-top:4px"><i class="fa-solid fa-rotate-left"></i> Nochmal</button><button class="btn btn-secondary" onclick="go('modules')" style="margin-top:4px"><i class="fa-solid fa-th-large"></i> Übersicht</button></div></div>`;}
+
+function rAllDone(){
+let totalC=0,totalQ=0;Object.values(S.visited).forEach(v=>{if(v&&v.done){totalC+=v.correct;totalQ+=v.questions}});const pct=totalQ?Math.round(totalC/totalQ*100):0;
+return `<div class="screen active fade-in" style="justify-content:center;align-items:center;min-height:80vh"><div class="card" style="text-align:center;padding:36px 24px;max-width:420px"><div style="font-size:48px;margin-bottom:12px">🏆</div><h2>Alle Module geschafft!</h2><div class="score-text">${totalC}/${totalQ}</div><div class="score-label">${pct}% richtig insgesamt</div><p style="color:#555;margin:12px 0 20px;line-height:1.6;font-family:var(--font-body)">Du hast alle ${MODULES.length} Module von Teil 3 durchgearbeitet.</p><button class="btn btn-primary" onclick="resetAll()"><i class="fa-solid fa-rotate-left"></i> Von vorne</button><button class="btn btn-secondary" style="margin-top:4px" onclick="go('modules')"><i class="fa-solid fa-th-large"></i> Module</button></div></div>`;}
+
+function rFulltext(){
+let html=`<div class="screen active fade-in"><div class="topbar"><button class="topbar-back" onclick="go('start')"><i class="fa-solid fa-arrow-left"></i> Start</button><div class="topbar-title">Gesamttext</div><div class="topbar-right"></div></div><h1 style="font-size:24px">Die Kurden im 20. Jahrhundert</h1><p style="color:#555;font-size:15px;margin-bottom:16px;font-weight:600">Der vollständige Text aller ${MODULES.length} Module zum Durchlesen. ${MODULES.reduce((a,m)=>a+m.sections.length,0)} Abschnitte.</p>`;
+MODULES.forEach((mod,mi)=>{const cls=mi===0?'':'mod-'+Math.min(mi+1,3);
+html+=`<div class="fulltext-mod ${cls}"><h2 style="font-size:18px;margin-bottom:12px">Modul ${mi+1}: ${mod.title}</h2>`;
+mod.sections.forEach((sec,si)=>{html+=`<div style="margin-bottom:24px${si<mod.sections.length-1?';padding-bottom:24px;border-bottom:2px dashed #ddd':''}"><h3 style="font-size:15px;margin-bottom:8px;text-transform:none;letter-spacing:0">${sec.title}</h3><div class="read-text" style="font-size:17px;margin-bottom:8px">${sec.text}</div><button class="tts-btn" onclick="speakFullSec(${mi},${si})"><i class="fa-solid fa-volume-high"></i> Vorlesen</button><div class="glossary" style="margin-top:8px"><div class="glossary-label">Kurmanji</div>${sec.glossary.map(g=>`<div class="glossary-row"><span class="kw">${g.kw}</span><span class="eq">=</span><span class="tr">${g.tr}</span></div>`).join('')}</div></div>`;});
+html+=`</div>`;});
+html+=`<button class="btn btn-primary" onclick="go('modules')"><i class="fa-solid fa-brain"></i> Zu den Modulen &amp; Quiz</button><button class="btn btn-secondary" onclick="go('start')" style="margin-top:4px"><i class="fa-solid fa-arrow-left"></i> Zurück zum Start</button></div>`;
+return html;}
+
+function rMethodik(){
+const totalSec=MODULES.reduce((a,m)=>a+m.sections.length,0);
+return `<div class="screen active fade-in"><div class="topbar"><button class="topbar-back" onclick="go('start')"><i class="fa-solid fa-arrow-left"></i> Start</button><div class="topbar-title">Methodik &amp; Didaktik</div><div class="topbar-right"></div></div>
+<h2 style="text-transform:none;font-size:1.3rem">1. Biographisches Lernen / Identitätslernen</h2>
+<p><strong>Beobachtung (aus Teil 1/2):</strong> Der Schüler entdeckte im Glossar den Begriff <em>Zerdeştî</em> — und erkannte ihn als den Spitznamen, den seine Grossmutter ihm gegeben hatte. Dieser Überraschungsmoment erzeugte echte Neugier: <em>Bin ich nach einer alten Religion benannt?</em></p>
+<p><strong>Methodisches Prinzip:</strong> Wenn Lernende sich selbst in historischen Inhalten wiederfinden, entsteht intrinsische Motivation ohne Belohnungssystem. Der Inhalt wird nicht mehr «gelernt», sondern «erlebt».</p>
+<p><strong>Anknüpfungspunkte in Teil 3:</strong> Badinan und Sulaimaniya/Surdash (Herkunftsregion der Familie), der Familienname <em>Koçer</em> (Modul «Stamm, Familie und Gesellschaft»), Barzani und die Peschmerga.</p>
+
+<h2 style="text-transform:none;font-size:1.3rem">2. Sprachliche Brücken als kognitive Anker</h2>
+<p><strong>Beobachtung:</strong> Der Name <em>Koçer</em> ist der zweite Familienname des Schülers. Im Text bedeutet es «Nomade». Das löste eine Kette von Fragen aus: <em>Warum heisst meine Familie so?</em></p>
+<p><strong>Methodisches Prinzip:</strong> Das Kurmanji-Glossar fungiert nicht als Übersetzungshilfe, sondern als <strong>Identitätsresonanz</strong>. Ein Wort in der Muttersprache aktiviert Vorwissen, das im Schulunterricht sonst unsichtbar bleibt.</p>
+
+<h2 style="text-transform:none;font-size:1.3rem">3. Transfer: Elternaufgabe, Reflexion — oder bewusst nichts</h2>
+<p><strong>Neu in Teil 3:</strong> Nicht jeder Abschnitt endet mit einer Elternaufgabe. Drei Varianten wechseln sich ab:</p>
+<p><strong>🏠 Elternaufgabe</strong> — echte Forschungsaufträge an die Familie (Oral History), gezielt dort eingesetzt, wo Familienwissen wirklich etwas beitragen kann (Barzani, Badinan, Stammesnamen, Migration).</p>
+<p><strong>💭 Reflexion</strong> — eigenständiges Nachdenken und Schreiben, besonders bei moralisch komplexen Inhalten (Krieg, Verrat, Identität, gebrochene Versprechen). Hier soll der SuS eine eigene Haltung entwickeln, bevor er andere fragt.</p>
+<p><strong>Kein Auftrag</strong> — bewusste Entlastung. Die Eltern-Ressource wird nicht überstrapaziert, und reine Wissensabschnitte dürfen einfach abgeschlossen werden.</p>
+<p><strong>Didaktische Begründung:</strong> Bei sensiblen Themen (Anfal, Halabdscha) ist die Elternaufgabe explizit als Angebot formuliert — mit dem Hinweis, dass Nicht-darüber-sprechen-wollen in Ordnung ist. Traumasensibilität geht vor Vollständigkeit.</p>
+
+<h2 style="text-transform:none;font-size:1.3rem">4. Das 3-Phasen-Modell der App</h2>
+<div style="border:var(--border-medium);padding:16px 20px;background:var(--color-surface);margin:12px 0;font-family:var(--font-mono);font-size:13px;line-height:2">
+<div style="color:var(--color-primary);font-weight:700">LESEN (Originaltext)</div>
+<div style="padding-left:16px;color:#555">↓ TTS-Unterstützung, Glossar, keine Zeitlimits</div>
+<div style="color:var(--color-primary);font-weight:700;margin-top:4px">VERSTEHEN (2 Quiz-Fragen pro Abschnitt)</div>
+<div style="padding-left:16px;color:#555">↓ sofortiges fehlerfreundliches Feedback, keine Strafe</div>
+<div style="color:var(--color-primary);font-weight:700;margin-top:4px">TRANSFER (Elternaufgabe / Reflexion / frei)</div>
+<div style="padding-left:16px;color:#555">↓ Verbindung Schulwissen ↔ Familienwissen ↔ eigene Haltung</div>
+</div>
+<p>Jede Phase ist optional ablösbar: Gesamttext-Modus für reines Lesen, Modul-Modus für strukturiertes Lernen. ${totalSec} Abschnitte à 5–7 Minuten — kein Druck, alles auf einmal zu schaffen.</p>
+
+<h2 style="text-transform:none;font-size:1.3rem">5. Lernmethodische Besonderheiten</h2>
+<div style="border:var(--border-thick);overflow:hidden">
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-medium)">
+<div style="padding:10px 14px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff;border-right:var(--border-medium)">Prinzip</div>
+<div style="padding:10px 14px;font-family:var(--font-mono);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;background:var(--color-black);color:#fff">Umsetzung in der App</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Fehlerfreundlichkeit</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Falschantwort zeigt sofort die richtige — kein Zurückwurf</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Chunking</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">${totalSec} Abschnitte à 5–7 Min, kein Druck alles auf einmal</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Multimodalität</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Lesen + TTS + Antworten auswählen + schriftlicher Transfer</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Abwechslung im Transfer</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Elternaufgabe, Reflexion oder bewusst kein Auftrag — keine Routine-Ermüdung</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Respekt vor dem SuS</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Anspruchsvolle Inhalte statt Vereinfachung, Fachbegriffe erklärt</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr;border-bottom:var(--border-thin)">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Traumasensibilität</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Sensible Themen (Anfal) als Angebot, nie als Pflicht formuliert</div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 2fr">
+<div style="padding:10px 14px;font-weight:700;font-size:14px;border-right:var(--border-thin)">Kulturelle Anschlussfähigkeit</div>
+<div style="padding:10px 14px;font-size:14px;color:#555">Glossar in Herkunftssprache, Inhalt direkt relevant (Badinan, Koçer)</div>
+</div>
+</div>
+
+<h2 style="text-transform:none;font-size:1.3rem;margin-top:24px">6. Mehrperspektivität als Leitprinzip von Teil 3</h2>
+<p>Teil 3 behandelt Gegenwartsgeschichte mit offenen Wunden: PKK, Anfal, Bürgerkriege. Die App folgt drei Regeln:</p>
+<p><strong>Beide Erzählungen zeigen:</strong> «Kampf gegen Terroristen» und «Befreiungskampf» werden als konkurrierende Deutungen benannt, nicht entschieden (Modul 2).</p>
+<p><strong>Komplexität statt Helden:</strong> Das Fallbeispiel Sisin zeigt Menschen, die pragmatisch zwischen den Fronten überleben — gegen jede Schwarz-Weiss-Zeichnung.</p>
+<p><strong>Innerkurdische Konflikte nicht verschweigen:</strong> Hormek gegen Cibran, PUK gegen DPK, Dschahsch — die Geschichte wird nicht zur Einheits-Legende geglättet.</p>
+
+<h2 style="text-transform:none;font-size:1.3rem">Fazit</h2>
+<p>Die wichtigste Erkenntnis aus der Praxis: <strong>Der SuS ist kein leeres Gefäss.</strong></p>
+<p>Er bringt eine Geschichte mit, die im Klassenzimmer unsichtbar ist — aber im Text plötzlich auftaucht: Badinan, Surdash, Koçer, die Peschmerga.</p>
+<p>Die App ist dann am wirksamsten, wenn sie diese Geschichte sichtbar macht — durch Sprache, durch Fragen an die Familie, durch eigenes Nachdenken.</p>
+<button class="btn btn-primary" onclick="go('modules')" style="margin-top:16px"><i class="fa-solid fa-book-open"></i> Zur Lernapp</button>
+<button class="btn btn-secondary" onclick="go('start')" style="margin-top:4px"><i class="fa-solid fa-arrow-left"></i> Zurück zum Start</button>
+</div>`;}
+
+function go(s){S.screen=s;S.answered=false;save();render()}
+function startMod(i){S.mi=i;S.si=0;S.screen='read';save();render()}
+function nextSec(){S.si++;S.screen='read';S.qi=0;S.results=[];S.answered=false;save();render()}
+function prevSec(){S.si=Math.max(0,S.si-1);S.screen='read';S.qi=0;S.results=[];S.answered=false;save();render()}
+function goSec(i){S.si=i;S.screen='read';S.qi=0;S.results=[];S.answered=false;save();render()}
+function startQuiz(){S.qi=0;S.streak=0;S.results=[];S.answered=false;S.screen='quiz';save();render()}
+function shuf(a){const b=[...a];for(let i=b.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[b[i],b[j]]=[b[j],b[i]]}return b}
+
+function ans(btn,ok){
+if(S.answered)return;S.answered=true;
+const btns=document.querySelectorAll('#ans-grid .ans-btn');btns.forEach(b=>b.disabled=true);
+if(ok){btn.classList.add('correct');S.streak++;S.results.push(true);document.getElementById('fb-ok').classList.add('show');speak('Richtig!')}
+else{btn.classList.add('wrong');S.streak=0;S.results.push(false);btns.forEach(b=>{if(b.dataset.c==='true')b.classList.add('revealed')});document.getElementById('fb-ko').classList.add('show');speak('Leider falsch.');}
+document.getElementById('nq-btn').style.display='flex';save();}
+
+function nextQ(){
+const sec=MODULES[S.mi].sections[S.si];S.qi++;S.answered=false;
+if(S.qi>=sec.questions.length){if(sec.task){S.screen='task';save();render()}else{finishSec()}return}
+save();render()}
+
+function finishSec(){
+const sec=MODULES[S.mi].sections[S.si];const total=sec.questions.length;const c=S.results.filter(r=>r).length;
+if(!S.visited[S.mi])S.visited[S.mi]={};S.visited[S.mi][S.si]={correct:c,total:total};
+S.screen='result';S.answered=false;save();render()}
+
+function retrySec(){S.screen='read';S.qi=0;S.results=[];S.answered=false;startQuiz()}
+
+function finishMod(){
+const mod=MODULES[S.mi];let modCorrect=0,modTotal=0;
+mod.sections.forEach((sec,si)=>{const total=sec.questions.length;modTotal+=total;if(S.visited[S.mi]&&S.visited[S.mi][si]){modCorrect+=S.visited[S.mi][si].correct}});
+if(!S.visited)S.visited={};S.visited[mod.id]={done:true,correct:modCorrect,questions:modTotal};
+const allDone=MODULES.every(m=>S.visited&&S.visited[m.id]&&S.visited[m.id].done);
+if(allDone){S.screen='allDone'}else{S.mi=S.mi<MODULES.length-1?S.mi+1:0;S.si=0;S.screen='modules'}save();render()}
+
+function saveNote(){const key=`${S.mi}-${S.si}`;const ta=document.getElementById('task-input');if(ta){S.notesSaved[key]=ta.value;save()}}
+
+function speakText(){const sec=MODULES[S.mi].sections[S.si];speak(sec.text.replace(/<[^>]+>/g,''))}
+function speakQ(){speak(MODULES[S.mi].sections[S.si].questions[S.qi].q)}
+function speakFullSec(mi,si){const sec=MODULES[mi].sections[si];speak(sec.text.replace(/<[^>]+>/g,''))}
+
+function speak(text){
+if(!window.speechSynthesis)return;window.speechSynthesis.cancel();
+const u=new SpeechSynthesisUtterance(text);u.lang='de-CH';u.rate=0.85;
+u.onstart=()=>document.querySelectorAll('.tts-btn').forEach(b=>b.classList.add('speaking'));
+u.onend=()=>document.querySelectorAll('.tts-btn').forEach(b=>b.classList.remove('speaking'));
+window.speechSynthesis.speak(u)}
+
+load();render();
+</script>
+</body>
+</html>

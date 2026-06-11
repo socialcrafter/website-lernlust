@@ -1,1 +1,14 @@
-Lehrplan 21/KI/Promptathon_Folien_V_1_01 (1).pptx
+# System-Dateien
+.DS_Store
+**/.DS_Store
+
+# Private Arbeitsmaterialien — gehören nicht ins öffentliche Repo
+Lehrplan 21/
+BS_DE_*
+fachliche-inputs/
+webapps/
+webapps.zip
+*.zip
+
+# Notizen / Arbeitsstände
+*.canvas
