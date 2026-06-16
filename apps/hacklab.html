@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hacklab · Was man lernen und anwenden kann</title>
+<style>
+  :root{
+    --bg:#faf8f3; --card:#ffffff; --ink:#23282a; --muted:#6c756f; --accent:#2f8f5b;
+    --accent-soft:#e7f1ea; --line:#e9e2d8; --line:#e8e3d9; --shade:#f4f1ea;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    line-height:1.6;-webkit-font-smoothing:antialiased;padding:0 0 80px}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+  header{padding:56px 0 8px}
+  .kicker{letter-spacing:.16em;text-transform:uppercase;font-size:12px;color:var(--accent);font-weight:700}
+  h1{font-size:clamp(28px,4.5vw,42px);margin:.25em 0 .35em;line-height:1.1}
+  .intro{font-size:17px;color:#3a423d;max-width:760px}
+  .intro b{color:var(--ink)}
+  .intro a, .vault a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent)}
+  .intro a:hover{opacity:.8}
+  ul.cols{max-width:760px;margin:14px 0 18px;padding-left:20px;color:#3a423d;font-size:15.5px}
+  ul.cols li{margin:5px 0}
+  ul.cols b{color:var(--ink)}
+  .note{background:var(--accent-soft);border-left:3px solid var(--accent);border-radius:10px;
+    padding:13px 16px;margin:22px 0 6px;font-size:14.5px;color:#2e4c3c}
+  .note b{color:#234}
+  nav.toc{display:flex;flex-wrap:wrap;gap:8px;margin:26px 0 8px;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  nav.toc a{font-size:13px;color:var(--muted);text-decoration:none;padding:5px 11px;border:1px solid var(--line);border-radius:999px;background:var(--card);transition:.15s}
+  nav.toc a:hover{color:var(--accent);border-color:var(--accent)}
+  section{margin-top:40px}
+  .sechead{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+  .sechead .no{font-size:14px;font-weight:700;color:var(--accent)}
+  .sechead h2{font-size:22px;margin:0;line-height:1.2}
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:var(--card);margin-top:12px}
+  table{border-collapse:collapse;width:100%;min-width:680px;font-size:14.5px}
+  thead th{text-align:left;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);
+    font-weight:700;padding:13px 16px;background:var(--shade);border-bottom:1px solid var(--line)}
+  tbody td{padding:13px 16px;border-bottom:1px solid var(--line);vertical-align:top}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--shade)}
+  td.koennen{font-weight:600;color:var(--ink);width:24%}
+  td.anw{color:#3a423d;width:30%}
+  td.werk{width:22%}
+  td.g2{color:var(--muted);font-style:italic;width:24%}
+  .tool{display:inline-block;background:var(--accent-soft);border-radius:6px;padding:2px 7px;font-size:12.5px;color:#2e4c3c;margin:1px 2px 1px 0}
+  .vault{font-size:13px;color:var(--muted);margin:10px 2px 0}
+  .vault span{color:#55605a}
+  .quellen{margin-top:48px}
+  ul.srclist{list-style:none;padding:0;margin:14px 0 0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+  ul.srclist li{padding:13px 16px;border-bottom:1px solid var(--line);font-size:14px;color:var(--muted)}
+  ul.srclist li:last-child{border-bottom:none}
+  ul.srclist a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent)}
+  ul.srclist a:hover{opacity:.8}
+  .srcnote{font-size:13.5px;color:var(--muted);margin:14px 2px 0}
+  .srcnote b{color:var(--ink)}
+  footer{color:var(--muted);font-size:13.5px;margin-top:52px;border-top:1px solid var(--line);padding-top:20px}
+  footer b{color:var(--ink)}
+  @media(max-width:600px){ td.koennen,td.anw,td.werk,td.g2{width:auto} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="kicker">Hacklab · lernlust</div>
+    <h1>Was man lernen und anwenden kann</h1>
+    <p class="intro">Eine geordnete Sammlung konkreter Dinge, die Schüler:innen im Hacklab lernen und sofort anwenden können. Jede Tabelle hat vier Spalten:</p>
+    <ul class="cols">
+      <li><b>Können</b> &ndash; was man konkret lernt</li>
+      <li><b>Anwendung</b> &ndash; was man damit baut oder herstellt</li>
+      <li><b>Werkzeug</b> &ndash; womit man arbeitet</li>
+      <li><b>Gegenstand 2. Ordnung</b> &ndash; was man nebenbei lernt, das in keinem Lehrplan steht</li>
+    </ul>
+    <p class="intro">Der Begriff <b>Gegenstand 2. Ordnung</b> stammt von der Pädagogin <a href="https://shiftingschool.wordpress.com/2019/09/19/hauptlernform-projektlernen-wie-geht-das/" target="_blank" rel="noopener">Lisa Rosa</a> und ihrem Konzept des Projektlernens: Während man an einer Sache arbeitet (etwa einen Server aufsetzt), lernt man zugleich etwas Grösseres, zum Beispiel Selbstständigkeit, Systemdenken oder Verantwortung. Genau dieser überfachliche Gewinn ist der eigentliche Bildungswert.</p>
+    <div class="note">Die sieben Bereiche decken sich grob mit den Themenspuren des Konzepts. Einträge mit <b>(V)</b> sind aus dem internen Vault ergänzt, dort gibt es schon Material dazu.</div>
+  </header>
+
+  <nav class="toc" id="toc"></nav>
+  <div id="content"></div>
+
+  <section id="quellen" class="quellen">
+    <div class="sechead"><span class="no">→</span><h2>Quellen und Grundlagen</h2></div>
+    <ul class="srclist">
+      <li><a href="https://shiftingschool.wordpress.com/2019/09/19/hauptlernform-projektlernen-wie-geht-das/" target="_blank" rel="noopener">Lisa Rosa: Hauptlernform Projektlernen. Wie geht das?</a> (Blog «shift.», Konzept Gegenstand 2. Ordnung)</li>
+      <li><a href="https://static.uni-graz.at/fileadmin/projekte/digitalelehre/Dokumente/E-CAMPUS_Problembasiertes_Lernen_Kat-6.pdf" target="_blank" rel="noopener">Problembasiertes Lernen (PBL)</a> – Universität Graz (PDF)</li>
+      <li><a href="https://www.fachportal-hochbegabung.de/pdf/2025_Steenbuck_Terfloth_KI_Begabtenfoerderung.pdf" target="_blank" rel="noopener">Steenbuck & Terfloth (2025): Künstliche Intelligenz in der schulischen Begabtenförderung</a> – Karg-Stiftung (PDF)</li>
+      <li><a href="https://udlguidelines.cast.org/" target="_blank" rel="noopener">CAST: Universal Design for Learning Guidelines</a></li>
+      <li><a href="https://dl.acm.org/doi/full/10.1145/3772318.3790732" target="_blank" rel="noopener">Inclusive Makerspace Design for Youth with Autism</a> – ACM 2025</li>
+    </ul>
+    <p class="srcnote">Diese Website wurde mit <b>Claude</b> erstellt. Die Inhalte stammen aus dem persönlichen Obsidian-Vault des Autors, also aus bereits umgesetzten oder recherchierten Projekten.</p>
+  </section>
+
+  <footer>
+    Hacklab @ <b>lernlust</b>. Offener Werkstattraum, freiwillig, ohne Notendruck. Gelernt wird am eigenen Projekt: ausprobieren, bauen, scheitern, verstehen.
+  </footer>
+</div>
+
+<script>
+const data=[
+{title:'Hardware, Upcycling und Elektronik',
+ rows:[
+  ['Mini-PC selbst bauen','Raspberry Pi als Rechner oder Server einrichten','Raspberry Pi, MicroSD','Systemverständnis, Autonomie'],
+  ['Mikrocontroller programmieren','Sensoren, Lichter, kleine Automaten','Arduino, ESP32 (V), MicroPython','Ursache und Wirkung, Iteration'],
+  ['Löten','Reparatur, eigene Schaltungen, Kabel','Lötkolben, Multimeter','Feinmotorik, Sorgfalt, Mut zum Eingriff'],
+  ['PC-Komponenten verstehen','Laptop öffnen, RAM und SSD tauschen, Innenleben erklären','Schraubenzieher-Set, Spendergeräte','Entmystifizierung von Technik'],
+  ['Alte Geräte wiederverwenden (V)','Intel-Mac oder Laptop neu beleben statt wegwerfen','Linux-USB, Rescuezilla (V)','Suffizienz, Ressourcenbewusstsein'],
+  ['3D-Druck (V)','Ersatzteile, Gehäuse, eigene Objekte','3D-Drucker, recyceltes Filament','Vom Entwurf zum Gegenstand'],
+ ],
+ vault:'Quartiersserver (Laptop nicht kaputt, Intel-Macs zu Linux, Schrott-Arbeitsplatz), Homelab (Hardware-Referenz Mini-PCs), Linux (Rescuezilla)'},
+{title:'Betriebssysteme, Linux und digitale Souveränität',
+ rows:[
+  ['Linux installieren und bedienen','Eigenes System aufsetzen, Terminal nutzen','Ubuntu, Mint, Bash','Technologische Mündigkeit'],
+  ['Betriebssysteme vergleichen','Windows, Linux und macOS bewusst wählen','Live-USBs','Es gibt Alternativen'],
+  ['Linux-Gaming (V)','Altes Gerät als Spielstation','Bazzite (V)','Reuse macht Spass'],
+  ['Datensicherung verstehen (V)','Eigene Backups einrichten','Backup-Tools (V)','Verantwortung für eigene Daten'],
+ ],
+ vault:'Quartiersserver (Linux-Starter, Gaming Bazzite, digitale Souveränität im Quartier), Homelab (Maintenance Backups)'},
+{title:'Server, Selfhosting und Netzwerk',
+ rows:[
+  ['Eigenen Server betreiben','Medienserver, Dateiserver, Webserver','alter iMac/PC, Linux','Dezentralität statt Cloud-Konzern'],
+  ['Werbe- und Trackingfilter (V)','Netzwerkweiter Adblocker','Pi-hole (V)','Wie Tracking funktioniert'],
+  ['Eigene Cloud (V)','Dateien, Kalender, Fotos selbst hosten','Nextcloud (V)','Datenhoheit'],
+  ['Medienserver (V)','Eigene Streaming-Bibliothek','Jellyfin (V)','Unabhängigkeit von Plattformen'],
+  ['Dienste sauber betreiben (V)','Mehrere Apps parallel, reproduzierbar','Docker (V)','Ordnung, Reproduzierbarkeit'],
+ ],
+ vault:'Homelab (Index, Self-Hosted Apps to Quit Big Tech, Docker Services)'},
+{title:'Lokale KI und Automatisierung',
+ rows:[
+  ['Lokale Sprachmodelle laufen lassen (V)','Chatbot oder Assistent ohne Cloud','Ollama, Gemma (V)','KI entmystifizieren, Datenschutz'],
+  ['Transkription (V)','Sprache zu Text, Untertitel','Whisper (V)','Werkzeuge selbst bauen statt kaufen'],
+  ['Sprachausgabe (TTS)','Texte vorlesen lassen, eigene Stimme-Tools','lokale TTS-Modelle (V)','Barrierefreiheit, Inklusion'],
+  ['Bilder generieren (V)','Illustrationen, Assets','Stable Diffusion (V)','Wie generative KI funktioniert'],
+  ['Automationsabläufe bauen (V)','Wiederkehrende Aufgaben verketten','n8n (V)','Prozessdenken, Effizienz'],
+  ['Einfache Agenten verstehen (V)','KI, die Schritte selbst plant','lokale Agenten (V)','Grenzen und Risiken von Autonomie'],
+ ],
+ vault:'Homelab (AI-Models-UseCase-Matrix, LLM-Server), Tech-Radar (Codex/Ollama lokale KI-Agenten)'},
+{title:'Creative Coding und Computermusik',
+ rows:[
+  ['Echtzeitgrafik','Interaktive Visuals, VJing, Installation','TouchDesigner','Code als visuelles Ausdrucksmittel'],
+  ['Modularsynthese','Klang aus Bausteinen erzeugen','VCV Rack','Signalfluss, Systemdenken'],
+  ['Live-Coding Musik','Code schreiben und sofort hören','Sonic Pi','Unmittelbarkeit von Code'],
+  ['Generative Kunst','Visuals im Browser','p5.js','Kreativität durch Regeln'],
+  ['Musik-Interface bauen','Eigenes Instrument mit Sensoren','MIDI, Raspberry Pi, Python','Ästhetik trifft Technik'],
+ ],
+ vault:'BYOP (Computermusik-Interface, Live-Coding-Bühne)'},
+{title:'Gamedesign und Serious Games',
+ rows:[
+  ['2D-Spiele bauen','Eigenes Spiel von der Idee zum Prototyp','Godot (V), PICO-8','Systemdenken, Regeln gestalten'],
+  ['Serious Game gestalten','Lernspiel, z.B. eine Biozelle erkunden','Godot, Minecraft EDU','Komplexes verständlich machen'],
+  ['Pixel-Art und Assets','Grafik fürs eigene Spiel','Aseprite, Inkscape (V)','Gestaltungskompetenz'],
+  ['Spielmechaniken analysieren','Verstehen, warum ein Spiel fesselt','Spiele, Reflexion','Medienkritik'],
+ ],
+ vault:'InclusiveGameLab (Game-Dev-Talks, Methodensammlung, Workshops), Medienbildung (Schule mit Games gestalten)',
+ coop:'Kooperation möglich: <a href="https://www.lambconsulting.bio/lambda-biolab/" target="_blank" rel="noopener">Lambda Biolab</a> (z.B. für das Serious Game zur Biozelle).'},
+{title:'Wissen, Web und Publizieren',
+ rows:[
+  ['Versionskontrolle','Projekte sichern, zusammenarbeiten','git, git push','Arbeiten wie Profis, Kooperation'],
+  ['Wissen strukturieren','Eigener Zettelkasten oder Notizsystem','Obsidian, Markdown','Metakognition, Lernen lernen'],
+  ['Webseiten bauen','Persönliche Seite, Projektseite','HTML, CSS, GitLab Pages','Selbstpräsentation, Öffentlichkeit'],
+  ['Gestaltung und Design','Layout, Typografie, Logos','Inkscape (V), Figma','Ästhetisches Urteil'],
+  ['Karten und Daten (V)','Gemeinde-Atlas, Schnitzeljagd','OpenStreetMap, uMap, QGIS (V)','Lokalbezug, Bürgerkompetenz'],
+ ],
+ vault:'BYOP (Zettelkasten mit GitLab, OpenStreetMap-Schnitzeljagd)'},
+];
+
+const toc=document.getElementById('toc');
+const content=document.getElementById('content');
+function tools(s){return s.split(',').map(t=>`<span class="tool">${t.trim()}</span>`).join(' ');}
+data.forEach((sec,i)=>{
+  const id='s'+(i+1);
+  const a=document.createElement('a');a.href='#'+id;a.textContent=(i+1)+'. '+sec.title.split(',')[0].split(' und ')[0];
+  toc.appendChild(a);
+  const s=document.createElement('section');s.id=id;
+  s.innerHTML=`
+    <div class="sechead"><span class="no">${i+1}</span><h2>${sec.title}</h2></div>
+    <div class="tablewrap"><table>
+      <thead><tr><th>Können</th><th>Anwendung</th><th>Werkzeug</th><th>Gegenstand 2. Ordnung</th></tr></thead>
+      <tbody>${sec.rows.map(r=>`<tr><td class="koennen">${r[0]}</td><td class="anw">${r[1]}</td><td class="werk">${tools(r[2])}</td><td class="g2">${r[3]}</td></tr>`).join('')}</tbody>
+    </table></div>
+    <p class="vault"><span>Material dazu (intern):</span> ${sec.vault}</p>
+    ${sec.coop?`<p class="vault coop">${sec.coop}</p>`:''}`;
+  content.appendChild(s);
+});
+</script>
+</body>
+</html>
