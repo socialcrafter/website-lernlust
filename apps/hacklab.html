@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hacklab · Was man lernen und anwenden kann</title>
+<title>Hacklab · Lernen am Scheitern</title>
 <style>
   :root{
     --bg:#faf8f3; --card:#ffffff; --ink:#23282a; --muted:#6c756f; --accent:#2f8f5b;
@@ -18,6 +18,7 @@
   header{padding:56px 0 8px}
   .kicker{letter-spacing:.16em;text-transform:uppercase;font-size:12px;color:var(--accent);font-weight:700}
   h1{font-size:clamp(28px,4.5vw,42px);margin:.25em 0 .35em;line-height:1.1}
+  .tagline{font-size:19px;color:var(--ink);max-width:760px;font-weight:500;margin:.2em 0 1em}
   .intro{font-size:17px;color:#3a423d;max-width:760px}
   .intro b{color:var(--ink)}
   .intro a, .vault a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent)}
@@ -49,12 +50,15 @@
   .tool{display:inline-block;background:var(--accent-soft);border-radius:6px;padding:2px 7px;font-size:12.5px;color:#2e4c3c;margin:1px 2px 1px 0}
   .vault{font-size:13px;color:var(--muted);margin:10px 2px 0}
   .vault span{color:#55605a}
+  .warum{margin-top:30px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px 20px 20px}
+  .warum .sechead{margin-top:14px}
   .quellen{margin-top:48px}
   ul.srclist{list-style:none;padding:0;margin:14px 0 0;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
   ul.srclist li{padding:13px 16px;border-bottom:1px solid var(--line);font-size:14px;color:var(--muted)}
   ul.srclist li:last-child{border-bottom:none}
   ul.srclist a{color:var(--accent);text-decoration:none;border-bottom:1px solid var(--accent)}
   ul.srclist a:hover{opacity:.8}
+  .srcsub{font-size:15px;margin:22px 0 0;color:var(--ink)}
   .srcnote{font-size:13.5px;color:var(--muted);margin:14px 2px 0}
   .srcnote b{color:var(--ink)}
   footer{color:var(--muted);font-size:13.5px;margin-top:52px;border-top:1px solid var(--line);padding-top:20px}
@@ -66,15 +70,9 @@
 <div class="wrap">
   <header>
     <div class="kicker">Hacklab · lernlust</div>
-    <h1>Was man lernen und anwenden kann</h1>
-    <p class="intro">Eine geordnete Sammlung konkreter Dinge, die Schüler:innen im Hacklab lernen und sofort anwenden können. Jede Tabelle hat vier Spalten:</p>
-    <ul class="cols">
-      <li><b>Können</b> &ndash; was man konkret lernt</li>
-      <li><b>Anwendung</b> &ndash; was man damit baut oder herstellt</li>
-      <li><b>Werkzeug</b> &ndash; womit man arbeitet</li>
-      <li><b>Gegenstand 2. Ordnung</b> &ndash; was man nebenbei lernt, das in keinem Lehrplan steht</li>
-    </ul>
-    <p class="intro">Der Begriff <b>Gegenstand 2. Ordnung</b> stammt von der Pädagogin <a href="https://shiftingschool.wordpress.com/2019/11/25/in-aller-kuerze-warum-wir-eine-andere-bildung-brauchen-und-was-das-bedeutet/" target="_blank" rel="noopener">Lisa Rosa</a> und ihrem Konzept des Projektlernens: Während man an einer Sache arbeitet (etwa einen Server aufsetzt), lernt man zugleich etwas Grösseres, zum Beispiel Selbstständigkeit, Systemdenken oder Verantwortung. Genau dieser überfachliche Gewinn ist der eigentliche Bildungswert.</p>
+    <h1>Lernen am Scheitern</h1>
+    <p class="tagline">Im Hacklab arbeitest du am eigenen Projekt: ausprobieren, scheitern, verstehen.</p>
+    <p class="intro">Eine geordnete Sammlung konkreter Dinge, die man im Hacklab lernen und sofort anwenden kann. Es orientiert sich an prozessorientiertem Lernen und am <a href="https://udlguidelines.cast.org/" target="_blank" rel="noopener">Universal Design for Learning (UDL)</a>.</p>
     <div class="note">Die sieben Bereiche decken sich grob mit den Themenspuren des Konzepts. Einträge mit <b>(V)</b> sind aus dem internen Vault ergänzt, dort gibt es schon Material dazu.</div>
   </header>
 
@@ -82,14 +80,28 @@
   <div id="content"></div>
 
   <section id="quellen" class="quellen">
-    <div class="sechead"><span class="no">→</span><h2>Quellen und Grundlagen</h2></div>
+    <div class="sechead"><span class="no">→</span><h2>Quellen und Inspiration</h2></div>
     <ul class="srclist">
-      <li><a href="https://shiftingschool.wordpress.com/2019/11/25/in-aller-kuerze-warum-wir-eine-andere-bildung-brauchen-und-was-das-bedeutet/" target="_blank" rel="noopener">Lisa Rosa: In aller Kürze – Warum wir eine andere Bildung brauchen</a> (Blog «shift.», Konzept Gegenstand 2. Ordnung)</li>
+      <li><a href="https://shiftingschool.wordpress.com/2019/11/25/in-aller-kuerze-warum-wir-eine-andere-bildung-brauchen-und-was-das-bedeutet/" target="_blank" rel="noopener">Lisa Rosa: 10 Thesen zur Bildung</a> (Blog «shift.», Literacy 2)</li>
+      <li><a href="https://shiftingschool.wordpress.com/2019/09/19/hauptlernform-projektlernen-wie-geht-das/" target="_blank" rel="noopener">Lisa Rosa: Hauptlernform Projektlernen. Wie geht das?</a> (Blog «shift.», Konzept Gegenstand 2. Ordnung)</li>
+      <li><a href="https://schulesocialmedia.com/" target="_blank" rel="noopener">Philippe Wampfler: Schule Social Media</a> (Blog zu Schule und Digitalität)</li>
+      <li><a href="https://blog.doebe.li/" target="_blank" rel="noopener">Beat Döbeli Honegger: Blog</a> (Digitalisierung und Bildung, Beats Biblionetz)</li>
       <li><a href="https://static.uni-graz.at/fileadmin/projekte/digitalelehre/Dokumente/E-CAMPUS_Problembasiertes_Lernen_Kat-6.pdf" target="_blank" rel="noopener">Problembasiertes Lernen (PBL)</a> – Universität Graz (PDF)</li>
       <li><a href="https://www.fachportal-hochbegabung.de/pdf/2025_Steenbuck_Terfloth_KI_Begabtenfoerderung.pdf" target="_blank" rel="noopener">Steenbuck & Terfloth (2025): Künstliche Intelligenz in der schulischen Begabtenförderung</a> – Karg-Stiftung (PDF)</li>
       <li><a href="https://udlguidelines.cast.org/" target="_blank" rel="noopener">CAST: Universal Design for Learning Guidelines</a></li>
       <li><a href="https://dl.acm.org/doi/full/10.1145/3772318.3790732" target="_blank" rel="noopener">Inclusive Makerspace Design for Youth with Autism</a> – ACM 2025</li>
+      <li><a href="https://gnulinux.ch/" target="_blank" rel="noopener">GnuLinux.ch</a> (Linux und Open Source, Schweiz)</li>
+      <li><a href="https://di.day/en/digital-switch-recipes" target="_blank" rel="noopener">Digital Switch Recipes</a> (di.day, Wege weg von Big Tech)</li>
+      <li><a href="https://hackaday.io/projects" target="_blank" rel="noopener">Hackaday.io Projects</a> (riesige Sammlung von Hardware- und Maker-Projekten)</li>
     </ul>
+
+    <h3 class="srcsub">Orte, Material und Kooperationen</h3>
+    <p class="srcnote">Material steht zur Verfügung, und Kooperationen mit Makerspaces oder Ateliers sind möglich.</p>
+    <ul class="srclist">
+      <li><a href="https://www.lambconsulting.bio/lambda-biolab/" target="_blank" rel="noopener">Lambda Independent Biolab</a> (offenes Biolab für eigene Experimente)</li>
+      <li><a href="https://www.starship-factory.ch/" target="_blank" rel="noopener">Makerspace Starship Factory</a> (Hacker- und Makerspace in Basel)</li>
+    </ul>
+
     <p class="srcnote">Diese Website wurde mit <b>Claude</b> erstellt. Die Inhalte stammen aus dem persönlichen Obsidian-Vault des Autors, also aus bereits umgesetzten oder recherchierten Projekten.</p>
   </section>
 
@@ -164,6 +176,17 @@ const data=[
   ['Karten und Daten (V)','Gemeinde-Atlas, Schnitzeljagd','OpenStreetMap, uMap, QGIS (V)','Lokalbezug, Bürgerkompetenz'],
  ],
  vault:'BYOP (Zettelkasten mit GitLab, OpenStreetMap-Schnitzeljagd)'},
+{title:'Serious Games und Zukunftsspiele ausprobieren',
+ rows:[
+  ['Evolution erleben','Vom Einzeller zur Zivilisation spielen, für Biologie und Evolution','Thrive (Open Source)','Evolution und Komplexität begreifen'],
+  ['Systeme und Automation','Fabriken, Logistik und Kreisläufe bauen und optimieren','Factorio','Systemdenken, kritischer Blick auf Ressourcen'],
+  ['Nachhaltige Zukunft spielen','Mit Sonne, Wind und Wasser eine Solarpunk-Welt aufbauen','Solarpunk (Cyberwave, rokaplay)','Aufbauen statt ausbeuten, Energie verstehen'],
+  ['Klima und Gesellschaft durchspielen','Massnahmen testen und ihre Folgen sehen','En-ROADS, ecopolicy (Vester)','Vernetztes Denken, Folgen abschätzen'],
+  ['Neue Serious Games testen','Spiele ausprobieren und didaktisch bewerten','itch.io, diverse','Medienkritik, was ein gutes Lernspiel ausmacht'],
+  ['Vom Spielen zum Selbermachen','Aus dem Gespielten ein eigenes Spiel entwickeln','Godot, PICO-8','Vom Konsumieren zum Gestalten'],
+ ],
+ vault:'Hacklab-Essay (Kapitel Solarpunk und Zukunftsfragen), InclusiveGameLab (Methoden für Serious Games)',
+ coop:'Spiele zum Ausprobieren: <a href="https://www.revolutionarygamesstudio.com/" target="_blank" rel="noopener">Thrive</a> (Evolution), <a href="https://www.rokaplay.com/solarpunk" target="_blank" rel="noopener">Solarpunk</a>, <a href="https://en-roads.climateinteractive.org/" target="_blank" rel="noopener">En-ROADS</a> (Klima).'},
 ];
 
 const toc=document.getElementById('toc');
