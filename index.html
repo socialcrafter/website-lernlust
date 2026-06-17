@@ -65,6 +65,97 @@
     </section>
 
     
+    <!-- Wetter Widget — MeteoSwiss Open Data -->
+<div class="weather-widget" style="background:linear-gradient(135deg,#3b82f6,#1d4ed8);border-radius:20px;padding:24px;color:white;margin:24px 0;">
+  <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+    <div>
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.1em;opacity:.8;">MeteoSwiss · Basel/Binningen</div>
+      <div id="ww-temp" style="font-size:48px;font-weight:700;line-height:1;margin:8px 0;">–°C</div>
+      <div id="ww-cond" style="font-size:14px;opacity:.9;"></div>
+    </div>
+    <div style="text-align:right;">
+      <div id="ww-detail" style="font-size:12px;opacity:.8;line-height:1.8;"></div>
+    </div>
+  </div>
+  <div style="margin-top:16px;border-top:1px solid rgba(255,255,255,.2);padding-top:12px;">
+    <canvas id="ww-chart" style="width:100%;height:60px;"></canvas>
+  </div>
+  <div style="display:flex;justify-content:space-between;margin-top:8px;font-size:11px;opacity:.7;">
+    <span id="ww-time"></span>
+    <a href="apps/wetter.html" style="color:white;text-decoration:none;">Details →</a>
+  </div>
+</div>
+<!-- End Wetter Widget -->
+<script>
+(function() {
+  const s = {"info": {"id": "bas", "name": "Basel / Binningen (BAS)", "lat": 47.5411, "lon": 7.5835}, "current": {"timestamp": "17.06.2026 05:00", "params": {"tre200h0": {"value": 17.2, "name": "Temperatur", "unit": "°C"}, "tre200hn": {"value": 17.0, "name": "Temperatur min", "unit": "°C"}, "tre200hx": {"value": 17.5, "name": "Temperatur max", "unit": "°C"}, "ure200h0": {"value": 72.0, "name": "Luftfeuchtigkeit", "unit": "%"}, "pp0qffh0": {"value": 1019.9, "name": "Luftdruck (gemessen)", "unit": "hPa"}, "pp0qnhh0": {"value": 1020.6, "name": "Luftdruck (auf Meereshöhe)", "unit": "hPa"}, "fkl010h0": {"value": 1.2, "name": "Windgeschwindigkeit", "unit": "km/h"}, "fkl010h1": {"value": 3.7, "name": "Windböen", "unit": "km/h"}, "dkl010h0": {"value": 95.0, "name": "Windrichtung", "unit": "°"}, "rre150h0": {"value": 0.0, "name": "Niederschlag", "unit": "mm"}, "gre000h0": {"value": 74.0, "name": "Sonnenscheindauer", "unit": "min"}, "tde200h0": {"value": 12.0, "name": "Taupunkt", "unit": "°C"}, "pva200h0": {"value": 14.0, "name": "Dampfdruck", "unit": "hPa"}}, "history": [{"time": "17.06.2026 00:00", "temp": 20.4, "rain": 0.0, "wind": 1.2}, {"time": "17.06.2026 01:00", "temp": 19.2, "rain": 0.0, "wind": 1.2}, {"time": "17.06.2026 02:00", "temp": 18.1, "rain": 0.0, "wind": 0.8}, {"time": "17.06.2026 03:00", "temp": 17.4, "rain": 0.0, "wind": 1.0}, {"time": "17.06.2026 04:00", "temp": 16.8, "rain": 0.0, "wind": 1.0}, {"time": "17.06.2026 05:00", "temp": 17.2, "rain": 0.0, "wind": 1.2}]}};
+  const p = s.current.params;
+  const temp = p.tre200h0?.value;
+  const tempMin = p.tre200hn?.value;
+  const tempMax = p.tre200hx?.value;
+  const humid = p.ure200h0?.value;
+  const wind = p.fkl010h0?.value;
+  const gusts = p.fkl010h1?.value;
+  const windDir = p.dkl010h0?.value;
+  const rain = p.rre150h0?.value;
+  const sun = p.gre000h0?.value;
+
+  // Richtung
+  const dirs = ["N","NNO","NO","ONO","O","OSO","SO","SSO","S","SSW","SW","WSW","W","WNW","NW","NNW"];
+  const dirStr = windDir != null ? dirs[Math.round(windDir / 22.5) % 16] : "";
+
+  // Condition
+  let cond = "";
+  if (rain > 5) cond = "🌧️ Regen";
+  else if (rain > 0.5) cond = "🌦️ Leichter Regen";
+  else if (temp > 30) cond = "🔥 Heiss";
+  else if (temp > 25) cond = "☀️ Warm";
+  else if (temp > 15) cond = "🌤️ Angenehm";
+  else if (temp > 5) cond = "🌥️ Kühl";
+  else if (temp > 0) cond = "❄️ Kalt";
+  else cond = "🥶 Frost";
+
+  document.getElementById("ww-temp").textContent = temp != null ? temp + "°C" : "–°C";
+  document.getElementById("ww-cond").textContent = cond;
+  document.getElementById("ww-detail").innerHTML = [
+    "💧 " + (humid != null ? humid + "%" : "–"),
+    "💨 " + (wind != null ? wind + " " + dirStr : "–") + (gusts ? " (Böen " + gusts + ")" : ""),
+    "🌧️ " + (rain != null ? rain + " mm" : "–"),
+    "☀️ " + (sun != null ? Math.round(sun/60*10)/10 + " h" : "–"),
+  ].join("<br>");
+  document.getElementById("ww-time").textContent = s.current.timestamp || "";
+
+  // Mini-Chart
+  const hist = s.current.history;
+  if (hist && hist.length > 1) {
+    const canvas = document.getElementById("ww-chart");
+    const ctx = canvas.getContext("2d");
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 60 * dpr;
+    ctx.scale(dpr, dpr);
+    const W = rect.width, H = 60;
+    const temps = hist.map(h => h.temp).filter(v => v != null);
+    if (temps.length > 1) {
+      const min = Math.min(...temps) - 1;
+      const max = Math.max(...temps) + 1;
+      ctx.strokeStyle = "rgba(255,255,255,0.8)";
+      ctx.lineWidth = 2;
+      ctx.lineJoin = "round";
+      ctx.beginPath();
+      hist.forEach((h, i) => {
+        if (h.temp == null) return;
+        const x = (i / (hist.length - 1)) * W;
+        const y = H - ((h.temp - min) / (max - min)) * H;
+        i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      });
+      ctx.stroke();
+    }
+  }
+})();
+</script>
+
     <!-- Apps Section -->
     <section id="apps" class="angebot">
         <div class="container">
