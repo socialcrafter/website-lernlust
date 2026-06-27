@@ -1,0 +1,159 @@
+<!DOCTYPE html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>InclusiveGameLab – Artikel-Archiv</title><style>
+:root{--bg:#0f1419;--card:#1a212b;--card2:#222c39;--line:#2d3a4a;--tx:#e6edf3;--mut:#8b9bb0;--acc:#4ca3ff;--cc:#36d399}
+*{box-sizing:border-box;margin:0;padding:0}body{background:var(--bg);color:var(--tx);font:14px/1.5 -apple-system,Segoe UI,Roboto,sans-serif;padding:24px;max-width:1000px;margin:0 auto}
+h1{font-size:22px}.sub{color:var(--mut);margin:2px 0 16px;font-size:13px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+input,select{background:var(--card2);border:1px solid var(--line);color:var(--tx);border-radius:8px;padding:9px 12px;font-size:13px}
+input{flex:1;min-width:220px}
+.cnt{color:var(--mut);font-size:12px;margin-bottom:10px}
+.cat{margin:18px 0 6px;font-size:15px;color:var(--acc);border-bottom:1px solid var(--line);padding-bottom:4px}
+.row{display:flex;align-items:center;gap:10px;padding:7px 10px;border-bottom:1px solid var(--line)}
+.row:hover{background:var(--card2)}.row a{color:var(--tx);text-decoration:none;flex:1}.row a:hover{color:var(--acc)}
+.src{color:var(--mut);font-size:11px;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis}
+.pill{padding:0 7px;border-radius:20px;font-size:10px;font-weight:600;background:rgba(54,211,153,.15);color:var(--cc)}
+</style></head><body>
+<h1>🎮 InclusiveGameLab – Artikel-Archiv</h1>
+<div class="sub">100 Artikel zu Barrierefreiheit &amp; Gaming · CC BY-SA 4.0 · Klick öffnet Volltext</div>
+<div class="bar"><input id="q" placeholder="Suchen (Titel, Quelle)…"><select id="cat"></select></div>
+<div class="cnt" id="cnt"></div><div id="list"></div>
+<script>
+const D=[
+{"t": "InclusiveGameLab - Twillo", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/InclusiveGameLab - Twillo.md", "cc": true},
+{"t": "Teaching Concept  Three Day Workshop  Game Development", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Teaching Concept  Three Day Workshop  Game Development.md", "cc": true},
+{"t": "Konzept für ein Blockseminar Barrierefreies Gaming", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Konzept für ein Blockseminar Barrierefreies Gaming.md", "cc": true},
+{"t": "Konzept für einen eintägigen Workshop Barrierefreies Gaming", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Konzept für einen eintägigen Workshop Barrierefreies Gaming.md", "cc": true},
+{"t": "Accessibility at Game Events", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Accessibility at Game Events.md", "cc": true},
+{"t": "Expert - Game Sound Design - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Expert - Game Sound Design - Common Barriers and Solutions.md", "cc": true},
+{"t": "Expert - Game Art - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Expert - Game Art - Common Barriers and Solutions.md", "cc": true},
+{"t": "Expert - Game Programming - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Expert - Game Programming - Common Barriers and Solutions.md", "cc": true},
+{"t": "Expert - Game Design - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Expert - Game Design - Common Barriers and Solutions.md", "cc": true},
+{"t": "Useful Tools to Improve Game Accessibility", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Useful Tools to Improve Game Accessibility.md", "cc": true},
+{"t": "Playtesting with Disabled Gamers", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Playtesting with Disabled Gamers.md", "cc": true},
+{"t": "Accessibility Basics for VR Games", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Accessibility Basics for VR Games.md", "cc": true},
+{"t": "Disability Representation in Digital Games", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Disability Representation in Digital Games.md", "cc": true},
+{"t": "Inclusive Marketing", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Inclusive Marketing.md", "cc": true},
+{"t": "Intermediate - Game Design - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Intermediate - Game Design - Common Barriers and Solutions.md", "cc": true},
+{"t": "Intermediate - Game Art - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Intermediate - Game Art - Common Barriers and Solutions.md", "cc": true},
+{"t": "Intermediate - Game Sound Design - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Intermediate - Game Sound Design - Common Barriers and Solutions.md", "cc": true},
+{"t": "Intermediate - Game Programming - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Intermediate - Game Programming - Common Barriers and Solutions.md", "cc": true},
+{"t": "InclusiveGameLab  Über das Projekt", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/InclusiveGameLab  Über das Projekt.md", "cc": true},
+{"t": "InclusiveGameLab About this project", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/InclusiveGameLab About this project.md", "cc": true},
+{"t": "Jugendschutz und digitale Spiele - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Jugendschutz und digitale Spiele - InclusiveGameLab.md", "cc": true},
+{"t": "Die häufigsten Barrieren in digitalen Spielen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Die häufigsten Barrieren in digitalen Spielen - InclusiveGameLab.md", "cc": true},
+{"t": "Kompetitives Spielen im digitalen Raum - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Kompetitives Spielen im digitalen Raum - InclusiveGameLab.md", "cc": true},
+{"t": "Potenziale digitaler Spiele in der pädagogischen Praxis - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Potenziale digitaler Spiele in der pädagogischen Praxis - InclusiveGameLab.md", "cc": true},
+{"t": "Spieletest als pädagogische Methode", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Spieletest als pädagogische Methode.md", "cc": true},
+{"t": "Rechtliche Grundlagen zu Teilhabe - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Rechtliche Grundlagen zu Teilhabe - InclusiveGameLab.md", "cc": true},
+{"t": "Subkulturen des Gamings", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Subkulturen des Gamings.md", "cc": true},
+{"t": "Übersetzung von digitalen Spielen in den analogen Raum", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Übersetzung von digitalen Spielen in den analogen Raum.md", "cc": true},
+{"t": "Vielfalt der Spieleplattformen und Orte der Gamingkultur", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Vielfalt der Spieleplattformen und Orte der Gamingkultur.md", "cc": true},
+{"t": "Repräsentation von Menschen mit Behinderung in digitalen Spielen", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Repräsentation von Menschen mit Behinderung in digitalen Spielen.md", "cc": true},
+{"t": "Kooperatives Spielen im digitalen Raum - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Kooperatives Spielen im digitalen Raum - InclusiveGameLab.md", "cc": true},
+{"t": "Der Unterschied zwischen Accessibility und Schwierigkeit - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Der Unterschied zwischen Accessibility und Schwierigkeit - InclusiveGameLab.md", "cc": true},
+{"t": "Der Behinderungsbegriff - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Der Behinderungsbegriff - InclusiveGameLab.md", "cc": true},
+{"t": "Digitale Spiele als Kulturgut - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Digitale Spiele als Kulturgut - InclusiveGameLab.md", "cc": true},
+{"t": "Inklusives-Potenzial-des-Spiels-Alle-sollen-digital-mit-spielen-können---InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Inklusives-Potenzial-des-Spiels-Alle-sollen-digital-mit-spielen-können---InclusiveGameLab.md", "cc": true},
+{"t": "Barrieren-überwinden-und-Zugang-schaffen-durch-assistive-Technologie---InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Barrieren-überwinden-und-Zugang-schaffen-durch-assistive-Technologie---InclusiveGameLab.md", "cc": true},
+{"t": "Methode Analoger Shooter - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Analoger Shooter - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Spielerisch Teamwork erleben - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Spielerisch Teamwork erleben - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Faszinations-Pyramide - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Faszinations-Pyramide - InclusiveGameLab.md", "cc": true},
+{"t": "Methode eSport für Alle  Gaming-Turniere zugänglich gestalten - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode eSport für Alle  Gaming-Turniere zugänglich gestalten - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Werde Entwicklerin für das barriereärmste Spiel - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Werde Entwicklerin für das barriereärmste Spiel - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Analoges JumpnRun-Spiel - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Analoges JumpnRun-Spiel - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Digitale Spiele als Brettspiel - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Digitale Spiele als Brettspiel - InclusiveGameLab.md", "cc": true},
+{"t": "Einleitung medienpädagogische Methoden - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Einleitung medienpädagogische Methoden - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Barrieren-Detektivinnen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Barrieren-Detektivinnen - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Barrieren kennenlernen - Verständnis gewinnen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Barrieren kennenlernen - Verständnis gewinnen - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Spielertypen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Spielertypen - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Spiele pädaogisch testen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Spiele pädaogisch testen - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Zeig mir doch mal was Du spielst - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Zeig mir doch mal was Du spielst - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Analoges Mario Party - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Analoges Mario Party - InclusiveGameLab.md", "cc": true},
+{"t": "Methode Digitale Spiele auf Barrierefreiheit testen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Methode Digitale Spiele auf Barrierefreiheit testen - InclusiveGameLab.md", "cc": true},
+{"t": "Inklusives Marketing - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Inklusives Marketing - InclusiveGameLab.md", "cc": true},
+{"t": "Universelles Design in digitalen Spielen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Universelles Design in digitalen Spielen - InclusiveGameLab.md", "cc": true},
+{"t": "Die Geschichte der Barrierefreiheit in digitalen Spielen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Die Geschichte der Barrierefreiheit in digitalen Spielen - InclusiveGameLab.md", "cc": true},
+{"t": "Spieletests mit behinderten Spielerinnen - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Spieletests mit behinderten Spielerinnen - InclusiveGameLab.md", "cc": true},
+{"t": "Barrierefreiheit bei Events - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Barrierefreiheit bei Events - InclusiveGameLab.md", "cc": true},
+{"t": "Hilfe-beim-Spielen-für-Menschen-mit-Behinderungen---Einfache-Sprache---InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Hilfe-beim-Spielen-für-Menschen-mit-Behinderungen---Einfache-Sprache---InclusiveGameLab.md", "cc": true},
+{"t": "Zusammenarbeit in Games ist gut - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Zusammenarbeit in Games ist gut - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Warum-eignen-sich-Games-für-die-Arbeit-mit-Kindern-und-Jugendlichen---Einfache-Sprache---InclusiveGa", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Warum-eignen-sich-Games-für-die-Arbeit-mit-Kindern-und-Jugendlichen---Einfache-Sprache---InclusiveGa.md", "cc": true},
+{"t": "Games sind ein Kulturgut - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Games sind ein Kulturgut - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Alle Menschen haben das Recht auf Teilhabe - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Alle Menschen haben das Recht auf Teilhabe - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Games und Inklusion - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Games und Inklusion - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Es-gibt-viele-Spiele-Plattformen-und-Orte-der-Gaming-Kultur---Einfache-Sprache---InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Es-gibt-viele-Spiele-Plattformen-und-Orte-der-Gaming-Kultur---Einfache-Sprache---InclusiveGameLab.md", "cc": true},
+{"t": "Was sind kompetitive Games - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Was sind kompetitive Games - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Verschiedene Gruppen im Gaming - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Verschiedene Gruppen im Gaming - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Hilfe-beim-Spielen-fuer-Menschen-mit-Behinderungen-Einfache-Sprache-InclusiveGam", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Hilfe-beim-Spielen-fuer-Menschen-mit-Behinderungen-Einfache-Sprache-InclusiveGam.md", "cc": true},
+{"t": "Games testen als Lernmethode - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Games testen als Lernmethode - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Wie-werden-Menschen-mit-Behinderungen-in-Games-gezeigt-Einfache-Sprache-Inclusiv", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Wie-werden-Menschen-mit-Behinderungen-in-Games-gezeigt-Einfache-Sprache-Inclusiv.md", "cc": true},
+{"t": "Games-sind-fuer-jeden-Menschen-anders-schwer-Einfache-Sprache-InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Games-sind-fuer-jeden-Menschen-anders-schwer-Einfache-Sprache-InclusiveGameLab.md", "cc": true},
+{"t": "Games-im-echten-Leben-nachspielen-Einfache-Sprache-InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Games-im-echten-Leben-nachspielen-Einfache-Sprache-InclusiveGameLab.md", "cc": true},
+{"t": "Barrieren in Games - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Barrieren in Games - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Hinweise-zu-Texten-in-einfacher-Sprache-Medienpädagogik-mit-Games---InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Hinweise-zu-Texten-in-einfacher-Sprache-Medienpädagogik-mit-Games---InclusiveGameLab.md", "cc": true},
+{"t": "Warum-eignen-sich-Games-fuer-die-Arbeit-mit-Kindern-und-Jugendlichen-Einfache-Sp", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Warum-eignen-sich-Games-fuer-die-Arbeit-mit-Kindern-und-Jugendlichen-Einfache-Sp.md", "cc": true},
+{"t": "Jugend-Schutz und Games - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Jugend-Schutz und Games - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Was bedeutet Behinderung - Einfache Sprache - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Was bedeutet Behinderung - Einfache Sprache - InclusiveGameLab.md", "cc": true},
+{"t": "Games-sind-für-jeden-Menschen-anders-schwer---Einfache-Sprache---InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Games-sind-für-jeden-Menschen-anders-schwer---Einfache-Sprache---InclusiveGameLab.md", "cc": true},
+{"t": "Es-gibt-viele-Spiele-Plattformen-und-Orte-der-Gaming-Kultur-Einfache-Sprache-Inc", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Es-gibt-viele-Spiele-Plattformen-und-Orte-der-Gaming-Kultur-Einfache-Sprache-Inc.md", "cc": true},
+{"t": "Wie-werden-Menschen-mit-Behinderungen-in-Games-gezeigt---Einfache-Sprache---InclusiveGameLab", "c": "InclusiveGameLab/Medienpaedagogik (DE)", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Medienpaedagogik (DE)/Wie-werden-Menschen-mit-Behinderungen-in-Games-gezeigt---Einfache-Sprache---InclusiveGameLab.md", "cc": true},
+{"t": "Designing for Emotional Accessibility Managing Triggers in Digital Games", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Designing for Emotional Accessibility Managing Triggers in Digital Games.md", "cc": true},
+{"t": "Game Art - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Game Art - Common Barriers and Solutions.md", "cc": true},
+{"t": "Game Programming - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Game Programming - Common Barriers and Solutions.md", "cc": true},
+{"t": "Game Sound Design - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Game Sound Design - Common Barriers and Solutions.md", "cc": true},
+{"t": "Game Design - Common Barriers and Solutions", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Game Design - Common Barriers and Solutions.md", "cc": true},
+{"t": "Legislation Laws Applying to Games", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Legislation Laws Applying to Games.md", "cc": true},
+{"t": "The History of Game Accessibility", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/The History of Game Accessibility.md", "cc": true},
+{"t": "Basic - What is a Disability - InclusiveGameLab", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Basic - What is a Disability - InclusiveGameLab.md", "cc": true},
+{"t": "First Steps in Creating Accessible Games  Recommendations and Challenges", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/First Steps in Creating Accessible Games  Recommendations and Challenges.md", "cc": true},
+{"t": "Working With Accessibility Consultants", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Working With Accessibility Consultants.md", "cc": true},
+{"t": "Universal Design", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Universal Design.md", "cc": true},
+{"t": "Accessibility vs Difficulty", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Accessibility vs Difficulty.md", "cc": true},
+{"t": "Introduction to Assistive Technology  Part 2 The Present", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Introduction to Assistive Technology  Part 2 The Present.md", "cc": true},
+{"t": "Introduction to Assistive Technology  Part 1 The Past", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Introduction to Assistive Technology  Part 1 The Past.md", "cc": true},
+{"t": "Barrieren überwinden und Zugang schaffen durch assistive Technologie - Inclusive", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Barrieren überwinden und Zugang schaffen durch assistive Technologie - Inclusive.md", "cc": true},
+{"t": "Inklusives Potenzial des Spiels Alle sollen digital (mit)spielen können - Inclus", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Inklusives Potenzial des Spiels Alle sollen digital (mit)spielen können - Inclus.md", "cc": true},
+{"t": "Es gibt viele Spiele-Plattformen und Orte der Gaming-Kultur - Einfache Sprache -", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Es gibt viele Spiele-Plattformen und Orte der Gaming-Kultur - Einfache Sprache -.md", "cc": true},
+{"t": "Games sind für jeden Menschen anders schwer - Einfache Sprache - InclusiveGameLa", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Games sind für jeden Menschen anders schwer - Einfache Sprache - InclusiveGameLa.md", "cc": true},
+{"t": "Hilfe beim Spielen für Menschen mit Behinderungen - Einfache Sprache - Inclusive", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Hilfe beim Spielen für Menschen mit Behinderungen - Einfache Sprache - Inclusive.md", "cc": true},
+{"t": "Hinweise zu Texten in einfacher Sprache Medienpädagogik mit Games - InclusiveGam", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Hinweise zu Texten in einfacher Sprache Medienpädagogik mit Games - InclusiveGam.md", "cc": true},
+{"t": "Wie werden Menschen mit Behinderungen in Games gezeigt - Einfache Sprache - Incl", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Wie werden Menschen mit Behinderungen in Games gezeigt - Einfache Sprache - Incl.md", "cc": true},
+{"t": "Warum eignen sich Games für die Arbeit mit Kindern und Jugendlichen - Einfache S", "c": "InclusiveGameLab/Sonstiges", "s": "CC BY-SA 4.0", "p": "artikel/InclusiveGameLab/Sonstiges/Warum eignen sich Games für die Arbeit mit Kindern und Jugendlichen - Einfache S.md", "cc": true}
+];const $=s=>document.querySelector(s);
+const cats=[...new Set(D.map(x=>x.c))].sort();
+$("#cat").innerHTML='<option value="">alle Kategorien</option>'+cats.map(c=>`<option>${c}</option>`).join("");
+function render(){
+ const q=$("#q").value.toLowerCase(),c=$("#cat").value;
+ let r=D.filter(x=>(!c||x.c===c)&&(!q||x.t.toLowerCase().includes(q)||(x.s||"").toLowerCase().includes(q)));
+ $("#cnt").textContent=r.length+" von "+D.length+" Artikeln";
+ const by={};r.forEach(x=>(by[x.c]=by[x.c]||[]).push(x));
+ $("#list").innerHTML=Object.keys(by).sort().map(cat=>`<div class="cat">${cat} (${by[cat].length})</div>`+
+   by[cat].sort((a,b)=>a.t.localeCompare(b.t)).map(x=>`<div class="row"><a href="${x.p.split('/').map(encodeURIComponent).join('/')}">${x.t}</a><span class="src">${x.s}</span></div>`).join("")).join("");
+}
+["q","cat"].forEach(id=>$("#"+id).oninput=render);
+// Override click to fetch and render markdown
+document.addEventListener('click', function(e){
+  const a = e.target.closest('a[href*=".md"]');
+  if(a){ e.preventDefault(); openArticle(a.href); }
+});
+async function openArticle(path){
+  const win = window.open('', '_blank');
+  win.document.write('<html><head><meta charset="utf-8"><title>Artikel</title><style>body{font:16px/1.7 -apple-system,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;color:#222}img{max-width:100%}a{color:#0066cc}pre{background:#f5f5f5;padding:16px;overflow:auto;border-radius:6px}blockquote{border-left:4px solid #ddd;margin:0;padding-left:16px;color:#555}h1,h2,h3{line-height:1.3}</style></head><body><a href="#" onclick="window.close()">← zurück</a><hr><div id="c">Lade...</div></body></html>');
+  try {
+    const r = await fetch(path); const md = await r.text();
+    win.document.getElementById('c').innerHTML = simpleMarkdown(md);
+  } catch(err) { win.document.getElementById('c').textContent = 'Fehler: '+err; }
+}
+function simpleMarkdown(md){
+  return md.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>').replace(/^## (.+)$/gm,'<h2>$1</h2>').replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>').replace(/\*([^*]+)\*/g,'<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank">$1</a>')
+    .replace(/^- (.+)$/gm,'<li>$1</li>').replace(/(<li>.*<\/li>
+?)+/g,'<ul>$1</ul>')
+    .replace(/
+
+/g,'</p><p>').replace(/^(?!<[hul]|<li)(.+)$/gm,'<p>$1</p>');
+}
+render();
+</script></body></html>
