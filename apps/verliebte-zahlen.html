@@ -1,0 +1,1104 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verliebte Zahlen</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --ink: #43303a;            /* dunkles Schoko-Braun als Pixel-Tinte */
+            --ink-soft: #8a6f7b;
+            --paper: #fff7f2;          /* warmes Creme */
+            --paper-2: #ffeaf2;        /* zartes Rosa */
+            --card: #fffdfb;
+            --pink: #ff6fa5;
+            --pink-dark: #e0517f;
+            --pink-soft: #ffc7dc;
+            --mint: #4ecdc4;
+            --mint-dark: #2fa89f;
+            --sun: #ffc93c;
+            --streak: #ff9f57;
+            --shadow: rgba(67,48,58,.18);
+            --heart-px: polygon(0% 20%, 20% 20%, 20% 0%, 40% 0%, 40% 20%, 60% 20%, 60% 0%, 80% 0%, 80% 20%, 100% 20%, 100% 60%, 80% 60%, 80% 80%, 60% 80%, 60% 100%, 40% 100%, 40% 80%, 20% 80%, 20% 60%, 0% 60%);
+            --primary: var(--pink);
+            --primary-light: var(--pink-dark);
+            --secondary: var(--mint);
+            --success: var(--mint-dark);
+            --warning: var(--sun);
+            --text-primary: var(--ink);
+            --text-secondary: var(--ink-soft);
+            --card-bg: var(--card);
+            --card-border: var(--ink);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: repeating-conic-gradient(var(--paper-2) 0% 25%, var(--paper) 0% 50%) 0 0 / 28px 28px;
+            min-height: 100vh;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 20px;
+        }
+
+        /* ruhige, statische Pixel-Herzen im Hintergrund */
+        .bg-shapes { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 0; overflow: hidden; }
+        .bg-shape { position: absolute; opacity: .16; background: var(--pink); clip-path: var(--heart-px); }
+        .bg-shape:nth-child(1) { width: 90px; height: 80px; top: 6%; right: 4%; }
+        .bg-shape:nth-child(2) { width: 60px; height: 54px; bottom: 12%; left: 4%; background: var(--mint); }
+        .bg-shape:nth-child(3) { width: 44px; height: 40px; top: 44%; right: 10%; background: var(--sun); }
+
+        .container { position: relative; z-index: 1; max-width: 460px; margin: 0 auto; width: 100%; }
+
+        header { text-align: center; padding: 14px 10px 10px; }
+        header h1 { font-family: 'Press Start 2P', 'Nunito', sans-serif; font-size: 1.05rem; color: var(--ink); margin-bottom: 14px; letter-spacing: 1px; text-shadow: 2px 2px 0 var(--pink-soft); }
+        header h1 .fa-solid { color: var(--pink); margin-right: 8px; }
+
+        .rewards-display { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
+        .reward-item { background: var(--card); padding: 7px 14px; font-weight: 800; display: flex; align-items: center; gap: 6px; border: 3px solid var(--ink); box-shadow: 3px 3px 0 var(--shadow); font-size: .95rem; }
+        .reward-item .fa-star { color: var(--sun); }
+        .reward-item .fa-gem { color: var(--mint-dark); }
+        .reward-item .fa-fire { color: var(--streak); }
+        .reward-item.streak-on { background: #fff1e2; }
+
+        .card { background: var(--card); border: 3px solid var(--ink); box-shadow: 6px 6px 0 var(--shadow); padding: 24px; }
+
+        .screen { display: none; }
+        .screen.active { display: block; animation: fadeIn 0.3s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ---------- Maskottchen ---------- */
+        .mascot-wrap { display: flex; justify-content: center; margin-bottom: 6px; }
+        .mascot { width: 110px; height: 90px; animation: bob 3.2s ease-in-out infinite; transform-origin: center bottom; image-rendering: pixelated; shape-rendering: crispEdges; }
+        @keyframes bob { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-6px);} }
+        .mascot .eyes-happy, .mascot .mouth-o, .mascot .mouth-flat, .mascot .sparkle { display: none; }
+        /* happy */
+        .mascot.is-happy { animation: pop .5s ease; }
+        .mascot.is-happy .eyes-open { display: none; }
+        .mascot.is-happy .eyes-happy { display: block; }
+        .mascot.is-happy .mouth-smile { display: none; }
+        .mascot.is-happy .mouth-o { display: block; }
+        @keyframes pop { 0%{transform:scale(1);} 40%{transform:scale(1.15);} 100%{transform:scale(1);} }
+        /* wrong */
+        .mascot.is-wrong { animation: wob .5s ease; }
+        .mascot.is-wrong .mouth-smile { display: none; }
+        .mascot.is-wrong .mouth-flat { display: block; }
+        @keyframes wob { 0%,100%{transform:rotate(0);} 25%{transform:rotate(-6deg);} 75%{transform:rotate(6deg);} }
+        /* celebrate */
+        .mascot.is-celebrate { animation: party .7s ease infinite; }
+        .mascot.is-celebrate .eyes-open { display:none; }
+        .mascot.is-celebrate .eyes-happy { display:block; }
+        .mascot.is-celebrate .mouth-smile { display:none; }
+        .mascot.is-celebrate .mouth-o { display:block; }
+        .mascot.is-celebrate .sparkle { display:block; }
+        @keyframes party { 0%,100%{transform:translateY(0) scale(1.04);} 50%{transform:translateY(-9px) scale(1.09);} }
+        .mascot-speech { text-align:center; color: var(--text-secondary); font-weight:700; min-height: 22px; margin-bottom: 4px; }
+
+        /* ---------- Home / Stufen-Map ---------- */
+        .home-head { text-align:center; margin-bottom: 14px; }
+        .home-head h2 { font-size: 1.3rem; margin-bottom: 4px; font-weight:900; }
+        .home-head p { color: var(--text-secondary); font-size: .95rem; }
+        .map-progress { margin: 10px 0 18px; }
+        .map-progress .progress-bar { height: 12px; }
+        .map-progress .label { text-align:center; font-size:.85rem; color:var(--text-secondary); margin-top:6px; }
+
+        .levels { display: grid; gap: 12px; }
+        .level-card { display:flex; align-items:center; gap:14px; padding:12px 14px; background: var(--card); border:3px solid var(--ink); box-shadow: 4px 4px 0 var(--shadow); cursor:pointer; transition: transform .12s, box-shadow .12s; text-align:left; width:100%; color:inherit; font-family:inherit; }
+        .level-card:hover { transform: translate(-1px,-1px); box-shadow: 5px 5px 0 var(--shadow); }
+        .level-card:active { transform: translate(2px,2px); box-shadow: 2px 2px 0 var(--shadow); }
+        .level-card .lv-icon { width:44px; height:44px; min-width:44px; display:flex; align-items:center; justify-content:center; font-size:1.15rem; background: var(--pink); color:#fff; border:3px solid var(--ink); }
+        .level-card .lv-text { flex:1; }
+        .level-card .lv-text .name { font-weight:900; font-size:1.02rem; }
+        .level-card .lv-text .sub { color: var(--text-secondary); font-size:.82rem; }
+        .level-card .lv-stars { color: var(--sun); font-size:.85rem; letter-spacing:2px; min-height: 14px; text-shadow:1px 1px 0 var(--ink); }
+        .level-card.locked { opacity:.45; cursor:not-allowed; background: var(--paper); }
+        .level-card.locked:hover, .level-card.locked:active { transform:none; box-shadow: 4px 4px 0 var(--shadow); }
+        .level-card.locked .lv-icon { background: var(--ink-soft); }
+        .level-card.mastered .lv-icon { background: var(--mint); }
+        .level-card .lv-flag { font-size:1.1rem; color: var(--text-secondary); }
+        .level-card.mastered .lv-flag { color: var(--mint-dark); }
+
+        /* ---------- Game ---------- */
+        .game-top { display:flex; align-items:center; gap:10px; margin-bottom: 12px; }
+        .btn-back { background: var(--card); border:3px solid var(--ink); box-shadow: 3px 3px 0 var(--shadow); color:var(--ink); width:40px; height:40px; min-width:40px; cursor:pointer; font-size:1rem; }
+        .btn-back:active { transform: translate(2px,2px); box-shadow: 1px 1px 0 var(--shadow); }
+        .progress-bar { height: 12px; background: var(--paper-2); border: 3px solid var(--ink); overflow: hidden; flex:1; }
+        .progress-fill { height: 100%; width:0; background: repeating-linear-gradient(90deg, var(--pink) 0 8px, var(--pink-dark) 8px 16px); transition: width 0.3s; }
+        .progress-text { font-size:.85rem; color: var(--text-secondary); white-space:nowrap; font-weight:800; }
+
+        .visual { display:flex; flex-direction:column; align-items:center; gap:12px; margin: 10px 0 4px; min-height: 90px; justify-content:center; }
+
+        /* Zehner-/Zwanzigerfeld */
+        .frame { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 10px; background: var(--paper-2); border: 3px solid var(--ink); }
+        .cell { width: 30px; height: 30px; background: transparent; border: 2px dashed var(--ink-soft); transition: all .25s; }
+        .cell.on { background: var(--pink); border: 2px solid var(--ink); }
+        .cell.filled { background: var(--mint); border: 2px solid var(--ink); }
+
+        /* Wuerfel mit Pixel-Herz-Punkten */
+        .dice-row { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+        .dice { display:grid; grid-template-columns:repeat(3,1fr); grid-template-rows:repeat(3,1fr); gap:2px; width:62px; height:62px; padding:7px; background: var(--card); border:3px solid var(--ink); box-shadow: 3px 3px 0 var(--shadow); }
+        .pip { width:14px; height:13px; align-self:center; justify-self:center; transition: all .2s; }
+        .pip.off { visibility:hidden; }
+        .pip.on { background: var(--pink); clip-path: var(--heart-px); }
+        .pip.rest { background: transparent; border:2px dashed var(--pink-soft); }
+        .pip.filled { background: var(--mint); clip-path: var(--heart-px); }
+        .dots-label { font-size:.85rem; color:var(--text-secondary); font-weight:700; }
+
+        .bignum { font-size: 4.4rem; font-weight: 900; color: var(--pink-dark); line-height:1; text-shadow: 3px 3px 0 var(--pink-soft); }
+
+        .question { text-align: center; font-size: 1.45rem; font-weight: 900; color: var(--ink); margin: 10px 0 2px; }
+        .question .num { color: var(--pink-dark); }
+        .question b { color: var(--pink-dark); }
+
+        /* Zahlen-Tastatur */
+        .keypad { max-width: 300px; margin: 12px auto 0; }
+        .kp-display { height: 64px; background: var(--paper-2); border:3px solid var(--ink); box-shadow: inset 3px 3px 0 rgba(67,48,58,.08); font-size:2.4rem; font-weight:900; display:flex; align-items:center; justify-content:center; margin-bottom:12px; color:var(--ink); transition: color .2s; }
+        .kp-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+        .kp-btn { padding:16px 0; font-size:1.5rem; font-weight:900; border:3px solid var(--ink); background:var(--card); color:var(--ink); cursor:pointer; font-family:inherit; box-shadow: 0 4px 0 var(--ink); transition: transform .08s, box-shadow .08s; }
+        .kp-btn:active { transform:translateY(4px); box-shadow: 0 0 0 var(--ink); }
+        .kp-ok { background:var(--mint); color:var(--ink); }
+        .kp-del { background:var(--paper); color:var(--ink-soft); }
+        @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+
+        .feedback { text-align: center; font-size: 1.15rem; font-weight: 800; margin-top: 14px; min-height: 30px; color: var(--ink); }
+        .feedback.correct { color: var(--mint-dark); }
+        .feedback.wrong { color: var(--pink-dark); }
+
+        /* ---------- Done ---------- */
+        .done { text-align: center; padding: 8px 0; }
+        .done h2 { font-family: 'Press Start 2P', 'Nunito', sans-serif; font-size: 1rem; margin: 12px 0 10px; }
+        .score { font-size: 2.6rem; font-weight: 900; color: var(--pink-dark); margin: 6px 0 4px; text-shadow: 3px 3px 0 var(--pink-soft); }
+        .done p { color: var(--text-secondary); margin-bottom: 8px; line-height:1.5; font-weight:700; }
+        .done .reward-line { display:flex; justify-content:center; gap:10px; flex-wrap:wrap; margin: 12px 0 18px; }
+        .badge { background: var(--card); border:3px solid var(--ink); box-shadow: 3px 3px 0 var(--shadow); padding:10px 14px; font-weight:800; }
+        .badge.unlock { background: #e4f7f4; color: var(--mint-dark); }
+        .badge.streak { background: #fff1e2; color: var(--streak); }
+
+        .btn { width: 100%; padding: 15px; font-size: 1.05rem; font-weight: 900; border: 3px solid var(--ink); cursor: pointer; transition: transform .08s, box-shadow .08s; display:inline-flex; align-items:center; justify-content:center; gap:8px; font-family:inherit; margin-top: 10px; box-shadow: 0 5px 0 var(--ink); }
+        .btn-primary { background: var(--pink); color: #fff; text-shadow: 1px 1px 0 var(--pink-dark); }
+        .btn-ghost { background: var(--card); color: var(--ink); }
+        .btn:active { transform: translateY(5px); box-shadow: 0 0 0 var(--ink); }
+
+        /* Pixel-Herz-Konfetti */
+        .confetti { position: fixed; width:12px; height:11px; top:-20px; z-index: 5; pointer-events:none; clip-path: var(--heart-px); }
+
+        /* Profile */
+        .profiles-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:12px; margin-top:8px; }
+        .profile-card { display:flex; flex-direction:column; align-items:center; gap:5px; padding:18px 10px; background:var(--card); border:3px solid var(--ink); box-shadow: 4px 4px 0 var(--shadow); cursor:pointer; color:inherit; font-family:inherit; transition: transform .12s, box-shadow .12s; }
+        .profile-card:hover { transform:translate(-1px,-1px); box-shadow: 5px 5px 0 var(--shadow); }
+        .profile-card:active { transform:translate(2px,2px); box-shadow: 2px 2px 0 var(--shadow); }
+        .profile-card.add { border-style:dashed; box-shadow:none; background:var(--paper); }
+        .pf-avatar { font-size:2.4rem; line-height:1; }
+        .pf-name { font-weight:900; font-size:1.05rem; }
+        .pf-sub { font-size:.78rem; color:var(--text-secondary); font-weight:700; }
+        .pf-sub .fa-fire { color:var(--streak); } .pf-sub .fa-star { color:var(--sun); }
+        .create-form input { width:100%; padding:14px; border:3px solid var(--ink); background:var(--paper-2); color:var(--ink); font-size:1.1rem; font-family:inherit; font-weight:800; text-align:center; margin-bottom:12px; }
+        .create-form input:focus { outline:none; background:#fff; }
+        .avatar-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-bottom:14px; }
+        .av-btn { font-size:1.5rem; padding:8px 0; border:3px solid var(--paper-2); background:var(--card); cursor:pointer; }
+        .av-btn.sel { border-color:var(--ink); background:var(--pink-soft); }
+
+        /* Profil-Chip */
+        .profile-chip { display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; }
+        .pc-left { display:flex; align-items:center; gap:8px; font-weight:900; }
+        .pc-avatar { font-size:1.6rem; }
+        .pc-switch { background:var(--card); border:3px solid var(--ink); box-shadow: 2px 2px 0 var(--shadow); color:var(--ink); padding:6px 12px; cursor:pointer; font-family:inherit; font-weight:800; font-size:.82rem; }
+        .pc-switch:active { transform:translate(1px,1px); box-shadow: 1px 1px 0 var(--shadow); }
+
+        /* Heute-Panel */
+        .today-panel { background: var(--paper-2); border:3px solid var(--ink); box-shadow: 4px 4px 0 var(--shadow); padding:16px; margin-bottom:16px; }
+        .tp-title { font-family: 'Press Start 2P', 'Nunito', sans-serif; font-size:.72rem; margin-bottom:12px; letter-spacing:1px; color: var(--pink-dark); }
+        .tp-goal { display:flex; align-items:center; justify-content:space-between; font-weight:800; margin-bottom:8px; }
+        .tp-dots { display:flex; gap:6px; }
+        .tp-dot { width:16px; height:15px; border:2px dashed var(--ink-soft); }
+        .tp-dot.on { background:var(--pink); border:none; clip-path: var(--heart-px); }
+        .tp-done { color:var(--mint-dark); font-weight:800; margin-bottom:8px; }
+        .tp-row { display:flex; justify-content:space-between; gap:8px; font-size:.9rem; color:var(--text-secondary); margin-bottom:8px; font-weight:700; }
+        .tp-reward { font-weight:800; color:var(--streak); }
+
+        /* Blitzbild-Tuch */
+        .tuch { width: 210px; height: 86px; background: repeating-linear-gradient(45deg, var(--pink-soft) 0 10px, var(--paper-2) 10px 20px); border:3px solid var(--ink); box-shadow: 3px 3px 0 var(--shadow); display:flex; align-items:center; justify-content:center; }
+        .tuch span { font-weight:800; color:var(--ink-soft); font-size:.9rem; }
+
+        /* Elternbereich */
+        .pr-intro { font-size:.85rem; color:var(--text-secondary); font-weight:700; margin-bottom:14px; line-height:1.6; }
+        .pr-level { margin-bottom:14px; }
+        .pr-head { display:flex; justify-content:space-between; align-items:baseline; gap:8px; font-size:.8rem; color:var(--text-secondary); margin-bottom:6px; flex-wrap:wrap; }
+        .pr-head b { color:var(--ink); font-size:.95rem; }
+        .hm-grid { display:flex; flex-wrap:wrap; gap:3px; }
+        .hm { display:inline-block; width:13px; height:13px; border:2px solid var(--ink); vertical-align:middle; }
+        .hm-new { background: var(--pink-soft); }
+        .hm-mid { background: var(--sun); }
+        .hm-safe { background: var(--mint); }
+        .pr-empty { color:var(--text-secondary); font-weight:700; }
+        .parent-settings { margin-top:18px; border-top:3px solid var(--paper-2); padding-top:14px; }
+        .ps-title { font-family:'Press Start 2P','Nunito',sans-serif; font-size:.72rem; color:var(--pink-dark); margin-bottom:12px; }
+        .ps-row { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; font-weight:800; font-size:.92rem; flex-wrap:wrap; }
+        .seg { display:flex; gap:6px; }
+        .seg-btn { padding:6px 10px; border:3px solid var(--ink); background:var(--card); font-family:inherit; font-weight:800; cursor:pointer; font-size:.85rem; }
+        .seg-btn.sel { background:var(--pink); color:#fff; }
+    </style>
+</head>
+<body>
+    <div class="bg-shapes"><div class="bg-shape"></div><div class="bg-shape"></div><div class="bg-shape"></div></div>
+
+    <div class="container">
+        <header>
+            <h1><i class="fa-solid fa-heart"></i> Verliebte Zahlen</h1>
+            <div class="rewards-display">
+                <div class="reward-item" id="streakItem"><i class="fa-solid fa-fire"></i> <span id="streak">0</span></div>
+                <div class="reward-item"><i class="fa-solid fa-star"></i> <span id="stars">0</span></div>
+                <div class="reward-item"><i class="fa-solid fa-gem"></i> <span id="diamonds">0</span></div>
+            </div>
+        </header>
+
+        <div class="card">
+            <!-- PROFILE -->
+            <div class="screen active" id="screenProfiles">
+                <div class="home-head"><h2>Wer übt?</h2><p>Wähle dein Profil oder leg ein neues an</p></div>
+                <div class="profiles-grid" id="profilesGrid"></div>
+                <div class="create-form" id="createForm" style="display:none">
+                    <input id="nameInput" maxlength="12" placeholder="Name eingeben">
+                    <div class="avatar-grid" id="avatarGrid"></div>
+                    <button class="btn btn-primary" id="btnCreate"><i class="fa-solid fa-check"></i> Profil anlegen</button>
+                    <button class="btn btn-ghost" id="btnCancelCreate">Abbrechen</button>
+                </div>
+            </div>
+
+            <!-- HOME -->
+            <div class="screen" id="screenHome">
+                <div class="profile-chip">
+                    <div class="pc-left"><span class="pc-avatar" id="pcAvatar">🦊</span><span class="pc-name" id="pcName">Kind</span></div>
+                    <div style="display:flex;gap:6px">
+                        <button class="pc-switch" id="btnParent" title="Elternbereich"><i class="fa-solid fa-gear"></i></button>
+                        <button class="pc-switch" id="btnSwitch"><i class="fa-solid fa-repeat"></i> Wechseln</button>
+                    </div>
+                </div>
+                <div class="mascot-wrap" id="homeMascotWrap"></div>
+                <div class="mascot-speech" id="homeSpeech">Hallo! Bereit zum Üben?</div>
+                <div class="today-panel" id="todayPanel"></div>
+                <div class="map-progress">
+                    <div class="progress-bar"><div class="progress-fill" id="mapProgress"></div></div>
+                    <div class="label" id="mapLabel"></div>
+                </div>
+                <div class="levels" id="levels"></div>
+            </div>
+
+            <!-- GAME -->
+            <div class="screen" id="screenGame">
+                <div class="game-top">
+                    <button class="btn-back" id="btnBack"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div class="progress-bar"><div class="progress-fill" id="progressBar"></div></div>
+                    <div class="progress-text" id="progressText">1 / 10</div>
+                </div>
+                <div class="visual" id="visual"></div>
+                <div class="question" id="question"></div>
+                <div class="keypad">
+                    <div class="kp-display" id="kpDisplay">–</div>
+                    <div class="kp-grid" id="kpGrid"></div>
+                </div>
+                <div class="feedback" id="feedback"></div>
+            </div>
+
+            <!-- DONE -->
+            <div class="screen" id="screenDone">
+                <div class="done">
+                    <div class="mascot-wrap" id="doneMascotWrap"></div>
+                    <h2 id="doneTitle">Super gemacht!</h2>
+                    <div class="score" id="score">10/10</div>
+                    <p id="doneMessage"></p>
+                    <div class="reward-line" id="rewardLine"></div>
+                    <button class="btn btn-primary" id="btnNext"></button>
+                    <button class="btn btn-ghost" id="btnHome"><i class="fa-solid fa-house"></i> Zur Übersicht</button>
+                </div>
+            </div>
+
+            <!-- ELTERNBEREICH -->
+            <div class="screen" id="screenParent">
+                <div class="game-top">
+                    <button class="btn-back" id="btnParentBack"><i class="fa-solid fa-arrow-left"></i></button>
+                    <div class="home-head" style="flex:1;margin:0"><h2>Elternbereich</h2></div>
+                </div>
+                <p class="pr-intro">Jedes Kästchen ist eine Aufgabe: <span class="hm hm-safe"></span> sitzt sicher · <span class="hm hm-mid"></span> in Arbeit · <span class="hm hm-new"></span> neu/unsicher. Tipp mit der Maus drauf für die Aufgabe.</p>
+                <div id="parentStats"></div>
+                <div class="parent-settings">
+                    <div class="ps-title">Einstellungen</div>
+                    <div id="settingsBox"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    // ---------------- Daten ----------------
+    const SAVE_KEY = 'verliebte_v2';
+    const PASS = 8; // ab 8/10 gemeistert
+    const TOTAL = 10;
+
+    const LEVELS = [
+        { id:1,  name:'Punkte bis 10',   sub:'Finde den Partner zu 10',  icon:'fa-dice',  op:'partner', target:10,  rep:'dots' },
+        { id:2,  name:'Zahlen bis 10',   sub:'Finde den Partner zu 10',  icon:'fa-heart', op:'partner', target:10,  rep:'num'  },
+        { id:3,  name:'Gemischt bis 10', sub:'Punkte und Zahlen',        icon:'fa-wand-magic-sparkles', op:'partner', target:10, rep:'mix' },
+        { id:4,  name:'Punkte bis 20',   sub:'Finde den Partner zu 20',  icon:'fa-dice',  op:'partner', target:20,  rep:'dots' },
+        { id:5,  name:'Zahlen bis 20',   sub:'Finde den Partner zu 20',  icon:'fa-heart', op:'partner', target:20,  rep:'num'  },
+        { id:6,  name:'Gemischt bis 20', sub:'Punkte und Zahlen',        icon:'fa-wand-magic-sparkles', op:'partner', target:20, rep:'mix' },
+        { id:7,  name:'Minus bis 10',    sub:'Wegnehmen im Raum 10',     icon:'fa-minus', op:'minus',   max:10,     rep:'num'  },
+        { id:8,  name:'Minus bis 20',    sub:'Wegnehmen im Raum 20',     icon:'fa-minus', op:'minus',   max:20,     rep:'num'  },
+        { id:9,  name:'Verliebte Zehner',sub:'Zehner-Partner zu 100',    icon:'fa-gem',   op:'partnerTens', target:100, rep:'num' },
+        { id:10, name:'Plus bis 100',    sub:'Plus im Hunderterraum',    icon:'fa-plus',  op:'plus',    max:100,    rep:'num'  },
+        { id:11, name:'Minus bis 100',   sub:'Minus im Hunderterraum',   icon:'fa-minus', op:'minus',   max:100,    rep:'num'  },
+    ];
+
+    const APP_KEY = 'verliebte_app';
+    let DAILY_GOAL = 2;
+    function applySettings(){
+        const s = app.settings || {};
+        NEW_PER_DAY  = s.newPerDay || 3;
+        FAST_BASE_MS = s.fastMs    || 4000;
+        HINT_MS      = s.hintMs    || 8000;
+        DAILY_GOAL   = s.dailyGoal || 2;
+    }
+    const AVATARS = ['🦊','🐱','🐧','🐰','🐼','🐨','🦄','🐸','🐥','🦋','🐢','🐝'];
+    const MILES = [3,7,14,30];
+    const MILE_DIAMONDS = {3:2, 7:5, 14:10, 30:20};
+    const REWARD = {1:1,2:1,3:2,4:2,5:2,6:3,7:3,8:4,9:4,10:5,11:6};
+
+    // ---------------- Lernkartei (nach Born/Oehler) ----------------
+    // === LOGIC ===
+    let NEW_PER_DAY = 3;              // max. neue Aufgaben pro Tag (im Elternbereich einstellbar)
+    let FAST_BASE_MS = 4000;          // so schnell beantwortet = "sicher" (inkl. Tippen)
+    let HINT_MS = 8000;               // danach zeigt die App selbst die Loesung
+    const INTERVALS = [0,1,2,4,7];    // Wiedervorlage in Tagen je Box (0 = lernend)
+    const MAX_BOX = INTERVALS.length-1;
+    const MAX_REQUEUE = 2;            // wie oft eine Aufgabe pro Runde wiederkommt
+
+    function addDaysStr(dstr, n){
+        const p = dstr.split('-').map(Number);
+        const d = new Date(p[0], p[1]-1, p[2]);
+        d.setDate(d.getDate()+n);
+        return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+    }
+    function cmpDate(a,b){
+        const pa=a.split('-').map(Number), pb=b.split('-').map(Number);
+        return (pa[0]-pb[0]) || (pa[1]-pb[1]) || (pa[2]-pb[2]);
+    }
+
+    // Alle Aufgaben einer Stufe (null = zu grosser Raum, wird dynamisch erzeugt)
+    function factUniverse(L){
+        const out = [];
+        if(L.op==='partner'){
+            for(let a=1;a<L.target;a++) out.push({id:'p'+L.target+':'+a, kind:'partner', target:L.target, a:a, ans:L.target-a});
+        } else if(L.op==='partnerTens'){
+            for(let t=1;t<=9;t++) out.push({id:'pt:'+(t*10), kind:'partner', target:100, a:t*10, ans:100-t*10});
+        } else if(L.op==='minus' && L.max<=20){
+            for(let m=2;m<=L.max;m++) for(let s=1;s<m;s++) out.push({id:'m:'+m+'-'+s, kind:'minus', m:m, s:s, ans:m-s});
+        } else {
+            return null;
+        }
+        return out;
+    }
+    function randFactBig(L, rnd){
+        if(L.op==='plus'){
+            const a = 2+Math.floor(rnd()*(L.max-3));
+            const b = 1+Math.floor(rnd()*(L.max-a));
+            return {id:'a:'+a+'+'+b, kind:'plus', a:a, b:b, ans:a+b};
+        }
+        const m = 2+Math.floor(rnd()*(L.max-1));
+        const s = 1+Math.floor(rnd()*(m-1));
+        return {id:'m:'+m+'-'+s, kind:'minus', m:m, s:s, ans:m-s};
+    }
+    // Gehoert ein gespeicherter Fakt zu dieser Stufe? (Stufen 1-3 und 4-6 teilen sich die Fakten)
+    function levelHasFact(L, f){
+        if(L.op==='partner')     return f.kind==='partner' && f.target===L.target;
+        if(L.op==='partnerTens') return f.kind==='partner' && f.target===100;
+        if(L.op==='minus')       return f.kind==='minus' && f.m<=L.max;
+        if(L.op==='plus')        return f.kind==='plus' && f.ans<=L.max;
+        return false;
+    }
+    function shuffleWith(a, rnd){
+        for(let i=a.length-1;i>0;i--){ const j=Math.floor(rnd()*(i+1)); const t=a[i]; a[i]=a[j]; a[j]=t; }
+        return a;
+    }
+    // keine zwei gleichen Aufgaben direkt hintereinander
+    function fixAdjacent(q){
+        for(let i=1;i<q.length;i++){
+            if(q[i].f.id===q[i-1].f.id){
+                for(let j=i+1;j<q.length;j++){
+                    if(q[j].f.id!==q[i-1].f.id && (i+1>=q.length || q[j].f.id!==q[i+1].f.id)){
+                        const t=q[i]; q[i]=q[j]; q[j]=t; break;
+                    }
+                }
+            }
+        }
+        return q;
+    }
+
+    // Tagespaeckchen: max. 3 neue + faellige Wiederholungen + Auffuellen mit Wiederholungen
+    function buildQueue(L, prof, today, rnd){
+        const tracked = [];
+        for(const id in prof.facts){ const f=prof.facts[id]; if(levelHasFact(L,f)) tracked.push(f); }
+        const newAllow = Math.max(0, NEW_PER_DAY - (prof.daily.newCount||0));
+        const uni = factUniverse(L);
+        let news = [];
+        if(uni){
+            for(let i=0;i<uni.length && news.length<newAllow;i++){ if(!prof.facts[uni[i].id]) news.push(uni[i]); }
+        } else {
+            let guard=0;
+            while(news.length<newAllow && guard<300){
+                guard++;
+                const f = randFactBig(L, rnd);
+                if(!prof.facts[f.id] && !news.some(x=>x.id===f.id)) news.push(f);
+            }
+        }
+        // Notfall: nichts Bekanntes und Tageslimit erreicht -> trotzdem 3 einfuehren, damit nie eine leere Runde entsteht
+        if(!tracked.length && !news.length){
+            if(uni){ for(let i=0;i<uni.length && news.length<3;i++){ if(!prof.facts[uni[i].id]) news.push(uni[i]); } }
+            else { let g=0; while(news.length<3 && g<300){ g++; const f=randFactBig(L,rnd); if(!news.some(x=>x.id===f.id)) news.push(f); } }
+        }
+        const due   = tracked.filter(f=>!f.due || cmpDate(f.due,today)<=0).sort((a,b)=>(a.box||0)-(b.box||0));
+        const later = tracked.filter(f=> f.due && cmpDate(f.due,today)>0).sort((a,b)=>cmpDate(a.due,b.due));
+        const picks = [];
+        news.forEach(f=>picks.push({f:f, isNew:true}));
+        for(let i=0;i<due.length   && picks.length<TOTAL;i++) picks.push({f:due[i]});
+        for(let i=0;i<later.length && picks.length<TOTAL;i++) picks.push({f:later[i]});
+        // Auffuellen: dieselben Aufgaben in anderer Reihenfolge nochmal (Born: Raumlage/Reihenfolge variieren)
+        const pool = picks.slice();
+        let gi = 0;
+        while(picks.length<TOTAL && pool.length){ picks.push({f:pool[gi%pool.length].f, isRep:true}); gi++; }
+        return fixAdjacent(shuffleWith(picks, rnd));
+    }
+
+    // Bewertung: 'fast' (unter Blitz-Schwelle), 'slow' (richtig, aber gezaehlt?), 'fail' (falsch/gezeigt)
+    function gradeFact(prof, spec, result, today){
+        let f = prof.facts[spec.id];
+        if(!f){
+            f = {id:spec.id, kind:spec.kind, box:0, seen:0, fast:0};
+            if(spec.kind==='partner'){ f.target=spec.target; f.a=spec.a; f.ans=spec.ans; }
+            else if(spec.kind==='minus'){ f.m=spec.m; f.s=spec.s; f.ans=spec.ans; }
+            else { f.a=spec.a; f.b=spec.b; f.ans=spec.ans; }
+            prof.facts[spec.id] = f;
+            prof.daily.newCount = (prof.daily.newCount||0)+1;
+        }
+        f.seen++;
+        if(result==='fast'){
+            f.fast++;
+            if(f.lastUp!==today){ f.box = Math.min(MAX_BOX,(f.box||0)+1); f.lastUp = today; } // max. 1 Stufe pro Tag hoch
+        } else if(result==='fail'){
+            f.box = 0; f.lastUp = null;
+        }
+        f.due = addDaysStr(today, INTERVALS[f.box||0]);
+        f.last = today;
+        return f;
+    }
+    function fastLimit(t){ return FAST_BASE_MS + (t.ans>=10?1200:0) + (t.ans>=100?1200:0); }
+    function quickPool(prof){
+        const out=[]; for(const id in prof.facts){ if((prof.facts[id].box||0)>=1) out.push(prof.facts[id]); } return out;
+    }
+    // === /LOGIC ===
+
+    let app = { profiles:[], activeId:null };
+    let P = null;            // aktives Profil
+    let session = null;
+
+    function newProfile(name, avatar){
+        return { id:'p'+Date.now()+Math.floor(Math.random()*9999), name, avatar,
+            stars:0, diamonds:0, unlocked:[1], mastered:[], bestStars:{},
+            streak:{count:0, last:null, longest:0},
+            daily:{date:null, runs:0, newCount:0}, totalRuns:0, milestones:[], facts:{} };
+    }
+
+    // ---------------- Speichern ----------------
+    function loadApp(){
+        try { const raw = localStorage.getItem(APP_KEY); if(raw) app = JSON.parse(raw); } catch(e){}
+        if(!app || !app.profiles) app = { profiles:[], activeId:null };
+        migrateOld();
+    }
+    function migrateOld(){
+        if(app.profiles.length) return;
+        try {
+            const raw = localStorage.getItem('verliebte_v2');
+            if(raw){
+                const d = JSON.parse(raw);
+                const p = newProfile('Kind', '🦊');
+                p.stars=d.stars||0; p.diamonds=d.diamonds||0;
+                p.unlocked=(d.unlocked&&d.unlocked.length)?d.unlocked:[1];
+                p.mastered=d.mastered||[]; p.bestStars=d.bestStars||{};
+                p.streak={count:(d.streak&&d.streak.count)||0, last:(d.streak&&d.streak.last)||null, longest:(d.streak&&d.streak.count)||0};
+                app.profiles.push(p);
+            }
+        } catch(e){}
+    }
+    function saveApp(){ localStorage.setItem(APP_KEY, JSON.stringify(app)); }
+    function save(){ saveApp(); }
+
+    function ensureDaily(){
+        const t = dateStr(new Date());
+        if(!P.daily || P.daily.date!==t) P.daily = { date:t, runs:0, newCount:0 };
+        if(P.daily.newCount==null) P.daily.newCount = 0;
+    }
+    function setActive(id){
+        P = app.profiles.find(p=>p.id===id);
+        app.activeId = id;
+        if(!P.facts) P.facts = {};   // Migration alter Profile
+        ensureDaily();
+        saveApp();
+    }
+
+    function dateStr(d){ return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
+    function streakOf(p){
+        if(!p || !p.streak || !p.streak.last) return 0;
+        const today = dateStr(new Date());
+        const y = dateStr(new Date(Date.now()-86400000));
+        return (p.streak.last===today || p.streak.last===y) ? p.streak.count : 0;
+    }
+    function liveStreak(){ return streakOf(P); }
+    function streakMult(s){ return s>=14?4 : s>=7?3 : s>=3?2 : 1; }
+
+    function updateRewards(){
+        document.getElementById('stars').textContent = P ? P.stars : 0;
+        document.getElementById('diamonds').textContent = P ? P.diamonds : 0;
+        const s = liveStreak();
+        document.getElementById('streak').textContent = s;
+        document.getElementById('streakItem').classList.toggle('streak-on', s>0);
+    }
+    function addStars(n){
+        P.stars += n;
+        while(P.stars>=100){ P.stars-=100; P.diamonds++; }
+        updateRewards();
+    }
+
+    // ---------------- Maskottchen (Pixel-Herz) ----------------
+    function mascotSVG(){
+        const px = (x,y,c,w,h)=>`<rect x="${x}" y="${y}" width="${w||1}" height="${h||1}" fill="${c}"/>`;
+        const B='#ff6fa5', S='#e0517f', I='#43303a', W='#ffffff', C='#ff8fb8', Y='#ffc93c';
+        // 8-Bit-Herz: Pixelzeilen als [von,bis]-Segmente
+        const rows = [ [[2,3],[7,8]], [[1,4],[6,9]], [[0,10]], [[0,10]], [[1,9]], [[2,8]], [[3,7]], [[4,6]], [[5,5]] ];
+        let body='';
+        rows.forEach((segs,y)=>segs.forEach(sg=>{ body += px(sg[0], y, B, sg[1]-sg[0]+1, 1); }));
+        // dunkle Schattenkante unten + Glanzpixel oben links
+        body += px(5,8,S)+px(4,7,S)+px(6,7,S)+px(3,6,S)+px(7,6,S)+px(2,5,S)+px(8,5,S);
+        body += px(1,2,W)+px(2,1,W);
+        const cheeks = px(2,4,C)+px(8,4,C);
+        return `<svg class="mascot" viewBox="-0.5 -0.5 12 10" shape-rendering="crispEdges">
+            ${body}${cheeks}
+            <g class="eyes-open">${px(3,3,I)}${px(7,3,I)}</g>
+            <g class="eyes-happy">${px(3,3.4,I,1,0.5)}${px(7,3.4,I,1,0.5)}</g>
+            <g class="mouth-smile">${px(4,5.4,I,0.7,0.7)}${px(5.15,6,I,0.7,0.7)}${px(6.3,5.4,I,0.7,0.7)}</g>
+            <g class="mouth-o">${px(4.9,5.6,I,1.2,1.2)}</g>
+            <g class="mouth-flat">${px(4.2,5.8,I,2.6,0.6)}</g>
+            <g class="sparkle">${px(-0.3,0,Y,0.8,0.8)}${px(10.4,1,Y,0.7,0.7)}${px(9.8,-0.4,Y,0.5,0.5)}</g>
+        </svg>`;
+    }
+    function setMascot(wrapId, mood){
+        const wrap = document.getElementById(wrapId);
+        if(!wrap.firstChild) wrap.innerHTML = mascotSVG();
+        const m = wrap.querySelector('.mascot');
+        m.className = 'mascot';
+        if(mood) m.classList.add('is-'+mood);
+    }
+    // ---------------- Home / Map ----------------
+    function isUnlocked(id){ return P.unlocked.includes(id); }
+    function isMastered(id){ return P.mastered.includes(id); }
+
+    function renderHome(){
+        document.getElementById('pcAvatar').textContent = P.avatar;
+        document.getElementById('pcName').textContent = P.name;
+        setMascot('homeMascotWrap', liveStreak()>0 ? 'happy' : null);
+        const s = liveStreak();
+        document.getElementById('homeSpeech').textContent =
+            s>=3 ? `Wow, ${s} Tage am Stück! Weiter so!` :
+            s>0  ? `Schön dass du wieder da bist!` :
+                   `Hallo ${P.name}! Bereit zum Üben?`;
+
+        // Heute-Panel
+        ensureDaily();
+        const runs = P.daily.runs, mult = streakMult(s);
+        let dots=''; for(let i=0;i<DAILY_GOAL;i++) dots += `<span class="tp-dot${i<runs?' on':''}"></span>`;
+        const nextMult = s<3 ? `noch ${3-s} Tage bis x2` : s<7 ? `noch ${7-s} Tage bis x3` : s<14 ? `noch ${14-s} Tage bis x4` : `Maximaler Bonus!`;
+        document.getElementById('todayPanel').innerHTML = `
+            <div class="tp-title">Heute</div>
+            <div class="tp-goal"><span>Ziel: ${DAILY_GOAL} Durchgänge</span><span class="tp-dots">${dots}</span></div>
+            ${runs>=DAILY_GOAL ? '<div class="tp-done"><i class="fa-solid fa-circle-check"></i> Tagesziel geschafft!</div>' : ''}
+            <div class="tp-row"><span><i class="fa-solid fa-fire" style="color:var(--streak)"></i> ${s} Tage am Stück</span><span>Längster: ${P.streak.longest||0}</span></div>
+            <div class="tp-row"><span><i class="fa-solid fa-seedling" style="color:var(--success)"></i> Neue Aufgaben heute: ${P.daily.newCount||0} / ${NEW_PER_DAY}</span><span>Gelernt: ${Object.keys(P.facts||{}).length}</span></div>
+            <div class="tp-reward"><i class="fa-solid fa-star"></i> Belohnung x${mult} <span style="color:var(--text-secondary);font-weight:600">· ${nextMult}</span></div>
+            ${quickPool(P).length>=5 ? '<button class="btn btn-ghost" id="btnQuick" style="margin-top:10px"><i class="fa-solid fa-bolt" style="color:var(--warning)"></i> Blitzrunde – Gekonntes wiederholen</button>' : ''}`;
+        const qb = document.getElementById('btnQuick');
+        if(qb) qb.addEventListener('click', startQuick);
+
+        const done = P.mastered.length, all = LEVELS.length;
+        document.getElementById('mapProgress').style.width = (done/all*100)+'%';
+        document.getElementById('mapLabel').textContent = `${done} von ${all} Stufen gemeistert · schwerer = mehr Sterne`;
+
+        const box = document.getElementById('levels');
+        box.innerHTML = '';
+        LEVELS.forEach(L=>{
+            const unlocked = isUnlocked(L.id), mastered = isMastered(L.id);
+            const card = document.createElement('button');
+            card.className = 'level-card' + (mastered?' mastered':'') + (!unlocked?' locked':'');
+            const best = P.bestStars[L.id]||0;
+            const starsStr = mastered ? '★★★' : best>=PASS ? '★★' : best>0 ? '★' : '';
+            card.innerHTML = `
+                <div class="lv-icon"><i class="fa-solid ${unlocked? L.icon : 'fa-lock'}"></i></div>
+                <div class="lv-text">
+                    <div class="name">${L.id}. ${L.name}</div>
+                    <div class="sub">${unlocked ? L.sub+' · ⭐x'+REWARD[L.id] : 'Erst die Stufe davor meistern'}</div>
+                    <div class="lv-stars">${starsStr}</div>
+                </div>
+                <div class="lv-flag"><i class="fa-solid ${mastered?'fa-circle-check':unlocked?'fa-chevron-right':'fa-lock'}"></i></div>`;
+            if(unlocked) card.addEventListener('click', ()=>startLevel(L.id));
+            box.appendChild(card);
+        });
+    }
+
+    // ---------------- Profile-Screen ----------------
+    let pendingAvatar = AVATARS[0];
+    function renderProfiles(){
+        const g = document.getElementById('profilesGrid'); g.innerHTML='';
+        app.profiles.forEach(p=>{
+            const c = document.createElement('button'); c.className='profile-card';
+            c.innerHTML = `<span class="pf-avatar">${p.avatar}</span><span class="pf-name">${p.name}</span>
+                <span class="pf-sub"><i class="fa-solid fa-fire"></i> ${streakOf(p)} · <i class="fa-solid fa-star"></i> ${p.stars}</span>`;
+            c.onclick = ()=>{ setActive(p.id); openHome(); };
+            g.appendChild(c);
+        });
+        const add = document.createElement('button'); add.className='profile-card add';
+        add.innerHTML = `<span class="pf-avatar">＋</span><span class="pf-name">Neu</span>`;
+        add.onclick = showCreate;
+        g.appendChild(add);
+    }
+    function showCreate(){
+        document.getElementById('profilesGrid').style.display='none';
+        document.getElementById('createForm').style.display='block';
+        document.getElementById('nameInput').value='';
+        pendingAvatar = AVATARS[0];
+        const ag = document.getElementById('avatarGrid'); ag.innerHTML='';
+        AVATARS.forEach((a,i)=>{
+            const b=document.createElement('button'); b.type='button';
+            b.className='av-btn'+(i===0?' sel':''); b.textContent=a;
+            b.onclick=()=>{ pendingAvatar=a; [...ag.children].forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); };
+            ag.appendChild(b);
+        });
+    }
+    function hideCreate(){
+        document.getElementById('createForm').style.display='none';
+        document.getElementById('profilesGrid').style.display='';
+    }
+    function createProfile(){
+        const name = (document.getElementById('nameInput').value||'').trim() || 'Kind';
+        const p = newProfile(name, pendingAvatar);
+        app.profiles.push(p); saveApp();
+        setActive(p.id); hideCreate(); openHome();
+    }
+    function openHome(){ updateRewards(); renderHome(); showScreen('screenHome'); }
+    function openProfiles(){ renderProfiles(); hideCreate(); showScreen('screenProfiles'); }
+
+    // ---------------- Elternbereich ----------------
+    // Bereiche ueberschneidungsfrei (Stufen 1-3 bzw. 4-6 teilen sich die Fakten)
+    const FACT_GROUPS = [
+        { name:'Partner bis 10',    total:9,    test:f=>f.kind==='partner' && f.target===10 },
+        { name:'Partner bis 20',    total:19,   test:f=>f.kind==='partner' && f.target===20 },
+        { name:'Verliebte Zehner',  total:9,    test:f=>f.kind==='partner' && f.target===100 },
+        { name:'Minus bis 10',      total:45,   test:f=>f.kind==='minus' && f.m<=10 },
+        { name:'Minus bis 20',      total:145,  test:f=>f.kind==='minus' && f.m>10 && f.m<=20 },
+        { name:'Plus bis 100',      total:null, test:f=>f.kind==='plus' },
+        { name:'Minus bis 100',     total:null, test:f=>f.kind==='minus' && f.m>20 },
+    ];
+    function renderParent(){
+        const box = document.getElementById('parentStats');
+        box.innerHTML = '';
+        const all = Object.values(P.facts||{});
+        FACT_GROUPS.forEach(G=>{
+            const facts = all.filter(G.test).sort((a,b)=>a.id<b.id?-1:1);
+            if(!facts.length) return;
+            const safe = facts.filter(f=>(f.box||0)>=3).length;
+            const mid  = facts.filter(f=>(f.box||0)>=1 && (f.box||0)<3).length;
+            let hm='';
+            facts.forEach(f=>{
+                const cls = (f.box||0)>=3 ? 'hm-safe' : (f.box||0)>=1 ? 'hm-mid' : 'hm-new';
+                hm += `<span class="hm ${cls}" title="${solutionText(f)} · Box ${f.box||0}"></span>`;
+            });
+            box.innerHTML += `<div class="pr-level">
+                <div class="pr-head"><b>${G.name}</b><span>${safe} sicher · ${mid} in Arbeit · ${facts.length-safe-mid} neu${G.total?' · '+facts.length+'/'+G.total+' geübt':''}</span></div>
+                <div class="hm-grid">${hm}</div></div>`;
+        });
+        if(!box.innerHTML) box.innerHTML = '<p class="pr-empty">Noch keine geübten Aufgaben. Nach den ersten Runden siehst du hier, welche Aufgaben sicher sitzen.</p>';
+        renderSettings();
+    }
+    const SETTING_DEFS = [
+        { key:'newPerDay', label:'Neue Aufgaben pro Tag', opts:[[1,'1'],[2,'2'],[3,'3']], def:3 },
+        { key:'dailyGoal', label:'Tagesziel (Durchgänge)', opts:[[1,'1'],[2,'2'],[3,'3']], def:2 },
+        { key:'fastMs',    label:'Blitz-Schwelle',        opts:[[3000,'3 s'],[4000,'4 s'],[6000,'6 s']], def:4000 },
+        { key:'hintMs',    label:'Lösung zeigen nach',    opts:[[6000,'6 s'],[8000,'8 s'],[12000,'12 s']], def:8000 },
+    ];
+    function renderSettings(){
+        const box = document.getElementById('settingsBox');
+        box.innerHTML = '';
+        if(!app.settings) app.settings = {};
+        SETTING_DEFS.forEach(S=>{
+            const cur = app.settings[S.key]!=null ? app.settings[S.key] : S.def;
+            let segs='';
+            S.opts.forEach(o=>{ segs += `<button class="seg-btn${o[0]===cur?' sel':''}" data-key="${S.key}" data-val="${o[0]}">${o[1]}</button>`; });
+            box.innerHTML += `<div class="ps-row"><span>${S.label}</span><span class="seg">${segs}</span></div>`;
+        });
+        box.querySelectorAll('.seg-btn').forEach(b=>{
+            b.addEventListener('click', ()=>{
+                app.settings[b.dataset.key] = parseInt(b.dataset.val);
+                saveApp(); applySettings(); renderSettings();
+            });
+        });
+    }
+    function openParent(){ renderParent(); showScreen('screenParent'); }
+
+    // ---------------- Aufgaben ----------------
+    function ri(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=ri(0,i); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+    // Loesung zeigen - bei Zehneruebergang immer derselbe Born-Rechenweg (erst zur 10 auffuellen)
+    function solutionText(t){
+        if(t.kind==='partner') return t.a+' und '+t.ans+' ist '+t.target;
+        if(t.kind==='minus'){
+            const u = t.m%10;
+            if(u>0 && t.s>u) return t.m+' − '+u+' = '+(t.m-u)+' · dann − '+(t.s-u)+' → '+t.ans;
+            return t.m+' − '+t.s+' = '+t.ans;
+        }
+        const fill = 10-(t.a%10);
+        if(t.a%10>0 && (t.a%10)+(t.b%10)>10 && t.b>fill)
+            return t.a+' + '+fill+' = '+(t.a+fill)+' · dann + '+(t.b-fill)+' → '+t.ans;
+        return t.a+' + '+t.b+' = '+t.ans;
+    }
+
+    // ---------------- Visuals ----------------
+    const PIPS = {1:[4], 2:[0,8], 3:[0,4,8], 4:[0,2,6,8], 5:[0,2,4,6,8]};
+    function diceFace(n, mode){ // mode: 'on' or 'rest'
+        const d = document.createElement('div');
+        d.className = 'dice';
+        const cells = PIPS[n] || [];
+        for(let i=0;i<9;i++){
+            const p = document.createElement('div');
+            p.className = 'pip ' + (cells.includes(i) ? mode : 'off');
+            d.appendChild(p);
+        }
+        return d;
+    }
+    function renderQuantity(n, mode){
+        const row = document.createElement('div');
+        row.className = 'dice-row';
+        let left = n;
+        while(left>0){ const c = Math.min(5,left); row.appendChild(diceFace(c, mode)); left-=c; }
+        return row;
+    }
+    function renderVisual(t){
+        const v = document.getElementById('visual');
+        v.innerHTML = '';
+        if(t.kind==='partner'){
+            if(t.rep==='dots' && t.target<=20){
+                v.appendChild(renderQuantity(t.a,'on'));   // nur der Würfel
+            } else {
+                const n = document.createElement('div'); n.className='bignum'; n.textContent=t.a;
+                v.appendChild(n);
+            }
+        }
+        // minus / plus: kein Visual, die Aufgabe steht in der Frage
+    }
+
+    function revealComplement(t){
+        if(t.kind==='partner' && t.rep==='dots' && t.target<=20){
+            const v = document.getElementById('visual');
+            const lab = document.createElement('div'); lab.className='dots-label'; lab.textContent = 'und '+t.ans+' fehlen bis '+t.target;
+            v.appendChild(lab);
+            v.appendChild(renderQuantity(t.ans,'filled'));
+        }
+    }
+
+    function questionLine(t){
+        if(t.kind==='partner') return `Wie viel fehlt bis <b>${t.target}</b>?`;
+        if(t.kind==='minus')   return `<span class="num">${t.m}</span> − <span class="num">${t.s}</span> = ?`;
+        if(t.kind==='plus')    return `<span class="num">${t.a}</span> + <span class="num">${t.b}</span> = ?`;
+    }
+
+    // ---------------- Spielablauf ----------------
+    function startLevel(id){
+        const L = LEVELS.find(x=>x.id===id);
+        ensureDaily();
+        const queue = buildQueue(L, P, dateStr(new Date()), Math.random);
+        session = { L, quick:false, queue, pos:0, base:queue.length, firstTry:0, gained:0, task:null, entry:null, hintT:null };
+        save();
+        showScreen('screenGame');
+        nextTask();
+    }
+
+    // Blitzrunde: alle schon gekonnten Aufgaben in schneller Folge (Borns "Schnelldurchlauf")
+    function startQuick(){
+        const pool = shuffle(quickPool(P)).slice(0,20);
+        if(pool.length<5) return;
+        ensureDaily();
+        session = { L:null, quick:true, queue:pool.map(f=>({f:f})), pos:0, base:pool.length, firstTry:0, gained:0, task:null, entry:null, hintT:null };
+        showScreen('screenGame');
+        nextTask();
+    }
+
+    function stopHint(){
+        if(!session) return;
+        if(session.hintT){ clearTimeout(session.hintT); session.hintT=null; }
+        if(session.coverT){ clearTimeout(session.coverT); session.coverT=null; }
+    }
+
+    function nextTask(){
+        const s = session;
+        if(s.pos >= s.queue.length){ finishLevel(); return; }
+        s.entry = s.queue[s.pos];
+        const t = Object.assign({}, s.entry.f);
+        if(t.kind==='partner'){
+            const rep = s.quick ? 'num' : (s.L.rep==='mix' ? (Math.random()<0.5?'dots':'num') : s.L.rep);
+            t.rep = rep;
+            // Drei-Phasen-Abloesung: Bild -> Blitzbild -> nur Zahl (je sicherer die Aufgabe, desto abstrakter)
+            if(t.rep==='dots'){
+                const rec = P.facts[t.id];
+                const box = rec ? (rec.box||0) : 0;
+                t.phase = box>=3 ? 'num' : (box>=1 ? 'blitz' : 'show');
+                if(t.phase==='num') t.rep = 'num';
+            }
+        }
+        s.task = t;
+        document.getElementById('progressBar').style.width = (s.pos/s.queue.length*100)+'%';
+        document.getElementById('progressText').textContent = (s.pos+1)+' / '+s.queue.length;
+        const fb = document.getElementById('feedback'); fb.textContent=''; fb.className='feedback';
+
+        renderVisual(t);
+        document.getElementById('question').innerHTML = questionLine(t);
+        typed=''; updateKpDisplay(); document.getElementById('kpDisplay').style.color='var(--ink)'; setKeypad(true);
+
+        s.t0 = Date.now();
+        stopHint();
+        if(t.phase==='blitz') s.coverT = setTimeout(coverVisual, 1600);          // Blitzbild: kurz zeigen, dann "Tuch" drueber
+        s.hintT = setTimeout(onHintTimeout, HINT_MS + (t.phase==='blitz'?1600:0)); // zoegert das Kind, zeigt die App die Loesung
+    }
+
+    // Gaidoschiks "unter dem Tuch": Bild verdecken, aus der Vorstellung antworten
+    function coverVisual(){
+        session.coverT = null;
+        document.getElementById('visual').innerHTML =
+            '<div class="tuch"><span>Psst … was hast du gesehen?</span></div>';
+    }
+    // Bild wieder aufdecken (fuer Loesung/Bestaetigung), dann Ergaenzung zeigen
+    function revealFull(t){
+        if(t.kind==='partner' && t.rep==='dots' && t.target<=20) renderVisual(t);
+        revealComplement(t);
+    }
+
+    // Aufgabe kommt 2-3 Plaetze spaeter nochmal
+    function requeue(entry){
+        if((entry.req||0) >= MAX_REQUEUE) return false;
+        const copy = { f:entry.f, req:(entry.req||0)+1, isRe:true };
+        const at = Math.min(session.queue.length, session.pos + 2 + (Math.random()<0.5?0:1));
+        session.queue.splice(at, 0, copy);
+        return true;
+    }
+
+    function advance(delay){
+        setTimeout(()=>{ session.pos++; nextTask(); }, delay);
+    }
+
+    // Borns "Nicht anstrengen!": nach 8s ohne Antwort Loesung zeigen, kein Fehler-Gefuehl
+    function onHintTimeout(){
+        const s = session, t = s.task;
+        setKeypad(false);
+        stopHint();
+        gradeFact(P, s.entry.f, 'fail', dateStr(new Date())); save();
+        const again = requeue(s.entry);
+        const fb = document.getElementById('feedback');
+        fb.innerHTML = 'Schau: <b>'+solutionText(t)+'</b>'+(again?' · kommt gleich nochmal':'');
+        fb.className = 'feedback';
+        revealFull(t);
+        advance(2600);
+    }
+
+    // ---------------- Zahlen-Tastatur ----------------
+    let typed='';
+    function buildKeypad(){
+        const g = document.getElementById('kpGrid'); g.innerHTML='';
+        ['1','2','3','4','5','6','7','8','9','del','0','ok'].forEach(k=>{
+            const b = document.createElement('button');
+            b.className = 'kp-btn' + (k==='ok'?' kp-ok':'') + (k==='del'?' kp-del':'');
+            b.dataset.k = k;
+            b.innerHTML = k==='del' ? '<i class="fa-solid fa-delete-left"></i>' : k==='ok' ? '<i class="fa-solid fa-check"></i>' : k;
+            g.appendChild(b);
+        });
+    }
+    function updateKpDisplay(){ document.getElementById('kpDisplay').textContent = typed===''?'–':typed; }
+    function setKeypad(on){ const g=document.getElementById('kpGrid'); g.style.pointerEvents=on?'auto':'none'; g.style.opacity=on?'1':'.45'; }
+    function pressKey(k){
+        if(k==='del'){ typed=typed.slice(0,-1); updateKpDisplay(); return; }
+        if(k==='ok'){ if(typed!=='') handleSubmit(parseInt(typed)); return; }
+        if(typed.length<3){ typed+=k; updateKpDisplay(); }
+    }
+
+    function handleSubmit(val){
+        const s = session, t = s.task, e = s.entry;
+        setKeypad(false);
+        stopHint();
+        const fb = document.getElementById('feedback');
+        const correct = (val===t.ans);
+        const dt = Date.now() - s.t0;
+        const today = dateStr(new Date());
+
+        if(correct){
+            const result = dt <= fastLimit(t) + (t.phase==='blitz'?1600:0) ? 'fast' : 'slow';
+            gradeFact(P, e.f, result, today);
+            let gain;
+            if(e.isRe){ gain = 1; }                                        // Wiederholung nach Fehler: kleiner Stern
+            else {
+                s.firstTry++;
+                gain = (s.quick ? 1 : REWARD[s.L.id]) * streakMult(liveStreak());
+            }
+            s.gained += gain;
+            addStars(gain); save();
+            fb.innerHTML = `<i class="fa-solid fa-circle-check"></i> Richtig! <span style="color:var(--warning)">+${gain}</span>`;
+            fb.className = 'feedback correct';
+            document.getElementById('kpDisplay').style.color = 'var(--success)';
+            revealFull(t);
+            advance(result==='fast' ? 900 : 1300);
+        } else {
+            gradeFact(P, e.f, 'fail', today); save();
+            const again = requeue(e);
+            fb.innerHTML = 'Schau: <b>'+solutionText(t)+'</b>'+(again?' · kommt gleich nochmal':'');
+            fb.className = 'feedback';
+            document.getElementById('kpDisplay').style.color = 'var(--primary-light)';
+            revealComplement(t);
+            advance(2600);
+        }
+    }
+
+    // ---------------- Abschluss ----------------
+    function finishLevel(){
+        const s = session, L = s.L;
+        stopHint();
+        const passed = !s.quick && s.firstTry >= Math.min(PASS, s.base);
+
+        // Durchgang zählen / Tagesziel
+        ensureDaily();
+        P.daily.runs++; P.totalRuns = (P.totalRuns||0)+1;
+        let dayDone = false;
+        if(P.daily.runs===DAILY_GOAL){
+            const today = dateStr(new Date());
+            if(P.streak.last!==today){
+                const y = dateStr(new Date(Date.now()-86400000));
+                P.streak.count = (P.streak.last===y) ? P.streak.count+1 : 1;
+                P.streak.last = today;
+                if(P.streak.count > (P.streak.longest||0)) P.streak.longest = P.streak.count;
+                dayDone = true;
+            }
+        }
+        // Meilensteine
+        let mileHit = null;
+        MILES.forEach(m=>{ if(P.streak.count>=m && !P.milestones.includes(m)){ P.milestones.push(m); P.diamonds += MILE_DIAMONDS[m]; mileHit = m; } });
+
+        // Bestleistung / Meistern / Freischalten (nicht bei Blitzrunden)
+        let unlockedNew = null, bonus=false;
+        if(!s.quick){
+            if((P.bestStars[L.id]||0) < s.firstTry) P.bestStars[L.id]=s.firstTry;
+            if(passed){
+                if(!isMastered(L.id)){ P.mastered.push(L.id); P.diamonds++; bonus=true; }
+                const next = L.id+1;
+                if(next<=LEVELS.length && !P.unlocked.includes(next)){ P.unlocked.push(next); unlockedNew=next; }
+            }
+        }
+        updateRewards(); save();
+
+        // Anzeige
+        setMascot('doneMascotWrap', (passed || (s.quick && s.firstTry>=s.base-1)) ? 'celebrate' : null);
+        document.getElementById('doneTitle').textContent = s.quick ? 'Blitzrunde fertig!' : (passed ? 'Geschafft!' : 'Gut geübt!');
+        document.getElementById('score').textContent = s.firstTry+'/'+s.base;
+        document.getElementById('doneMessage').textContent = s.quick
+            ? (s.firstTry===s.base ? 'Alles sitzt! Blitzschnell!' : 'Fleißig wiederholt, das festigt!')
+            : passed
+            ? (s.firstTry===s.base ? 'Perfekt! Alles richtig!' : 'Stufe gemeistert!')
+            : `Du brauchst ${PASS} von ${s.base}. Morgen klappt mehr, dranbleiben!`;
+
+        const mult = streakMult(liveStreak());
+        const rl = document.getElementById('rewardLine'); rl.innerHTML='';
+        rl.innerHTML += `<div class="badge"><i class="fa-solid fa-star" style="color:var(--warning)"></i> +${s.gained}</div>`;
+        if(mult>1) rl.innerHTML += `<div class="badge streak"><i class="fa-solid fa-bolt"></i> x${mult}</div>`;
+        if(liveStreak()>0) rl.innerHTML += `<div class="badge streak"><i class="fa-solid fa-fire"></i> ${liveStreak()} Tage</div>`;
+        if(dayDone) rl.innerHTML += `<div class="badge unlock"><i class="fa-solid fa-circle-check"></i> Tagesziel!</div>`;
+        if(mileHit) rl.innerHTML += `<div class="badge"><i class="fa-solid fa-medal" style="color:var(--warning)"></i> ${mileHit} Tage · <i class="fa-solid fa-gem"></i> +${MILE_DIAMONDS[mileHit]}</div>`;
+        if(bonus) rl.innerHTML += `<div class="badge"><i class="fa-solid fa-gem" style="color:var(--success)"></i> +1</div>`;
+        if(unlockedNew){
+            const NL = LEVELS.find(x=>x.id===unlockedNew);
+            rl.innerHTML += `<div class="badge unlock"><i class="fa-solid fa-lock-open"></i> ${NL.name} frei!</div>`;
+        }
+        if(!dayDone && P.daily.runs<DAILY_GOAL){
+            rl.innerHTML += `<div class="badge"><i class="fa-solid fa-flag-checkered"></i> noch ${DAILY_GOAL-P.daily.runs} bis Tagesziel</div>`;
+        }
+
+        const nextBtn = document.getElementById('btnNext');
+        if(s.quick){
+            nextBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> Noch eine Blitzrunde`;
+            nextBtn.onclick = startQuick;
+        } else if(passed && unlockedNew){
+            nextBtn.innerHTML = `<i class="fa-solid fa-arrow-right"></i> Nächste Stufe`;
+            nextBtn.onclick = ()=>startLevel(unlockedNew);
+        } else {
+            nextBtn.innerHTML = `<i class="fa-solid fa-rotate-right"></i> Nochmal üben`;
+            nextBtn.onclick = ()=>startLevel(L.id);
+        }
+        nextBtn.style.display='';
+
+        showScreen('screenDone');
+        if(passed) confetti();
+    }
+
+    // ---------------- Konfetti ----------------
+    function confetti(){
+        const colors = ['#ff6fa5','#4ecdc4','#ffc93c','#ffc7dc'];
+        for(let i=0;i<28;i++){
+            const c = document.createElement('div');
+            c.className='confetti';
+            c.style.left = Math.random()*100+'vw';
+            c.style.background = colors[ri(0,colors.length-1)];
+            c.style.transform = `rotate(${ri(0,360)}deg)`;
+            document.body.appendChild(c);
+            const dur = 1600+ri(0,1200);
+            c.animate([{transform:`translateY(0) rotate(0)`,opacity:1},{transform:`translateY(105vh) rotate(${ri(180,720)}deg)`,opacity:.9}],{duration:dur,easing:'ease-in'});
+            setTimeout(()=>c.remove(), dur);
+        }
+    }
+
+    // ---------------- Navigation ----------------
+    function showScreen(id){
+        document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    document.getElementById('kpGrid').addEventListener('click', e=>{
+        const b = e.target.closest('.kp-btn'); if(b) pressKey(b.dataset.k);
+    });
+    document.addEventListener('keydown', e=>{
+        if(!document.getElementById('screenGame').classList.contains('active')) return;
+        if(e.key>='0' && e.key<='9') pressKey(e.key);
+        else if(e.key==='Backspace'){ e.preventDefault(); pressKey('del'); }
+        else if(e.key==='Enter') pressKey('ok');
+    });
+    document.getElementById('btnBack').addEventListener('click', ()=>{ stopHint(); openHome(); });
+    document.getElementById('btnHome').addEventListener('click', openHome);
+    document.getElementById('btnSwitch').addEventListener('click', openProfiles);
+    document.getElementById('btnParent').addEventListener('click', openParent);
+    document.getElementById('btnParentBack').addEventListener('click', openHome);
+    document.getElementById('btnCreate').addEventListener('click', createProfile);
+    document.getElementById('btnCancelCreate').addEventListener('click', hideCreate);
+    document.getElementById('nameInput').addEventListener('keydown', e=>{ if(e.key==='Enter') createProfile(); });
+
+    // ---------------- Start ----------------
+    buildKeypad();
+    loadApp();
+    applySettings();
+    openProfiles();
+    </script>
+</body>
+</html>
