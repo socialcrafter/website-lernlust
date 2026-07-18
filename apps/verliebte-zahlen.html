@@ -388,19 +388,38 @@
         return (pa[0]-pb[0]) || (pa[1]-pb[1]) || (pa[2]-pb[2]);
     }
 
-    // Alle Aufgaben einer Stufe (null = zu grosser Raum, wird dynamisch erzeugt)
+    // Alle Aufgaben einer Stufe (null = zu grosser Raum, wird dynamisch erzeugt).
+    // Partneraufgaben sind PAARE (3+7 und 7+3 = ein Fakt, Anzeige wechselt), Reihenfolge didaktisch:
+    // erst die Verdopplung (Kraft der 5 bzw. 10), dann die Randpaare.
     function factUniverse(L){
         const out = [];
         if(L.op==='partner'){
-            for(let a=1;a<L.target;a++) out.push({id:'p'+L.target+':'+a, kind:'partner', target:L.target, a:a, ans:L.target-a});
+            const order = L.target===10 ? [5,1,2,3,4] : [10,9,1,8,2,7,3,6,4,5];
+            order.forEach(lo=>{ const hi=L.target-lo; out.push({id:'p'+L.target+':'+lo+'-'+hi, kind:'partner', target:L.target, lo:lo, hi:hi}); });
         } else if(L.op==='partnerTens'){
-            for(let t=1;t<=9;t++) out.push({id:'pt:'+(t*10), kind:'partner', target:100, a:t*10, ans:100-t*10});
+            [50,10,20,30,40].forEach(lo=>{ const hi=100-lo; out.push({id:'pt:'+lo+'-'+hi, kind:'partner', target:100, lo:lo, hi:hi}); });
         } else if(L.op==='minus' && L.max<=20){
             for(let m=2;m<=L.max;m++) for(let s=1;s<m;s++) out.push({id:'m:'+m+'-'+s, kind:'minus', m:m, s:s, ans:m-s});
         } else {
             return null;
         }
         return out;
+    }
+    // Migration: alte Einzel-Fakten (p10:7, pt:30) zu Paar-Fakten (p10:3-7, pt:30-70)
+    function migrateFactPairs(prof){
+        for(const id of Object.keys(prof.facts)){
+            const old = prof.facts[id];
+            let target=null, a=null, m=id.match(/^p(\d+):(\d+)$/);
+            if(m){ target=+m[1]; a=+m[2]; }
+            else { m=id.match(/^pt:(\d+)$/); if(m){ target=100; a=+m[1]; } }
+            if(target==null) continue;
+            const lo=Math.min(a,target-a), hi=target-lo;
+            const nid = id.charAt(1)==='t' ? 'pt:'+lo+'-'+hi : 'p'+target+':'+lo+'-'+hi;
+            delete prof.facts[id];
+            const ex = prof.facts[nid];
+            if(ex){ ex.box=Math.max(ex.box||0, old.box||0); ex.seen=(ex.seen||0)+(old.seen||0); ex.fast=(ex.fast||0)+(old.fast||0); }
+            else prof.facts[nid] = {id:nid, kind:'partner', target:target, lo:lo, hi:hi, box:old.box||0, seen:old.seen||0, fast:old.fast||0, due:old.due, last:old.last};
+        }
     }
     function randFactBig(L, rnd){
         if(L.op==='plus'){
@@ -438,12 +457,23 @@
         return q;
     }
 
-    // Tagespaeckchen: max. 3 neue + faellige Wiederholungen + Auffuellen mit Wiederholungen
+    // Tagespaeckchen: max. 3 neue + faellige Wiederholungen + Auffuellen mit Wiederholungen.
+    // Erste Runde in einem Bereich = "Schau-Runde": erst pruefen, was das Kind schon kann
+    // (Borns Ueberpruefungstabelle) - schnell Gekonntes startet direkt als gekonnt.
     function buildQueue(L, prof, today, rnd){
         const tracked = [];
         for(const id in prof.facts){ const f=prof.facts[id]; if(levelHasFact(L,f)) tracked.push(f); }
-        const newAllow = Math.max(0, NEW_PER_DAY - (prof.daily.newCount||0));
         const uni = factUniverse(L);
+        if(!tracked.length){
+            let probes = [];
+            if(uni) probes = uni.slice(0, Math.min(TOTAL, uni.length));
+            else { let g=0; while(probes.length<TOTAL && g<300){ g++; const f=randFactBig(L,rnd); if(!probes.some(x=>x.id===f.id)) probes.push(f); } }
+            const picks = probes.map(f=>({f:f, probe:true}));
+            const pool = picks.slice(); let gi=0;
+            while(picks.length<TOTAL && pool.length){ picks.push({f:pool[gi%pool.length].f, probe:true, isRep:true}); gi++; }
+            return fixAdjacent(shuffleWith(picks, rnd));
+        }
+        const newAllow = Math.max(0, NEW_PER_DAY - (prof.daily.newCount||0));
         let news = [];
         if(uni){
             for(let i=0;i<uni.length && news.length<newAllow;i++){ if(!prof.facts[uni[i].id]) news.push(uni[i]); }
@@ -454,11 +484,6 @@
                 const f = randFactBig(L, rnd);
                 if(!prof.facts[f.id] && !news.some(x=>x.id===f.id)) news.push(f);
             }
-        }
-        // Notfall: nichts Bekanntes und Tageslimit erreicht -> trotzdem 3 einfuehren, damit nie eine leere Runde entsteht
-        if(!tracked.length && !news.length){
-            if(uni){ for(let i=0;i<uni.length && news.length<3;i++){ if(!prof.facts[uni[i].id]) news.push(uni[i]); } }
-            else { let g=0; while(news.length<3 && g<300){ g++; const f=randFactBig(L,rnd); if(!news.some(x=>x.id===f.id)) news.push(f); } }
         }
         const due   = tracked.filter(f=>!f.due || cmpDate(f.due,today)<=0).sort((a,b)=>(a.box||0)-(b.box||0));
         const later = tracked.filter(f=> f.due && cmpDate(f.due,today)>0).sort((a,b)=>cmpDate(a.due,b.due));
@@ -474,13 +499,27 @@
     }
 
     // Bewertung: 'fast' (unter Blitz-Schwelle), 'slow' (richtig, aber gezaehlt?), 'fail' (falsch/gezeigt)
+    function newFactRecord(spec){
+        const f = {id:spec.id, kind:spec.kind, box:0, seen:0, fast:0};
+        if(spec.kind==='partner'){ f.target=spec.target; f.lo=spec.lo; f.hi=spec.hi; }
+        else if(spec.kind==='minus'){ f.m=spec.m; f.s=spec.s; f.ans=spec.ans; }
+        else { f.a=spec.a; f.b=spec.b; f.ans=spec.ans; }
+        return f;
+    }
+    // Schau-Runde: erste Begegnung zaehlt nicht als "neu lernen", sondern stuft ein
+    function gradeProbe(prof, spec, result, today){
+        if(prof.facts[spec.id]) return gradeFact(prof, spec, result, today);
+        const f = newFactRecord(spec);
+        f.box = result==='fast' ? 2 : result==='slow' ? 1 : 0;
+        f.seen = 1; f.fast = result==='fast' ? 1 : 0;
+        f.lastUp = today; f.due = addDaysStr(today, INTERVALS[f.box]); f.last = today;
+        prof.facts[spec.id] = f;
+        return f;
+    }
     function gradeFact(prof, spec, result, today){
         let f = prof.facts[spec.id];
         if(!f){
-            f = {id:spec.id, kind:spec.kind, box:0, seen:0, fast:0};
-            if(spec.kind==='partner'){ f.target=spec.target; f.a=spec.a; f.ans=spec.ans; }
-            else if(spec.kind==='minus'){ f.m=spec.m; f.s=spec.s; f.ans=spec.ans; }
-            else { f.a=spec.a; f.b=spec.b; f.ans=spec.ans; }
+            f = newFactRecord(spec);
             prof.facts[spec.id] = f;
             prof.daily.newCount = (prof.daily.newCount||0)+1;
         }
@@ -545,6 +584,7 @@
         P = app.profiles.find(p=>p.id===id);
         app.activeId = id;
         if(!P.facts) P.facts = {};   // Migration alter Profile
+        migrateFactPairs(P);         // Einzel-Fakten zu Paar-Fakten
         ensureDaily();
         saveApp();
     }
@@ -701,9 +741,9 @@
     // ---------------- Elternbereich ----------------
     // Bereiche ueberschneidungsfrei (Stufen 1-3 bzw. 4-6 teilen sich die Fakten)
     const FACT_GROUPS = [
-        { name:'Partner bis 10',    total:9,    test:f=>f.kind==='partner' && f.target===10 },
-        { name:'Partner bis 20',    total:19,   test:f=>f.kind==='partner' && f.target===20 },
-        { name:'Verliebte Zehner',  total:9,    test:f=>f.kind==='partner' && f.target===100 },
+        { name:'Partner bis 10',    total:5,    test:f=>f.kind==='partner' && f.target===10 },
+        { name:'Partner bis 20',    total:10,   test:f=>f.kind==='partner' && f.target===20 },
+        { name:'Verliebte Zehner',  total:5,    test:f=>f.kind==='partner' && f.target===100 },
         { name:'Minus bis 10',      total:45,   test:f=>f.kind==='minus' && f.m<=10 },
         { name:'Minus bis 20',      total:145,  test:f=>f.kind==='minus' && f.m>10 && f.m<=20 },
         { name:'Plus bis 100',      total:null, test:f=>f.kind==='plus' },
@@ -761,7 +801,7 @@
 
     // Loesung zeigen - bei Zehneruebergang immer derselbe Born-Rechenweg (erst zur 10 auffuellen)
     function solutionText(t){
-        if(t.kind==='partner') return t.a+' und '+t.ans+' ist '+t.target;
+        if(t.kind==='partner'){ const x=(t.a!=null?t.a:t.lo), y=(t.ans!=null?t.ans:t.hi); return x+' und '+y+' ist '+t.target; }
         if(t.kind==='minus'){
             const u = t.m%10;
             if(u>0 && t.s>u) return t.m+' − '+u+' = '+(t.m-u)+' · dann − '+(t.s-u)+' → '+t.ans;
@@ -855,6 +895,9 @@
         s.entry = s.queue[s.pos];
         const t = Object.assign({}, s.entry.f);
         if(t.kind==='partner'){
+            // Paar-Fakt: Anzeigeseite wechselt (mal 3+?=10, mal 7+?=10) - gleiche Aufgabe, mehr Abwechslung
+            t.a = (Math.random()<0.5 ? t.hi : t.lo);
+            t.ans = t.target - t.a;
             const rep = s.quick ? 'num' : (s.L.rep==='mix' ? (Math.random()<0.5?'dots':'num') : s.L.rep);
             t.rep = rep;
             // Drei-Phasen-Abloesung: Bild -> Blitzbild -> nur Zahl (je sicherer die Aufgabe, desto abstrakter)
@@ -910,7 +953,7 @@
         const s = session, t = s.task;
         setKeypad(false);
         stopHint();
-        gradeFact(P, s.entry.f, 'fail', dateStr(new Date())); save();
+        (s.entry.probe ? gradeProbe : gradeFact)(P, s.entry.f, 'fail', dateStr(new Date())); save();
         const again = requeue(s.entry);
         const fb = document.getElementById('feedback');
         fb.innerHTML = 'Schau: <b>'+solutionText(t)+'</b>'+(again?' · kommt gleich nochmal':'');
@@ -950,7 +993,7 @@
 
         if(correct){
             const result = dt <= fastLimit(t) + (t.phase==='blitz'?1600:0) ? 'fast' : 'slow';
-            gradeFact(P, e.f, result, today);
+            (e.probe ? gradeProbe : gradeFact)(P, e.f, result, today);
             let gain;
             if(e.isRe){ gain = 1; }                                        // Wiederholung nach Fehler: kleiner Stern
             else {
@@ -965,7 +1008,7 @@
             revealFull(t);
             advance(result==='fast' ? 900 : 1300);
         } else {
-            gradeFact(P, e.f, 'fail', today); save();
+            (e.probe ? gradeProbe : gradeFact)(P, e.f, 'fail', today); save();
             const again = requeue(e);
             fb.innerHTML = 'Schau: <b>'+solutionText(t)+'</b>'+(again?' · kommt gleich nochmal':'');
             fb.className = 'feedback';
@@ -1013,10 +1056,13 @@
 
         // Anzeige
         setMascot('doneMascotWrap', (passed || (s.quick && s.firstTry>=s.base-1)) ? 'celebrate' : null);
-        document.getElementById('doneTitle').textContent = s.quick ? 'Blitzrunde fertig!' : (passed ? 'Geschafft!' : 'Gut geübt!');
+        const wasProbe = s.queue.some(e=>e.probe);
+        document.getElementById('doneTitle').textContent = s.quick ? 'Blitzrunde fertig!' : wasProbe ? 'Schau-Runde fertig!' : (passed ? 'Geschafft!' : 'Gut geübt!');
         document.getElementById('score').textContent = s.firstTry+'/'+s.base;
         document.getElementById('doneMessage').textContent = s.quick
             ? (s.firstTry===s.base ? 'Alles sitzt! Blitzschnell!' : 'Fleißig wiederholt, das festigt!')
+            : wasProbe && !passed
+            ? 'Jetzt weiß ich, was du schon kannst. Ab jetzt üben wir genau das Richtige!'
             : passed
             ? (s.firstTry===s.base ? 'Perfekt! Alles richtig!' : 'Stufe gemeistert!')
             : `Du brauchst ${PASS} von ${s.base}. Morgen klappt mehr, dranbleiben!`;
