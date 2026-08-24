@@ -53,6 +53,8 @@ h2{font-family:'Fredoka',sans-serif;font-size:1.2rem;color:var(--secondary);marg
 .btn+p{text-align:center;margin-top:6px;color:var(--muted);font-size:.85rem;}
 
 /* Set grid */
+.grp-hdr{grid-column:1/-1;font-family:'Fredoka',sans-serif;font-weight:600;font-size:1rem;
+    color:var(--primary);margin:6px 0 2px;padding:6px 2px;border-bottom:2px solid #ffe1e1;}
 .sets{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .set-btn{background:#fff;border:2px solid #eee;border-radius:var(--radius-sm);padding:14px;
     font-family:'Fredoka',sans-serif;font-weight:600;color:var(--text);cursor:pointer;font-size:.95rem;
@@ -106,11 +108,15 @@ h2{font-family:'Fredoka',sans-serif;font-size:1.2rem;color:var(--secondary);marg
     <div class="screen active" id="screenStart">
         <div class="card">
             <h2>🎯 Wähle ein Set</h2>
-            <p class="muted">10 Sets à 10 Sätze · Sek 3</p>
+            <p class="muted">16 Sets à 10 Sätze · Sek 3 · Grundlagen + Beruf &amp; Fortgeschritten</p>
             <div class="sets" id="setsGrid"></div>
             <div style="height:14px"></div>
             <div class="opt">
-                <button class="btn btn-secondary on" id="modeV" onclick="setAll()">Alle<br>gemischt</button>
+                <button class="btn btn-secondary on" id="allG" onclick="setAllLvl(0)">Alle<br>Grundlagen</button>
+                <button class="btn btn-secondary" id="allB" onclick="setAllLvl(1)">Alle<br>Beruf+Adv</button>
+                <button class="btn btn-secondary" id="allX" onclick="setAllLvl(null)">Alles<br>gemischt</button>
+            </div>
+            <div class="opt" style="margin-top:10px;">
                 <button class="btn btn-secondary on" id="modeEn" onclick="dirEn()">🇬🇧→🇩🇪</button>
                 <button class="btn btn-secondary on" id="modeDe" onclick="dirDe()">🇩🇪→🇬🇧</button>
             </div>
@@ -272,12 +278,81 @@ const SETS = [
 ["Where is the hospital?","Wo ist das Krankenhaus?"],
 ["I've lost my wallet.","Ich habe mein Portemonnaie verloren."],
 ["Do you need any help?","Brauchst du Hilfe?"],
-["Thank you so much for your help.","Vielen Dank für deine Hilfe."]]]]
+["Thank you so much for your help.","Vielen Dank für deine Hilfe."]]]],
+["Bewerbung & Vorstellungsgespräch",[[
+["I'm applying for the apprenticeship.","Ich bewerbe mich um die Lehrstelle."],
+["Can I have an application form, please?","Kann ich bitte ein Bewerbungsformular haben?"],
+["I'm interested in this position.","Ich interessiere mich für diese Stelle."],
+["What are your strengths?","Was sind Ihre Stärken?"],
+["I work well in a team.","Ich arbeite gut im Team."],
+["Why do you want this job?","Warum möchtest du diese Stelle?"],
+["I did a two-week internship.","Ich habe ein zweiwöchiges Praktikum gemacht."],
+["When can you start?","Wann kannst du anfangen?"],
+["I'm reliable and hard-working.","Ich bin zuverlässig und fleißig."],
+["Thank you for the opportunity.","Vielen Dank für die Möglichkeit."]]]],
+["Arbeit & Berufsalltag",[[
+["I start work at eight.","Ich beginne die Arbeit um acht."],
+["We have a meeting at nine.","Um neun haben wir eine Besprechung."],
+["I'm on my way to work.","Ich bin auf dem Weg zur Arbeit."],
+["What time is your break?","Wann ist deine Pause?"],
+["I work part-time.","Ich arbeite Teilzeit."],
+["I have a day off tomorrow.","Ich habe morgen frei."],
+["My colleague shows me the task.","Mein Kollege zeigt mir die Aufgabe."],
+["I've finished for today.","Ich bin für heute fertig."],
+["Please report to the supervisor.","Bitte melde dich beim Vorgesetzten."],
+["Let's get to work.","Lass uns an die Arbeit gehen."]]]],
+["Kunden & Berufsalltag",[[
+["How can I help you?","Wie kann ich Ihnen helfen?"],
+["I'm just looking, thanks.","Ich schaue mich nur um, danke."],
+["This is currently on sale.","Das ist gerade im Angebot."],
+["Would you like a receipt?","Möchten Sie eine Quittung?"],
+["Sorry, it's out of stock.","Entschuldigung, das ist ausverkauft."],
+["It comes with a guarantee.","Dabei gibt es eine Garantie."],
+["Please sign here.","Bitte unterschreiben Sie hier."],
+["Delivery takes about three days.","Die Lieferung dauert etwa drei Tage."],
+["Do you have a loyalty card?","Haben Sie eine Kundenkarte?"],
+["I'll check that for you.","Ich schaue das für Sie nach."]]]],
+["Meinungen äussern",[[
+["In my opinion, it's worth it.","Meiner Meinung nach lohnt es sich."],
+["I completely agree with you.","Ich stimme dir völlig zu."],
+["I see your point, but...","Ich verstehe deinen Punkt, aber..."],
+["I'm not so sure about that.","Da bin ich mir nicht ganz sicher."],
+["On the other hand, it's cheaper.","Andererseits ist es billiger."],
+["It depends on the situation.","Es kommt auf die Situation an."],
+["That makes sense to me.","Das leuchtet mir ein."],
+["Let's agree on that.","Darauf einigen wir uns."],
+["Honestly, I have mixed feelings.","Ehrlich gesagt habe ich gemischte Gefühle."],
+["I'd rather not, if that's okay.","Lieber nicht, wenn das in Ordnung ist."]]]],
+["Über die Vergangenheit",[[
+["Yesterday I went to the city.","Gestern bin ich in die Stadt gegangen."],
+["When I was younger, I played football.","Als ich jünger war, spielte ich Fußball."],
+["I've never been to England.","Ich war noch nie in England."],
+["We did that two weeks ago.","Das haben wir vor zwei Wochen gemacht."],
+["I saw him last Friday.","Ich habe ihn letzten Freitag gesehen."],
+["It used to be different.","Früher war es anders."],
+["I didn't understand what he said.","Ich habe nicht verstanden, was er sagte."],
+["She has just left.","Sie ist gerade gegangen."],
+["We were talking when it started.","Wir redeten gerade, als es begann."],
+["I used to live in the countryside.","Früher lebte ich auf dem Land."]]]],
+["Pläne & Bedingungen",[[
+["If I had more time, I would learn more.","Wenn ich mehr Zeit hätte, würde ich mehr lernen."],
+["I would like to apply for this job.","Ich würde mich gern für diese Stelle bewerben."],
+["Let's see if we can manage it.","Mal sehen, ob wir das hinbekommen."],
+["It could be a good idea.","Es könnte eine gute Idee sein."],
+["Would you mind helping me?","Würdest du mir helfen?"],
+["I'm looking forward to the weekend.","Ich freue mich auf das Wochenende."],
+["I might be a bit late.","Ich komme vielleicht etwas zu spät."],
+["Could you keep it in mind?","Könntest du das bitte im Kopf behalten?"],
+["We'll see how it goes.","Wir werden sehen, wie es läuft."],
+["By this time next year...","Nächstes Jahr um diese Zeit..."]]]]
 ];
 
 /* ---------- STATE ---------- */
+// Stufe je Set: 0 = Grundlagen, 1 = Beruf & Fortgeschritten
+const SET_LEVELS=[0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1];
 let deck=[];        // [ {en,de,set} ... ] shuffled queue
 let done=0, againN=0, setSel=null;
+let allLvl=null;    // null = alle mixen, 0 = nur Grundlagen, 1 = nur Beruf+Adv
 let dir='en';       // 'en' => english front, 'de' => german front
 
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
@@ -285,15 +360,23 @@ function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor
 /* ---------- Set grid ---------- */
 function renderSets(){
     const g=document.getElementById('setsGrid');g.innerHTML='';
-    SETS.forEach((s,i)=>{
-        const b=document.createElement('button');
-        b.className='set-btn';
-        b.innerHTML=`<span>${s[0].split('·')[0].trim()}</span><span class="n">${i+1}</span>`;
-        b.onclick=()=>{setSel=i;startGame();};
-        g.appendChild(b);
+    const groups=[['★ Grundlagen',0],['★ Beruf & Fortgeschritten',1]];
+    groups.forEach(([title,lvl])=>{
+        const hdr=document.createElement('div');hdr.className='grp-hdr';hdr.textContent=title;g.appendChild(hdr);
+        SETS.forEach((s,i)=>{
+            if(SET_LEVELS[i]!==lvl)return;
+            const b=document.createElement('button');b.className='set-btn';
+            b.innerHTML=`<span>${s[0].split('·')[0].trim()}</span><span class="n">${i+1}</span>`;
+            b.onclick=()=>{setSel=i;startGame();};
+            g.appendChild(b);
+        });
     });
 }
-function setAll(){setSel=null;}
+function setAllLvl(lv){allLvl=lv;setSel=null;updateLevelUI();}
+function updateLevelUI(){
+    const map={'0':'allG',1:'allB','null':'allX'};
+    for(const k in map){const on=(allLvl==null?k==='null':allLvl===Number(k));document.getElementById(map[k]).classList.toggle('on',on);}
+}
 function dirEn(){dir='en';document.getElementById('modeEn').classList.add('on');document.getElementById('modeDe').classList.remove('on');}
 function dirDe(){dir='de';document.getElementById('modeDe').classList.add('on');document.getElementById('modeEn').classList.remove('on');}
 
@@ -303,7 +386,12 @@ function shuffleSet(setIdx){return SETS[setIdx][1][0].map(c=>({en:c[0],de:c[1]})
 function startGame(){
     let base;
     if(setSel!=null){base=SETS[setSel][1][0].map(c=>({en:c[0],de:c[1]}));document.getElementById('headRight').textContent=SETS[setSel][0];}
-    else{base=[];SETS.forEach(s=>s[1][0].forEach(c=>base.push({en:c[0],de:c[1]})));document.getElementById('headRight').textContent='Alle gemischt';}
+    else{base=[];SETS.forEach((s,i)=>{
+            if(allLvl==null||SET_LEVELS[i]===allLvl)s[1][0].forEach(c=>base.push({en:c[0],de:c[1]}));
+        });
+        document.getElementById('headRight').textContent=
+            allLvl==null?'Alle gemischt':(allLvl===0?'Alle · Grundlagen':'Alle · Beruf & Fortgeschritten');
+    }
     deck=shuffle(base);done=0;againN=0;
     show('screenGame');next();
 }
