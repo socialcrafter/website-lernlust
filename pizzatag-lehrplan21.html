@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Welche Kompetenzen des Lehrplans 21 eine Schülerfirma tatsächlich bearbeitet — und an welche Handlungskompetenzen der Berufslehren sie anschliessen.">
+  <title>Pizzatag im Lehrplan 21 — Lernlust</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* ── Zusätzliche Styles nur für diese Seite ───────────────── */
+
+    /* Fachbereichsfarben — flach, hoher Kontrast, schwarze Kontur */
+    :root {
+      --f-WAH:#e67e22; --f-MA:#4cc9f0; --f-D:#f72585;  --f-MI:#7209b7; --f-BO:#ffd60a;
+      --f-NT:#06d6a0;  --f-RZG:#8ac926; --f-ERG:#ff595e; --f-TTG:#4a7c59; --f-BG:#c77dff;
+    }
+
+    .lp-section { padding: var(--space-lg) 0; }
+    .lp-section + .lp-section { border-top: var(--border-thick); }
+
+    /* ── Kennzahlen ─────────────────────────────────────────── */
+    .tally {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 0;
+      border: var(--border-thick);
+      box-shadow: var(--shadow-brutal);
+      background: var(--color-surface);
+      margin-top: var(--space-md);
+    }
+    .tally div { padding: 20px 18px; border-right: var(--border-thin); }
+    .tally div:last-child { border-right: 0; }
+    .tally b {
+      display: block; font-size: 2.4rem; font-weight: 900; line-height: 1;
+      font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+    }
+    .tally span {
+      display: block; margin-top: 6px; font-size: 0.75rem; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    /* ── Filterleiste ───────────────────────────────────────── */
+    .filterbar {
+      border: var(--border-thick);
+      box-shadow: var(--shadow-brutal);
+      background: var(--color-bg);
+      padding: 20px 22px;
+      display: flex; flex-direction: column; gap: 16px;
+      margin-bottom: var(--space-md);
+    }
+    .filter-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .filter-label {
+      font-size: 0.72rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.1em; width: 100%; margin: 0;
+    }
+    .lp-search {
+      flex: 1; min-width: 220px;
+      border: var(--border-medium); background: var(--color-bg); color: var(--color-text);
+      padding: 11px 14px; font-family: var(--font-sans); font-size: 1rem; font-weight: 600;
+      border-radius: 0;
+    }
+    .lp-search:focus-visible { outline: 4px solid var(--color-tertiary); outline-offset: 2px; }
+
+    .chip {
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;
+      padding: 7px 11px; cursor: pointer;
+      border: var(--border-thin); background: var(--color-bg); color: var(--color-text);
+      border-radius: 0; line-height: 1;
+    }
+    .chip:hover { box-shadow: 3px 3px 0 var(--color-black); transform: translate(-1px,-1px); }
+    .chip[aria-pressed="true"] { background: var(--color-black); color: #fff; }
+    .chip:focus-visible { outline: 3px solid var(--color-tertiary); outline-offset: 2px; }
+    .chip .swatch {
+      display: inline-block; width: 10px; height: 10px; margin-right: 7px;
+      border: 2px solid var(--color-black); vertical-align: -1px;
+    }
+    .chip .n { opacity: .55; margin-left: 3px; }
+
+    .toggle { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
+    .toggle input { width: 20px; height: 20px; accent-color: var(--color-accent); margin: 0; }
+    .btn-reset {
+      border: var(--border-thin); background: var(--color-surface); color: var(--color-text);
+      font-family: var(--font-sans); font-weight: 800; font-size: 0.82rem; text-transform: uppercase;
+      letter-spacing: 0.05em; padding: 8px 12px; cursor: pointer;
+    }
+    .btn-reset:hover { background: var(--color-primary); }
+    .lp-count { font-weight: 800; font-size: 0.9rem; margin-bottom: var(--space-sm); font-variant-numeric: tabular-nums; }
+
+    /* ── Schritte ───────────────────────────────────────────── */
+    .step { margin-bottom: var(--space-md); scroll-margin-top: 90px; }
+    .step-head {
+      background: var(--color-black); color: #fff;
+      padding: 14px 20px; display: flex; gap: 16px; align-items: baseline; flex-wrap: wrap;
+    }
+    .step-head .num {
+      font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.14em; color: var(--color-accent);
+      background: #fff; padding: 3px 8px; flex: none;
+    }
+    .step-head h3 {
+      margin: 0; color: #fff; font-size: clamp(1.1rem, 2.4vw, 1.5rem);
+      text-transform: uppercase; font-weight: 900; letter-spacing: -0.01em;
+    }
+    .step-note {
+      border: var(--border-thin); border-top: 0; background: var(--color-surface);
+      padding: 14px 20px; font-size: 0.95rem; font-weight: 600; margin: 0;
+    }
+    .step-list { border: var(--border-thin); border-top: 0; background: var(--color-bg); }
+
+    /* ── Kompetenzzeile ─────────────────────────────────────── */
+    .k { display: grid; grid-template-columns: 132px minmax(0,1fr); gap: 0 20px;
+         padding: 18px 20px; border-top: var(--border-thin); }
+    .k:first-child { border-top: 0; }
+    .k.marked { background: #fffbe6; box-shadow: inset 8px 0 0 var(--color-primary); }
+    .k-code { font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem; word-break: break-all; }
+    .k-fach {
+      display: inline-block; margin-top: 7px; padding: 2px 7px;
+      border: 2px solid var(--color-black); font-size: 0.65rem; font-weight: 900;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .k-quote { font-size: 1rem; font-weight: 600; line-height: 1.5; margin: 0; }
+    .k-quote::before { content: "«"; } .k-quote::after { content: "»"; }
+    .k-map {
+      margin: 12px 0 0; padding: 10px 14px; background: var(--color-surface);
+      border-left: 6px solid var(--color-primary); font-size: 0.92rem; font-weight: 600;
+    }
+    .k-map b {
+      display: block; font-size: 0.66rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.12em; margin-bottom: 3px;
+    }
+    .k-jobs { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 11px; }
+    .jobchip {
+      font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700;
+      padding: 4px 8px; border: 2px solid var(--color-black); background: var(--color-bg);
+    }
+    .jobchip i { font-style: normal; color: var(--color-accent); }
+    .k-merk { grid-column: 2; margin-top: 11px; }
+    .k-merk label { display: inline-flex; align-items: center; gap: 7px; font-size: 0.72rem;
+      font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; cursor: pointer; }
+    .k-merk input { width: 18px; height: 18px; accent-color: var(--color-primary); margin: 0; }
+    @media (max-width: 700px) {
+      .k { grid-template-columns: 1fr; }
+      .k-code { margin-bottom: 10px; }
+      .k-fach { margin-top: 0; margin-left: 10px; }
+      .k-merk { grid-column: 1; }
+    }
+    .lp-empty { border: var(--border-thick); padding: 30px; font-weight: 700; text-align: center; }
+
+    /* ── Überfachliche Kompetenzen ──────────────────────────── */
+    .ufk { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: var(--space-sm); }
+    .ufk > div { border: var(--border-thin); box-shadow: var(--shadow-small); background: var(--color-bg); padding: 20px; }
+    .ufk h4 { margin: 0 0 4px; font-size: 1rem; }
+    .ufk .who {
+      display: inline-block; margin-bottom: 12px; padding: 2px 8px;
+      border: 2px solid var(--color-black); background: var(--color-tertiary);
+      font-size: 0.65rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .ufk ul { margin: 0; padding-left: 20px; }
+    .ufk li { margin-bottom: 7px; font-size: 0.9rem; font-weight: 600; }
+
+    /* ── Lehrberufe ─────────────────────────────────────────── */
+    .beruf { border: var(--border-thick); box-shadow: var(--shadow-brutal); background: var(--color-bg);
+             padding: 24px; margin-bottom: var(--space-md); }
+    .beruf-head { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 8px; }
+    .beruf-head h3 { margin: 0; font-size: clamp(1.05rem, 2.2vw, 1.4rem); }
+    .stufe {
+      border: 2px solid var(--color-black); background: var(--color-primary);
+      font-family: var(--font-mono); font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px;
+    }
+    .stufe.eba { background: var(--color-tertiary); }
+    .beruf-why { font-size: 0.95rem; font-weight: 600; margin-bottom: 18px; }
+    .hkb {
+      margin: 20px 0 0; padding: 8px 12px; background: var(--color-black); color: #fff;
+      font-size: 0.72rem; font-weight: 900; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+    .hk { display: grid; grid-template-columns: 66px minmax(0,1fr); gap: 0 14px;
+          padding: 11px 4px; border-bottom: var(--border-thin); align-items: baseline; }
+    .hk code { font-family: var(--font-mono); font-weight: 700; font-size: 0.82rem; color: var(--color-accent); }
+    .hk p { margin: 0; font-size: 0.92rem; font-weight: 600; }
+    .hk .tie { display: block; margin-top: 4px; font-size: 0.8rem; font-weight: 700; opacity: .7; }
+    @media (max-width: 560px) { .hk { grid-template-columns: 1fr; gap: 4px; } }
+
+    /* ── Hinweise und Quellen ───────────────────────────────── */
+    .hinweis {
+      border: var(--border-thick); box-shadow: var(--shadow-brutal);
+      background: var(--color-surface); padding: 22px 24px; margin-bottom: var(--space-md);
+    }
+    .hinweis h4 { margin: 0 0 8px; font-size: 1rem; }
+    .hinweis p { margin: 0 0 10px; font-size: 0.95rem; font-weight: 600; }
+    .hinweis p:last-child { margin-bottom: 0; }
+    .quellen { list-style: none; padding: 0; }
+    .quellen li { border-bottom: var(--border-thin); padding: 11px 0; font-size: 0.92rem; font-weight: 600; }
+
+    /* Sprungnavigation */
+    .jump { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: var(--space-md); }
+    .jump a {
+      border: var(--border-thin); background: var(--color-surface); padding: 8px 12px;
+      font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;
+      text-decoration: none; color: var(--color-text);
+    }
+    .jump a:hover { background: var(--color-primary); color: var(--color-black); box-shadow: 3px 3px 0 var(--color-black); }
+  </style>
+</head>
+<body>
+
+  <!-- ── Navigation (identisch zu index.html) ───────────────── -->
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-text">Lernlust</span>
+      </a>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html#apps" class="nav-link">Apps</a></li>
+        <li><a href="index.html#reflexion" class="nav-link">Feldversuch</a></li>
+        <li><a href="pizzatag-lehrplan21.html" class="nav-link" style="font-weight:900;">Pizzatag</a></li>
+        <li><a href="prompts.html" class="nav-link">Prompts</a></li>
+        <li><a href="index.html#kontakt" class="nav-link nav-cta">Kontakt</a></li>
+      </ul>
+      <button class="nav-toggle" id="navToggle">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ── Hero ───────────────────────────────────────────────── -->
+  <section class="hero">
+    <div class="hero-background">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+    </div>
+    <div class="container">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-line">Eine Klasse verkauft Pizza.</span>
+          <span class="title-line highlight">Was lernt sie dabei?</span>
+        </h1>
+        <p class="hero-subtitle">Eine Schülerfirma am Sonderschulangebot Basel: einmal pro Woche frische Pizza. Planen, einkaufen, kalkulieren, verkaufen, abrechnen — und alles davon digital vorbereiten, absprechen und dokumentieren. Diese Seite zeigt, welche Kompetenzen des Lehrplans 21 dabei wirklich bearbeitet werden und an welche Handlungskompetenzen der Berufslehren sie anschliessen.</p>
+        <div class="hero-cta">
+          <a href="#kompetenzen" class="btn btn-primary">Zu den Kompetenzen</a>
+          <a href="#lehrstellen" class="btn btn-secondary">Anschluss Lehrstellen</a>
+        </div>
+      </div>
+      <div class="hero-illustration">
+        <div class="floating-card card-1"><span class="card-text">Planen</span></div>
+        <div class="floating-card card-2"><span class="card-text">Verkaufen</span></div>
+        <div class="floating-card card-3"><span class="card-text">Kasse ✓</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Kennzahlen ─────────────────────────────────────────── -->
+  <section class="lp-section">
+    <div class="container">
+      <h2 class="section-title">Die Auslegeordnung</h2>
+      <p class="section-intro">Alle Kompetenzformulierungen sind im Wortlaut aus dem Lehrplan 21 zitiert und gegen die Fachbereichslehrpläne geprüft. Die Zeile «Am Pizzatag» ist Zuordnung, kein Lehrplantext.</p>
+      <div class="tally" id="tally"></div>
+    </div>
+  </section>
+
+  <!-- ── Kompetenzen ────────────────────────────────────────── -->
+  <section id="kompetenzen" class="lp-section">
+    <div class="container">
+      <nav class="jump">
+        <a href="#kompetenzen">Fünf Schritte</a>
+        <a href="#ufk">Überfachliche Kompetenzen</a>
+        <a href="#lehrstellen">Anschluss Lehrstellen</a>
+        <a href="#quellen">Quellen</a>
+      </nav>
+
+      <div class="filterbar">
+        <div class="filter-row">
+          <p class="filter-label">Suchen</p>
+          <input class="lp-search" id="q" type="search" placeholder="Code oder Stichwort, z.B. MI.1.4.f oder Hygiene" autocomplete="off">
+        </div>
+        <div class="filter-row">
+          <p class="filter-label">Fachbereich</p>
+          <div class="filter-row" id="fachChips" style="gap:8px"></div>
+        </div>
+        <div class="filter-row">
+          <p class="filter-label">Projektschritt</p>
+          <div class="filter-row" id="stepChips" style="gap:8px"></div>
+        </div>
+        <div class="filter-row">
+          <label class="toggle"><input type="checkbox" id="onlyDigital"> nur digitale Kompetenzen</label>
+          <label class="toggle"><input type="checkbox" id="onlyMerk"> nur gemerkte</label>
+          <button class="btn-reset" id="reset" type="button">Zurücksetzen</button>
+        </div>
+      </div>
+
+      <p class="lp-count" id="count"></p>
+      <div id="stream"></div>
+      <p class="lp-empty" id="empty" hidden>Keine Kompetenz passt zu dieser Auswahl.</p>
+    </div>
+  </section>
+
+  <!-- ── Überfachliche Kompetenzen ──────────────────────────── -->
+  <section id="ufk" class="lp-section">
+    <div class="container">
+      <h2 class="section-title">Überfachliche Kompetenzen</h2>
+      <p class="section-intro">Der Lehrplan 21 führt personale, soziale und methodische Kompetenzen ohne Codes und ohne Zyklusstufen. Eine Schülerfirma ist eines der wenigen Gefässe, in denen sie nicht nebenbei laufen, sondern den Kern der Sache bilden. Wortlaut aus den Grundlagen, Kapitel Überfachliche Kompetenzen.</p>
+      <div class="ufk" id="ufkGrid"></div>
+    </div>
+  </section>
+
+  <!-- ── Lehrberufe ─────────────────────────────────────────── -->
+  <section id="lehrstellen" class="lp-section">
+    <div class="container">
+      <h2 class="section-title">Anschluss an die Lehrstellen</h2>
+      <p class="section-intro">Was die Klasse am Pizzatag tut, steht in den Bildungsplänen der Berufslehren als Handlungskompetenz. Der Wortlaut unten stammt aus den offiziellen Bildungsplänen, die Zeile darunter benennt, wo im Projekt dieselbe Handlung vorkommt. Brauchbar für Schnupperlehren, Standortgespräche und das Berufswahldossier.</p>
+      <div id="berufe"></div>
+    </div>
+  </section>
+
+  <!-- ── Quellen ────────────────────────────────────────────── -->
+  <section id="quellen" class="lp-section">
+    <div class="container">
+      <h2 class="section-title">Quellen und Lesehinweis</h2>
+
+      <div class="hinweis">
+        <h4>Was hier Lehrplan ist und was nicht</h4>
+        <p>In Anführungszeichen steht der Originalwortlaut aus dem Lehrplan 21, D-EDK, bereinigte Fassung vom 29.02.2016. Die Rechte daran liegen bei der D-EDK. Der massgebliche Text steht auf <a href="https://www.lehrplan.ch">lehrplan.ch</a>.</p>
+        <p>Die Zeile «Am Pizzatag» ist meine Zuordnung und kein Lehrplantext. Sie ist als Vorschlag gedacht und gehört im Team überprüft.</p>
+        <p>Zyklusangaben beziehen sich auf Zyklus 3. Verbindlich ist immer die kantonale Fassung, für Basel-Stadt der Lehrplan 21 in der Ausgestaltung des Kantons, nicht die D-EDK-Vorlage.</p>
+      </div>
+
+      <ul class="quellen">
+        <li>Lehrplan 21, D-EDK, bereinigte Fassung vom 29.02.2016 — Fachbereichs- und Modullehrpläne sowie Grundlagen, <a href="https://www.lehrplan.ch">lehrplan.ch</a></li>
+        <li><a href="https://hotelgastro.ch/wp-content/uploads/2026/02/01_Bildungsplan_Koechin_EFZKoch_EFZ.pdf">Bildungsplan Köchin EFZ / Koch EFZ</a>, Hotel &amp; Gastro formation Schweiz</li>
+        <li><a href="https://www.bbz-sh.ch/wp-content/uploads/BBZ_Bildungsplan_Kuechenangestellte-r_EBA.pdf">Bildungsplan Küchenangestellte/r EBA</a></li>
+        <li><a href="https://hotelgastro.ch/wp-content/uploads/2026/02/01c_Qualifikationsprofil_Validierung_von_Bildungsleistungen_Restaurantfachfrau_EFZRestaurantfachmann_EFZ_.pdf">Qualifikationsprofil Restaurantfachfrau/-mann EFZ</a></li>
+        <li><a href="https://kbzsg.ch/wp-content/uploads/2023/03/Bildungsverordnung-Kauffrau-Kaufmann-EFZ.pdf">Bildungsverordnung Kauffrau/Kaufmann EFZ</a>, Reform 2023</li>
+        <li><a href="https://www.svbl.ch/logistiker-logistikerin/wp-content/uploads/sites/11/2026/01/DE_20230805_BiPla_LogistikerEFZ.pdf">Bildungsplan Logistiker/in EFZ</a>, ASFL SVBL</li>
+        <li><a href="https://www.zentrumbildung.ch/sites/default/files/uploads/2023-02/web-gb-broschuere-detailhandel2022-reform2.pdf">Detailhandel EFZ und EBA, Reform Verkauf 2022+</a> sowie <a href="https://bsdpz.ch/detailhandelsfachleute-efz/">BSDPZ Zürich</a></li>
+        <li><a href="https://www.ehb.swiss/sites/default/files/documents/bildungsplan_bkc_efz_01.01.2018_mit_anahng_2.pdf">Bildungsplan Bäcker-Konditor-Confiseur EFZ</a>, Fassung 01.01.2018</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Footer (identisch zu index.html) ───────────────────── -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <span class="logo-text">Lernlust</span>
+        </div>
+        <div class="footer-links">
+          <a href="impressum.html">Impressum</a>
+          <a href="datenschutz.html">Datenschutz</a>
+        </div>
+        <p class="footer-copyright">Alle Apps sind kostenlos und werbefrei</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+/* ============================ DATEN ============================ */
+const FACH = {
+  WAH:{n:"Wirtschaft, Arbeit, Haushalt", v:"--f-wah"},
+  MA:{n:"Mathematik", v:"--f-ma"},
+  D:{n:"Deutsch", v:"--f-d"},
+  MI:{n:"Medien und Informatik", v:"--f-mi"},
+  BO:{n:"Berufliche Orientierung", v:"--f-bo"},
+  NT:{n:"Natur und Technik", v:"--f-nt"},
+  RZG:{n:"Räume, Zeiten, Gesellschaften", v:"--f-rzg"},
+  ERG:{n:"Ethik, Religionen, Gemeinschaft", v:"--f-erg"},
+  TTG:{n:"Textiles und Technisches Gestalten", v:"--f-ttg"},
+  BG:{n:"Bildnerisches Gestalten", v:"--f-bg"}
+};
+
+const STEPS = [
+  {id:"planen", num:"Schritt 1", t:"Planen", note:"Das Angebot festlegen, Mengen und Abläufe bestimmen, Rollen im Team verteilen. Hier liegt der wirtschaftskundliche Kern des Projekts: WAH.2.1.a nennt den Pausenkiosk wörtlich als Beispiel für den einfachen Wirtschaftskreislauf."},
+  {id:"einkaufen", num:"Schritt 2", t:"Einkaufen", note:"Anbieter und Produkte vergleichen, Deklarationen lesen, Herkunft und Ökologie gewichten, Bestellmengen bestimmen."},
+  {id:"preis", num:"Schritt 3", t:"Preis setzen", note:"Warenkosten auf die Portion rechnen, Marge festlegen, Angebot und Nachfrage am eigenen Verkauf beobachten. Der rechnerisch dichteste Schritt."},
+  {id:"verkaufen", num:"Schritt 4", t:"Verkaufen", note:"Herstellen unter Hygienebedingungen, Werbung machen, mit Kundinnen und Kunden sprechen, das Produkt präsentieren."},
+  {id:"kasse", num:"Schritt 5", t:"Kasse führen", note:"Einnahmen erfassen, Budget führen, den Ertrag auf das Reiseziel hochrechnen, Zahlungsformen kennen."},
+  {id:"digital", num:"Querschnitt", t:"Digitale Ebene: planen, kommunizieren, dokumentieren", note:"Weil das ganze Projekt über Teams läuft – Kanal, Dateiablage, Anmeldung, Kalkulationstabelle, Protokolle –, sind die Informatikkonzepte und die Anwendungskompetenzen aus Medien und Informatik keine Zugabe, sondern tragende Elemente. Kursiv jeweils der Wortlaut."},
+  {id:"berufswahl", num:"Querschnitt", t:"Berufliche Orientierung", note:"Der Pizzatag ist eine Arbeitserfahrung mit Zeugnischarakter. Diese Kompetenzen verbinden ihn mit dem Berufswahlprozess."}
+];
+
+/* code, fach, text (Wortlaut LP21), step(s), map (Zuordnung), jobs, digital */
+const K = [
+/* --- 1 PLANEN --- */
+{c:"WAH.2.1.a",f:"WAH",s:["planen"],t:"können einen einfachen Wirtschaftskreislauf an einem Beispiel konkretisieren (z.B. Pausenkiosk, Hofverkauf, Lebensmittelgeschäft) und das Zusammenspiel von Akteuren auf Märkten darstellen.",m:"Die Schülerfirma ist der Wirtschaftskreislauf. Lieferant, Betrieb, Kundschaft und Ertrag lassen sich am eigenen Verkauf zeichnen statt am Lehrbuchbeispiel.",j:["KV c1","Koch c1"]},
+{c:"WAH.1.3.d",f:"WAH",s:["planen"],t:"können anhand eines Unternehmens aufzeigen (z.B. Bäckerei, Schreinerei), wie Produktionsfaktoren zusammenspielen.",m:"Wissen, Arbeit, Kapital und Boden am eigenen Betrieb: Rezeptwissen, Arbeitsstunden der Klasse, Startkapital und die Schulküche.",j:["BKC 1.3","KV c1"]},
+{c:"WAH.1.3.a",f:"WAH",s:["planen","einkaufen"],t:"können den Produktionsprozess von exemplarischen Gütern darstellen und die produktionsbedingte Wertschöpfung einschätzen.",m:"Vom Mehl zur verkauften Pizza: Wo entsteht der Wert, und wie viel davon bleibt bei der Klasse?",j:["BKC 1.1","Koch a2"]},
+{c:"WAH.5.1.b",f:"WAH",s:["planen","verkaufen"],t:"können alltägliche Arbeiten planen und realisieren, gezielt mit Ressourcen, Geräten und Werkzeugen umgehen und dabei Sicherheitsaspekte berücksichtigen (z.B. Nahrungszubereitung, Reinigungsarbeiten, Textilpflege).",m:"Backofen, Messer, Reinigung: der Sicherheits- und Geräteteil des Produktionstags.",j:["Koch a4","Koch b2","KA a4"]},
+{c:"WAH.5.1.c",f:"WAH",s:["planen"],t:"können alltägliche Arbeiten organisiert und effizient ausführen (z.B. Arbeitsverteilung und -koordination im Team, Geräteeinsatz bei der Nahrungszubereitung).",m:"Vor-, Haupt- und Nacharbeiten trennen und einem Ämtliplan zuordnen. Der Lehrplan nennt genau die Arbeitsorganisation, die eine Schülerfirma braucht.",j:["Koch c1","Koch c4","Log a2"]},
+{c:"WAH.5.1.e",f:"WAH",s:["planen"],t:"können bei alltäglichen Arbeiten (z.B. Planung und Zubereitung von Mahlzeiten) der Situation angepasst zwischen verschiedenen Handlungsalternativen abwägen, den Entscheid erproben und Erfahrungen reflektieren (z.B. bei kurzer Mittagspause, spontanem Dazukommen von Gästen).",m:"Was tun, wenn doppelt so viele Leute kommen wie geplant? Der Lehrplan formuliert den Fall wörtlich.",j:["Koch c4","Rest a5"]},
+{c:"WAH.4.4.e",f:"WAH",s:["planen","verkaufen"],t:"können Mahlzeiten situationsangepasst planen und zubereiten (z.B. wenig Zeit für die Nahrungszubereitung, Berücksichtigung von Nahrungsmittelunverträglichkeiten, vorhandene Nahrungsmittel verwerten, finanzielle Möglichkeiten).",m:"Belagvarianten für unterschiedliche Bedürfnisse, Restenverwertung, Zeitfenster der grossen Pause.",j:["Koch a1","KA a1"]},
+{c:"WAH.1.1.b",f:"WAH",s:["planen"],t:"können Informationen zur Zuschreibung von persönlichem und gesellschaftlichem Wert von Arbeit zusammentragen (z.B. Befragung, Literatur, Medien) sowie Gemeinsamkeiten und Unterschiede diskutieren (z.B. Verantwortlichkeit, Zuverlässigkeit, Pflichtbewusstsein und Sorgfalt beim Arbeiten; persönlicher Sinngehalt und soziale Anerkennung der Arbeit, wirtschaftliche Bedeutung).",m:"Warum ist es ein Unterschied, ob jemand am Pizzatag erscheint oder nicht? Zuverlässigkeit wird hier erfahrbar statt ermahnt.",j:["KV a4"]},
+{c:"MI.2.2.c",f:"MI",s:["planen","digital"],d:1,t:"können Abläufe mit Schleifen und Verzweigungen aus ihrer Umwelt erkennen, beschreiben und strukturiert darstellen (z.B. mittels Flussdiagrammen).",m:"Den Ablauf des Pizzatags als Flussdiagramm zeichnen: wiederholte Schritte, Entscheidungspunkte, Zuständigkeiten.",j:["Koch c1","Log a2"]},
+
+/* --- 2 EINKAUFEN --- */
+{c:"WAH.3.3.a",f:"WAH",s:["einkaufen"],t:"können Konsumangebote unter Berücksichtigung von Produktinformationen und weiteren Kriterien vergleichen (z.B. Materialeigenschaften, Praktikabilität; ökologische Kriterien bei Herstellung, Nutzung, Entsorgung).",m:"Drei Mozzarella, drei Preise, drei Herkünfte. Vergleich als Tabelle, Entscheid begründet.",j:["DH b","Koch a2","Log c7"]},
+{c:"WAH.3.3.b",f:"WAH",s:["einkaufen"],t:"können ausgehend von Situation und Bedarf sowie den Konsumangeboten eine an Kriterien orientierte Kaufentscheidung ableiten.",m:"Bedarf für 60 Pizzen rechnen, dann entscheiden – nicht umgekehrt.",j:["Koch a2","Log c7"]},
+{c:"WAH.3.3.c",f:"WAH",s:["einkaufen","digital"],d:1,t:"können zu unterschiedlichen Konsumgütern und Situationen Informationen recherchieren und so relevante Kriterien für Kaufentscheidungen zusammenstellen.",m:"Online-Preisrecherche bei Grossisten, Ergebnisse in die gemeinsame Tabelle im Teams-Kanal.",j:["KV e2","DH c"]},
+{c:"WAH.4.3.b",f:"WAH",s:["einkaufen","verkaufen"],t:"können Informationen aus Lebensmittelkennzeichnungen erschliessen und das Angebot hinsichtlich unterschiedlicher Aspekte beurteilen (z.B. Gesundheit, Haltbarkeit, Lagerung, Herkunft, Produktion, Ökologie, Zertifizierung).",m:"Etiketten lesen und die Angaben für die eigene Deklaration am Verkaufsstand brauchen – Allergene inklusive.",j:["Koch b1","Koch a3","KA a3"]},
+{c:"WAH.2.2.a",f:"WAH",s:["einkaufen"],t:"können Aufgaben von Handel und Handelsbetrieben beschreiben (z.B. Verteilung und Austausch von Gütern, Sicherstellung der Versorgung und Verfügbarkeit, Import und Export, Transport, Lagerung).",m:"Warum kostet dieselbe Ware beim Grossisten weniger als im Quartierladen? Der Weg der Zutat wird zum Thema.",j:["Log c1","Log c4","DH b"]},
+{c:"WAH.1.3.c",f:"WAH",s:["einkaufen"],t:"können unterschiedliche Produktionsweisen innerhalb einer Produktegruppe vergleichen (z.B. Kleider, tierische und pflanzliche Nahrungsmittel, elektronische Geräte)",m:"Industrieller Teig gegen selbst angesetzter Teig, Tomaten aus der Dose gegen frische.",j:["BKC 1.1","LMT"]},
+{c:"WAH.4.5.b",f:"WAH",s:["einkaufen"],t:"können Lebensmittelangebote nach lokalen und globalen Wirkungen analysieren (z.B. Fleisch, Fisch, Gemüse, Früchte).",m:"Salami, Mozzarella und Tomaten haben sehr unterschiedliche Bilanzen. Grundlage für die Belagsentscheide.",j:["Koch c5","LMT"]},
+{c:"WAH.4.5.a",f:"WAH",s:["einkaufen"],t:"können an exemplarischen Lebensmitteln globale Zusammenhänge der Lebensmittelproduktion aufzeigen (z.B. Produktionsstandorte, Produktionsprozesse, Umgang mit Ressourcen wie Luft, Boden, Wasser, Arbeits- und Einkommensbedingungen).",m:"Eine Zutat exemplarisch zurückverfolgen – Hartweizen oder Tomaten eignen sich gut.",j:["LMT"]},
+{c:"TTG.3.B.1.c",f:"TTG",s:["einkaufen"],t:"können Informationen zu ökonomischen, ökologischen und gesellschaftlichen Zusammenhängen der Rohstoffgewinnung recherchieren, um Vor- und Nachteile bei Kauf und Nutzung abzuwägen.",m:"Gleiche Denkbewegung wie in WAH, hier von der Materialseite her: Verpackung, Kartonschachteln, Einweggeschirr.",j:["Koch b3"]},
+{c:"RZG.3.2.e",f:"RZG",s:["einkaufen"],t:"setzen sich mit der nachhaltigen Produktion von Gütern auseinander und können Erkenntnisse in Bezug auf das eigene Verhalten reflektieren.",m:"Der Einkaufsentscheid der Klasse ist das eigene Verhalten – es lässt sich direkt überprüfen.",j:[]},
+
+/* --- 3 PREIS SETZEN --- */
+{c:"WAH.2.1.b",f:"WAH",s:["preis"],t:"können am Beispiel der Preisbildung das Zusammenspiel von Angebot und Nachfrage beschreiben.",m:"Preis senken und beobachten, was mit der verkauften Menge passiert. Das Experiment läuft wöchentlich.",j:["Rest d6","DH a"]},
+{c:"WAH.2.1.c",f:"WAH",s:["preis"],t:"können Einflüsse auf die Preisbildung sowie Auswirkungen von Preisveränderungen erklären (z.B. Schwankungen in Produktion und Absatz, Wettbewerb).",m:"Was macht die Mensa nebenan? Was passiert, wenn der Käse teurer wird?",j:["Rest d6","DH b"]},
+{c:"WAH.2.1.d",f:"WAH",s:["preis"],t:"können Einflussmöglichkeiten des Staates auf Märkte an Beispielen erklären (z.B. Steuern, Subventionen, Umweltabgaben).",m:"Kleiner, aber realer Anknüpfungspunkt: Mehrwertsteuer auf Lebensmitteln, Vorschriften für Schulverpflegung.",j:["KV c6"]},
+{c:"MA.3.A.1.l",f:"MA",s:["preis"],t:"verstehen und verwenden die Begriffe Steigung in %, Zins, Zinssatz, Kapital, Rabatt, Brutto, Netto.",m:"Genau das Vokabular der Kalkulation. Brutto, Netto und Rabatt sind am Pizzatag keine Prüfungswörter, sondern Arbeitsbegriffe.",j:["KV c5","BKC 1.3.1","DH b"]},
+{c:"MA.1.A.3.h",f:"MA",s:["preis"],t:"können Prozentrechnungen mit dem Rechner ausführen.",m:"Marge, Rabatt, Anteil der Warenkosten am Verkaufspreis.",j:["BKC 1.3.1","KV c5"]},
+{c:"MA.3.A.3.i",f:"MA",s:["preis","digital"],d:1,t:"können Rechner oder geeignete Software (z.B. Tabellenkalkulation) zur Berechnung von Funktionswerten und Masszahlen benutzen. können Sachaufgaben mit Prozentangaben lösen (z.B. zu Steigung und Zins).",m:"Die Kalkulationstabelle in Teams ist das Werkzeug: Zutatenkosten pro Portion, Aufschlag, Verkaufspreis.",j:["Koch c3","KV e1"]},
+{c:"MA.1.B.3.h",f:"MA",s:["preis","digital"],d:1,t:"können mit einem Tabellenkalkulationsprogramm durch systematisches Variieren Gleichungen lösen sowie Formeln eingeben bzw. verwenden (z.B. A = ½(s·h).",m:"«Wie viele Pizzen müssen wir verkaufen, damit die Reise finanziert ist?» als Formel statt als Schätzung.",j:["Koch c3","KV e1"]},
+{c:"MA.3.C.1.j",f:"MA",s:["preis","kasse"],t:"können Beziehungen zwischen verschiedenen Grössen datengestützt herstellen (…). können soziale (z.B. Unfallprävention), wirtschaftliche (z.B. Zins, Rabatt, Leasing) und ökologische (z.B. Wasserverbrauch, Entsorgung) Fragestellungen bearbeiten und vergleichen Zahlenangaben absolut und relativ.",m:"Umsatz und Gewinn absolut und in Prozent nebeneinander lesen – der häufigste Denkfehler beim Kassensturz.",j:["KV e3","DH b"]},
+{c:"MA.3.C.2.h",f:"MA",s:["preis"],t:"können Wertetabellen, Diagramme, Sachtexte, Terme und Graphen einander zuordnen und interpretieren. können Sachsituationen nach funktionalen, statistischen und probabilistischen Gesichtspunkten bearbeiten, angemessene Entscheidungen treffen und Lösungswege mit Wertetabellen, Diagrammen, Texten, Termen und Graphen darstellen.",m:"Kostenfunktion und Erlösfunktion auf ein Blatt. Der Schnittpunkt ist die Zahl, ab der die Klasse Geld verdient.",j:["KV e3"]},
+{c:"MA.3.A.2.i",f:"MA",s:["preis","einkaufen"],t:"können Grössen absolut und relativ vergleichen (z.B. 120 Stück oder 60% bzw. ⅗ einer Menge).",m:"Gramm pro Portion, Anteil am Gesamtbudget, Preis pro Kilo gegen Preis pro Packung.",j:["Koch a2","Log c6"]},
+{c:"MA.3.B.1.i",f:"MA",s:["preis","kasse"],t:"können Ergebnisse und Aussagen zu funktionalen Zusammenhängen überprüfen, insbesondere durch Interpretation von Tabellen, Graphen und Diagrammen (…).",m:"Die eigene Hochrechnung an den echten Verkaufszahlen der nächsten Woche prüfen.",j:["KV e3","Rest d4"]},
+
+/* --- 4 VERKAUFEN --- */
+{c:"WAH.4.4.a",f:"WAH",s:["verkaufen"],t:"können im Umgang mit Nahrung die Wirkung von Mikroorganismen berücksichtigen (z.B. Haltbarkeit, Hygiene, Zubereitung).",m:"Der Hygieneteil ist nicht verhandelbar, sobald an Dritte verkauft wird – und er ist zugleich die direkteste Brücke zur Gastroberufslehre.",j:["Koch b1","KA b1","Rest c4","BKC 1.4.2"]},
+{c:"WAH.4.4.b",f:"WAH",s:["verkaufen"],t:"können Gerichte mithilfe eines Rezeptes selbstständig zubereiten.",m:"Teig, Sauce, Belag nach standardisiertem Rezept – gleiche Qualität in jeder Woche.",j:["Koch a5","KA a5","BKC 1.1.6"]},
+{c:"WAH.4.4.c",f:"WAH",s:["verkaufen"],t:"können Eigenschaften von Nahrungsmitteln bei der Verarbeitung und Zubereitung berücksichtigen (z.B. Erhalt von Geschmack, Konsistenz, Nährwert; Veränderung durch Temperatur, Wasser, Fett).",m:"Warum geht der Teig auf, warum wird der Boden zäh, warum verbrennt der Rand. Fachwissen mit sofortiger Rückmeldung.",j:["BKC 1.1.1","BKC 1.1.3","Koch a5"]},
+{c:"WAH.4.4.d",f:"WAH",s:["verkaufen"],t:"können Gerichte unter Berücksichtigung von gesundheitlichen und ökologischen Aspekten auswählen und zubereiten (z.B. Energie- und Nährwert von Nahrungsmitteln, nährstofferhaltende Zubereitung, saisonale Nahrungsmittel).",m:"Saisonaler Belag, vegetarische Variante, Portionengrösse.",j:["Koch a1","KA a2"]},
+{c:"WAH.4.3.a",f:"WAH",s:["verkaufen"],t:"können die Wahl von Nahrung aus gesundheitlicher Perspektive beurteilen und Handlungsalternativen formulieren.",m:"Eine Schule verkauft Essen an Kinder. Diese Spannung gehört ausdrücklich ins Projekt und nicht ausgeblendet.",j:["KA a2","Koch a1"]},
+{c:"WAH.3.1.c",f:"WAH",s:["verkaufen"],t:"können bei Konsumgütern ausgewählte Marketingstrategien untersuchen und deren Einfluss auf Konsumentscheidungen diskutieren (z.B. Werbe- und Verkaufsstrategien, Marken).",m:"Erst Werbung analysieren, dann selber welche machen. Der Perspektivwechsel ist der Lernmoment.",j:["DH a","DH e","Rest b2"]},
+{c:"WAH.4.2.a",f:"WAH",s:["verkaufen"],t:"können soziale und kulturelle Aspekte beim Essen und Trinken erkennen und deren Einflüsse auf die Entwicklung von Essverhalten reflektieren (z.B. familiäre Gewohnheiten, Peers, Werbung, kulturelle Eigenheiten in Bezug auf Wahl von Nahrungsmitteln und Zubereitung von Mahlzeiten).",m:"Pizza als Migrationsgeschichte. Welche Beläge gehen in dieser Schule, welche nicht, und warum?",j:["Rest a6"]},
+{c:"D.3.C.1.j",f:"D",s:["verkaufen"],t:"können sich an einem Gespräch mit unterschiedlichen Gesprächspartner/innen eigenständig und adressatengerecht beteiligen (Peers, Erwachsene, vertraut/unvertraut). ... können ein Gespräch mit unbekannten Personen eröffnen.",m:"Das Verkaufsgespräch am Stand – mit Mitschülerinnen, mit Lehrpersonen, mit der Schulleitung. Der Lehrplan nennt das Eröffnen eines Gesprächs mit Unbekannten ausdrücklich.",j:["DH a","Rest a2","KV d2"]},
+{c:"D.3.B.1.h",f:"D",s:["verkaufen","digital"],d:1,t:"können Arbeitsergebnisse und Sachthemen der Klasse strukturiert präsentieren und die wesentlichen Aspekte hervorheben sowie dabei Medien ziel- und adressatenorientiert nutzen.",m:"Das Projekt der Schulleitung oder den Eltern vorstellen, mit Folien aus dem Teams-Kanal.",j:["KV b3","Koch d2"]},
+{c:"MI.1.2.h",f:"MI",s:["verkaufen","digital"],d:1,t:"können die Absicht hinter Medienbeiträgen einschätzen (z.B. Werbung, Zeitschrift, Parteizeitung).",m:"Bevor die Klasse Werbung macht, liest sie fremde Werbung gegen den Strich.",j:["DH e"]},
+{c:"MI.1.3.f",f:"MI",s:["verkaufen","digital"],d:1,t:"können Medien nutzen, um ihre Gedanken und ihr Wissen vor Publikum zu präsentieren und/oder zu veröffentlichen. können Wirkungen eigener Medienbeiträge einschätzen und bei der Produktion entsprechend berücksichtigen.",m:"Aushang, Bildschirmanzeige, Beitrag im Schulkanal – und die Frage, wie das ankommt.",j:["DH f","KV e4"]},
+{c:"BG.2.C.1.6d",f:"BG",s:["verkaufen","digital"],d:1,t:"kennen bildsprachliche Mittel in Fotografie und Film (z.B. Perspektive, Tiefenschärfe, Einstellungsgrösse) und können diese erproben und gezielt einsetzen. können Bilder und Filme digital bearbeiten (z.B. Korrekturen, Schnitt, Montage).",m:"Produktfotos der Pizza für Aushang und Kanal – Licht, Ausschnitt, Nachbearbeitung.",j:["DH e","Koch a6"]},
+{c:"BG.2.C.1.6e",f:"BG",s:["verkaufen","digital"],d:1,t:"können eine Reportage, Dokumentation oder ein Storyboard in der Gruppe erstellen.",m:"Kurze Doku über einen Pizzatag: taugt gleichzeitig als Projektdokumentation und als Werbung.",j:["KV e4"]},
+{c:"NT.7.2.c",f:"NT",s:["verkaufen"],t:"können Ergebnisse experimenteller Untersuchungen (z.B. Nährstoffnachweise in Lebensmitteln, Verdauung im Reagenzglas) dazu nutzen, um die Ansprüche des eigenen Körpers einzuschätzen und entsprechend zu handeln.",m:"Nährwertangaben nicht nur abschreiben, sondern naturwissenschaftlich verstehen.",j:["Koch a2","LMT"]},
+{c:"ERG.5.4.c",f:"ERG",s:["verkaufen","planen"],t:"können Zuständigkeiten aushandeln und vereinbaren und sich verantwortlich für die Gemeinschaft engagieren (z.B. Aufgaben, Ämter, Aktivitäten planen).",m:"Ämtli am Pizzatag sind verbindlich, weil sonst niemand bedient wird. Verbindlichkeit mit spürbarer Konsequenz.",j:["KV b1"]},
+{c:"NT.3.3.d",f:"NT",s:["verkaufen","einkaufen"],t:"können Ideen zur Abfallverminderung, zur Verbesserung des Recyclingverhaltens sowie Visionen für weitere Recyclingkreisläufe entwickeln und deren Realisierungsmöglichkeiten einschätzen.",m:"Verpackung, Resten, Entsorgung am Stand. Führt direkt zu Koch b3 und c5.",j:["Koch b3","Koch c5","Rest e4"]},
+
+/* --- 5 KASSE FÜHREN --- */
+{c:"WAH.2.3.b",f:"WAH",s:["kasse"],t:"können ein Budget planen, sich über fixe und variable Kosten informieren, Auswirkungen von Einkommensveränderungen auf Handlungsspielräume und Sparmöglichkeiten aufzeigen (z.B. Taschengeld, Lehrlingslohn).",m:"Das Reisebudget ist das Ziel des Projekts. Fixe Kosten (Miete Küche, Geräte) und variable Kosten (Zutaten) lassen sich am eigenen Fall trennen.",j:["KV c5","KV c6"]},
+{c:"WAH.2.3.c",f:"WAH",s:["kasse"],t:"können Formen des Zahlungsverkehrs beschreiben und sich über Vertragsbedingungen informieren (z.B. Barzahlung, Überweisung, Online-Shopping, Kreditkarte, Kleinkredit, Leasing).",m:"Bar oder Twint am Stand? Der Vergleich ist konkret und führt zu Gebühren, Belegen und Nachvollziehbarkeit.",j:["Rest d2","DH a","KV c5"]},
+{c:"WAH.2.3.a",f:"WAH",s:["kasse"],t:"können die Anforderungen einer selbstständigen Lebensführung erkennen sowie Herausforderungen und Handlungsspielräume bei unterschiedlichen finanziellen Ressourcen diskutieren.",m:"Der Sprung vom Klassenbudget zum eigenen Lehrlingsbudget wird hier vorbereitet.",j:["KV a4"]},
+{c:"WAH.2.3.e",f:"WAH",s:["kasse"],t:"können Möglichkeiten zum verantwortungsvollen Umgang mit eigenen finanziellen Ressourcen, eigenen Bedürfnissen und der Vielfalt an Marktanbietern und Marktangeboten diskutieren.",m:"Wer entscheidet über den Ertrag, und nach welchen Regeln? Eine echte Aushandlung in der Klasse.",j:["KV c5"]},
+{c:"MA.1.B.3.f",f:"MA",s:["kasse","digital"],d:1,t:"können mit elektronischen Medien Daten erfassen, sortieren und darstellen (Tabellenkalkulationsprogramm).",m:"Die Kassenliste jeder Woche in dieselbe Tabelle – sortierbar, auswertbar, teilbar.",j:["KV e3","Koch c3"]},
+{c:"MA.3.B.1.j",f:"MA",s:["kasse"],t:"können funktionale und statistische Zusammenhänge erforschen, dazu Fragen stellen sowie Ergebnisse vergleichen (…). können statistische Rohdaten zu sozialen, wirtschaftlichen und ökologischen Fragestellungen erforschen und Vermutungen dazu austauschen.",m:"Nach zehn Wochen liegen echte Rohdaten vor: Wochentag, Wetter, Belag, Absatz.",j:["KV e6","Rest d4"]},
+{c:"MI.2.1.j",f:"MI",s:["kasse","digital"],d:1,t:"können Daten in einer Datenbank strukturieren, erfassen, suchen und automatisiert auswerten.",m:"Die Verkaufsliste als strukturierte Datei statt als loses Blatt – mit Feldern, die später auswertbar sind.",j:["KV e6","Log b5"]},
+
+/* --- QUERSCHNITT DIGITAL --- */
+{c:"MI.1.4.f",f:"MI",s:["digital"],d:1,t:"können kooperative Werkzeuge anpassen und für gemeinsames Arbeiten, Meinungsaustausch, Kommunikation sowie zum Publizieren einsetzen (z.B. Blog, Wiki).",m:"Der Teams-Kanal des Projekts: Kanäle anlegen, Registerkarten setzen, Dateiablage strukturieren. Die Klasse richtet das Werkzeug ein, statt es nur zu benutzen.",j:["KV e5","Koch d2"]},
+{c:"MI.1.4.d",f:"MI",s:["digital"],d:1,t:"können Medien gezielt für kooperatives Lernen nutzen.",m:"Gemeinsam an derselben Kalkulationstabelle arbeiten, ohne sich gegenseitig zu überschreiben.",j:["KV b1"]},
+{c:"MI.1.4.c",f:"MI",s:["digital"],d:1,t:"können mittels Medien kommunizieren und dabei die Sicherheits- und Verhaltensregeln befolgen.",m:"Absprachen im Kanal statt im privaten Chat. Was gehört wohin, was gar nicht in die Gruppe.",j:["KV b1","Rest d1"]},
+{c:"MI.1.1.d",f:"MI",s:["digital"],d:1,t:"können Regeln und Wertesysteme verschiedener Lebenswelten unterscheiden, reflektieren und entsprechend handeln (z.B. Netiquette, Werte in virtuellen Welten).",m:"Der Projektkanal ist ein Arbeitsraum, kein Pausenplatz. Eine gemeinsam geschriebene Kanal-Netiquette ist ein greifbares Produkt.",j:["KV a4"]},
+{c:"MI.1.3.d",f:"MI",s:["digital"],d:1,t:"können in ihren Medienbeiträgen die Sicherheitsregeln im Umgang mit persönlichen Daten einbeziehen (z.B. Angaben zur Person, Passwort, Nickname).",m:"Fotos vom Verkaufsstand: Wer ist erkennbar, wer hat zugestimmt, wo wird das veröffentlicht?",j:["KV e5"]},
+{c:"MI.1.3.e",f:"MI",s:["digital"],d:1,t:"können Medieninhalte weiterverwenden und unter Angabe der Quelle in Eigenproduktionen integrieren (z.B. Vortrag, Blog/Klassenblog).",m:"Bilder und Rezepte für den Aushang korrekt nachweisen.",j:["KV e4"]},
+{c:"MI.1.3.g",f:"MI",s:["digital"],d:1,t:"können mit eigenen und fremden Inhalten Medienbeiträge herstellen und berücksichtigen dabei die rechtlichen Rahmenbedingungen sowie Sicherheits- und Verhaltensregeln.",m:"Werbematerial für den Pizzatag rechtlich sauber erstellen.",j:["DH e","KV e4"]},
+{c:"MI.2.1.h",f:"MI",s:["digital"],d:1,t:"können Dokumente so ablegen, dass auch andere sie wieder finden.",m:"Dateibenennung und Ordnerstruktur im Teams-Kanal. Die Anwendungskompetenz «Handhabung» für Zyklus 3 nennt genau diesen Satz.",j:["KV c3","Log b5"]},
+{c:"MI.2.1.f",f:"MI",s:["digital"],d:1,t:"erkennen und verwenden Baum- und Netzstrukturen (z.B. Ordnerstruktur auf dem Computer, Stammbaum, Mindmap, Website).",m:"Die Projektablage als Baum planen, bevor sie chaotisch wird.",j:["KV c3"]},
+{c:"MI.2.1.k",f:"MI",s:["digital"],d:1,t:"können Methoden zur Datenreplikation unterscheiden und anwenden (Backup, Synchronisation, Versionierung).",m:"Warum eine Cloud-Ablage Versionen führt und was das für die Kalkulationstabelle bedeutet, wenn jemand etwas löscht.",j:["KV e5"]},
+{c:"MI.2.3.j",f:"MI",s:["digital"],d:1,t:"können lokale Geräte, lokales Netzwerk und das Internet als Speicherorte für private und öffentliche Daten unterscheiden.",m:"Liegt die Datei auf dem Schulgerät, im Schulnetz oder in der Cloud – und wer kommt jeweils dran?",j:["KV e5"]},
+{c:"MI.2.3.h",f:"MI",s:["digital"],d:1,t:"können erklären, wie Daten verloren gehen können und kennen die wichtigsten Massnahmen, sich davor zu schützen.",m:"Einmal die Kassenliste verlieren reicht als Anlass. Besser vorher besprochen.",j:["KV e5"]},
+{c:"MI.2.3.g",f:"MI",s:["digital"],d:1,t:"können bei Problemen mit Geräten und Programmen Lösungsstrategien anwenden (z.B. Hilfe-Funktion, Recherche).",m:"Drucker streikt, Datei öffnet nicht, Anmeldung klemmt – am Pizzatag unter Zeitdruck.",j:["KV e5","Rest d3"]},
+{c:"MI.2.3.n",f:"MI",s:["digital"],d:1,t:"können die Risiken unverschlüsselter Datenübermittlung und -speicherung abschätzen.",m:"Anspruchsvoller Baustein, passt zur Frage, wo Namenslisten der Anmeldungen liegen.",j:["KV e5"]},
+{c:"AK Produktion",f:"MI",s:["digital"],d:1,t:"können Plattformen gestalten und anpassen und diese interaktiv für gemeinsames Arbeiten, Meinungsaustausch, Kommunikation sowie zum Publizieren einsetzen (z.B. Datenablage und -austausch, Blog, Cloudcomputing).",m:"Anwendungskompetenz «Produktion und Präsentation», Zyklus 3. Beschreibt die Arbeit im Teams-Kanal fast wörtlich. Ort der Einarbeitung: D.4.B.1.h, MI.1.4.f.",j:["KV e5","Koch c3"]},
+{c:"AK Produktion",f:"MI",s:["digital"],d:1,t:"können in Programmen Vorlagen anwenden (z.B. Textverarbeitung, Präsentationen, Tabellenkalkulation).",m:"Eine Vorlage für die Wochenabrechnung bauen und jede Woche wiederverwenden. Ort der Einarbeitung: D.3.B.1.i, D.4.D.1.f, MA.1.B.3.g.",j:["KV e1","Koch c3"]},
+{c:"AK Produktion",f:"MI",s:["digital"],d:1,t:"können Geräte und Programme zur Erstellung, Bearbeitung und Gestaltung von Texten, Tabellen, Präsentationen, Diagrammen, Bildern, Tönen, Videos und Algorithmen einsetzen.",m:"Die Werkzeugliste des Projekts in einem Satz. Ort der Einarbeitung u.a. MA.1.B.3.h, BG.2.C.1.6d, D.4.B.1.h.",j:["KV e1","KV e4"]},
+{c:"AK Recherche",f:"MI",s:["digital"],d:1,t:"können Medien für den eigenen Lernprozess selbstständig auswählen und einsetzen (z.B. Sachbuch, Zeitschrift, RSS-Feed, soziale Netzwerke, E-Book, fachbezogene Software).",m:"Anwendungskompetenz «Recherche und Lernunterstützung», Zyklus 3. Ort der Einarbeitung u.a. WAH.3.2.a, WAH.3.3.c, MA.2.B.1.i.",j:["KV e2"]},
+{c:"AK Handhabung",f:"MI",s:["digital"],d:1,t:"können ausreichend automatisiert mit der Tastatur schreiben.",m:"Anwendungskompetenz «Handhabung», Zyklus 3, Ort der Einarbeitung D.4.A.1.i. Am Pizzatag über Protokolle und Listen geübt statt im Trockenkurs.",j:["KV a3"]},
+
+/* --- QUERSCHNITT BERUFSWAHL --- */
+{c:"BO.1.1.a",f:"BO",s:["berufswahl"],t:"können Elemente ihres Persönlichkeitsprofils wahrnehmen und beschreiben (Fähigkeiten, Voraussetzungen, Interessen, Einstellungen, Werte).",m:"Die Rollen am Pizzatag zeigen Neigungen: Kasse, Produktion, Werbung, Einkauf.",j:[]},
+{c:"BO.1.1.b",f:"BO",s:["berufswahl"],t:"können das Selbstbild mit dem Fremdbild respektive der Aussensicht vergleichen und festhalten.",m:"Rückmeldungen aus dem Team nach dem Verkaufstag sind Aussensicht mit Belegen.",j:[]},
+{c:"BO.2.1.b",f:"BO",s:["berufswahl"],t:"können sich selbstständig Informationen zu mindestens drei ausgewählten Berufen bzw. Ausbildungswegen in verschiedenen Berufsfeldern beschaffen (z.B. im Berufsinformationszentrum (BIZ), im Internet, an Berufsmessen, an Informationsveranstaltungen).",m:"Die Berufe unten sind der natürliche Einstieg – die Klasse kennt die Tätigkeiten bereits aus eigener Erfahrung.",j:[]},
+{c:"BO.2.1.c",f:"BO",s:["berufswahl"],t:"können Anforderungen und Tätigkeiten anhand von mindestens zwei ausgewählten Berufs- bzw. Ausbildungswegen aufzeigen und gegenüberstellen.",m:"Koch EFZ gegen Küchenangestellte EBA, oder Detailhandel gegen Restaurant: gleiche Situation, andere Anforderungsstufe.",j:[]},
+{c:"BO.2.2.a",f:"BO",s:["berufswahl"],t:"können Berufe aus ihrem familiären und weiteren Umfeld in Bezug zu ihrem aktuellen Bildungs- und Berufswunsch setzen.",m:"Viele Familien im Umfeld arbeiten in Gastronomie, Detailhandel oder Logistik. Der Pizzatag macht diese Arbeit besprechbar.",j:[]},
+{c:"BO.4.2.a",f:"BO",s:["berufswahl"],t:"können selbstständige Einblicke in Berufe und Ausbildungen vorbereiten und organisieren respektive sich Unterstützung holen (z.B. Schnupperlehren).",m:"Wer am Pizzatag in der Produktion stark ist, hat ein Argument für die Schnupperlehre in der Küche.",j:[]},
+{c:"BO.4.3.a",f:"BO",s:["berufswahl"],t:"können ihre spezifischen Ressourcen dokumentieren (Fähigkeiten, Erfahrungen, Aktivitäten in Schule und Freizeit, Sprachkenntnisse).",m:"Der Pizzatag gehört als belegte Arbeitserfahrung ins Bewerbungsdossier, nicht nur ins Zeugnis.",j:[]},
+{c:"BO.4.3.b",f:"BO",s:["berufswahl","digital"],d:1,t:"können wichtige Informationen und Erfahrungen aus der Praxis sammeln und dokumentieren (Berufsinformationen, Schnupperlehrbeurteilungen).",m:"Portfolio im Teams-Kanal: Fotos, Wochenabrechnungen, Rückmeldungen.",j:["KV a1"]},
+{c:"WAH.1.2.c",f:"WAH",s:["berufswahl"],t:"können sich am Beispiel eines Lehrvertrages über Rechte und Pflichten der Arbeitgeber/innen und Arbeitnehmer/innen informieren und Bedingungen für eine gute Zusammenarbeit benennen.",m:"Die Abmachungen der Schülerfirma als Miniatur eines Arbeitsvertrags lesen.",j:["KV a4"]},
+{c:"WAH.1.2.a",f:"WAH",s:["berufswahl"],t:"können Informationen zum Arbeitsalltag von Arbeitnehmer/innen und Arbeitgeber/innen zusammentragen (z.B. Aufgaben, Tätigkeiten, Verantwortung, Gestaltungsmöglichkeiten, Risiken, Lohn, Arbeitsumfeld, Leistungserwartungen, Veränderungen des Arbeitsplatzes, Besonderheiten) und diese Informationen mit eigenen Berufsvorstellungen vergleichen.",m:"Der eigene Arbeitstag am Stand als Vergleichsmassstab für das, was in Berufsbeschrieben steht.",j:[]}
+];
+
+const UFK = [
+{h:"Selbstreflexion",w:"Personal",l:["können Stärken und Schwächen ihres Lern- und Sozialverhaltens einschätzen.","können Fehler analysieren und über alternative Lösungen nachdenken.","können eigene Einschätzungen und Beurteilungen mit solchen von aussen vergleichen und Schlüsse ziehen."]},
+{h:"Selbstständigkeit",w:"Personal",l:["können übertragene Arbeiten sorgfältig, zuverlässig und pünktlich erledigen.","können einen geeigneten Arbeitsplatz einrichten, das eigene Lernen organisieren, die Zeit einteilen.","können Strategien einsetzen, um eine Aufgabe auch bei Widerständen und Hindernissen zu Ende zu führen."]},
+{h:"Eigenständigkeit",w:"Personal",l:["können Argumente abwägen und einen eigenen Standpunkt einnehmen.","können die Argumente zum eigenen Standpunkt verständlich und glaubwürdig vortragen."]},
+{h:"Dialog- und Kooperationsfähigkeit",w:"Sozial",l:["können in der Gruppe und in der Klasse oder in einem Schülerrat Abmachungen aushandeln und Regeln einhalten.","können je nach Situation eigene Interessen zu Gunsten der Zielerreichung in der Gruppe zurückstellen oder durchsetzen.","können Gruppenarbeiten planen."]},
+{h:"Konfliktfähigkeit",w:"Sozial",l:["können sachlich und zielorientiert kommunizieren, Gesprächsregeln anwenden und Konflikte direkt ansprechen.","können Kritik angemessen, klar und anständig mitteilen und mit konstruktiven Vorschlägen verbinden.","können Kritik annehmen und die eigene Position hinterfragen."]},
+{h:"Umgang mit Vielfalt",w:"Sozial",l:["können Menschen in ihren Gemeinsamkeiten und Differenzen wahrnehmen und verstehen.","können die Wirkung von Sprache reflektieren und achten in Bezug auf Vielfalt auf einen wertschätzenden Sprachgebrauch."]},
+{h:"Sprachfähigkeit",w:"Methodisch",l:["können Fachausdrücke und Textsorten aus den verschiedenen Fachbereichen verstehen und anwenden."]},
+{h:"Informationen nutzen",w:"Methodisch",l:["können Informationen aus Beobachtungen ..., aus Texten, Tabellen und Statistiken, aus Grafiken und Bildern, aus Befragungen und Interviews suchen, sammeln und zusammenstellen.","können die Qualität und Bedeutung der gesammelten und strukturierten Informationen abschätzen und beurteilen.","können die Ergebnisse in unterschiedlichen Darstellungsformen wie Mindmap, Bericht, Plakat oder Referat aufbereiten und anderen näherbringen."]},
+{h:"Aufgaben und Probleme lösen",w:"Methodisch",l:["können Ziele für die Aufgaben und Problemlösungen setzen und Umsetzungsschritte planen.","können Lern- und Arbeitsprozesse durchführen, dokumentieren und reflektieren.","können neue Herausforderungen erkennen und kreative Lösungen entwerfen."]}
+];
+
+const BERUFE = [
+{k:"Koch", n:"Köchin EFZ / Koch EFZ", st:"EFZ · 3 Jahre", why:"Der nächstliegende Anschluss. Vier der fünf Projektschritte kommen im Bildungsplan als eigene Handlungskompetenz vor, inklusive der Kalkulation und der digitalen Planungssysteme.",
+ g:[{b:"A · Zubereiten und Präsentieren von Speisen und Gerichten", i:[
+   ["a1","Speiseangebot mitgestalten, Food-Trends miteinbeziehen und den Gästebedürfnissen anpassen","Schritt 1: Belag und Angebot festlegen"],
+   ["a2","Bestellmengen, Warenkosten und Nährwert von Gerichten berechnen und geeignete Lebensmittel einkaufen","Schritt 2 und 3: die Kalkulation in einem Satz"],
+   ["a3","Gelieferte Lebensmittel auf Qualität und Menge kontrollieren und geeignet lagern","Schritt 2: Warenannahme am Verkaufstag"],
+   ["a4","Lebensmittel, Arbeitsplatz, Werkzeuge, Utensilien und Geräte für die Speiseproduktion vorbereiten","Schritt 4: Mise en place"],
+   ["a5","Tierische und pflanzenbasierte Lebensmittel zu Speisen und Gerichten zubereiten, veredeln und sensorisch prüfen","Schritt 4: Teig, Sauce, Belag"],
+   ["a6","Gerichte kombinieren, anrichten und inszenieren","Schritt 4: Präsentation am Stand"]]},
+  {b:"B · Umsetzen der Vorgaben zur Sicherheit und Nachhaltigkeit", i:[
+   ["b1","Hygiene, Lebensmittelsicherheit, Auskunftspflicht und mikrobiologische Qualitätsstandards in der Küche sicherstellen","Schritt 4: Hygienekonzept und Allergeninformation"],
+   ["b2","Unfall- und Erkrankungsrisiken minimieren und im Ereignisfall Sofortmassnahmen treffen","Schritt 1 und 4: Sicherheitsregeln am Ofen"],
+   ["b3","Abfälle und Reststoffe aufgrund der Lagerung und Vorbereitung von Speisen trennen und entsorgen","Schritt 4: Entsorgung am Stand"],
+   ["b4","Geräte, Werkzeuge, Geschirr, Räume und Einrichtungen reinigen und instand halten","Schritt 1: Nacharbeiten im Ämtliplan"]]},
+  {b:"C · Umsetzen betrieblicher und wirtschaftlicher Abläufe", i:[
+   ["c1","Die Abläufe in der Küche planen und umsetzen","Schritt 1: der Ablaufplan des Pizzatags"],
+   ["c2","Die Zusammenarbeit mit Partnerinnen und Partnern an den Nahtstellen planen und vorbereiten","Schritt 1: Absprachen mit Hauswartung und Schulleitung"],
+   ["c3","Digitale Bestell-, Berechnungs- und Planungssysteme für den Küchenbereich anwenden","Digitale Ebene: Kalkulationstabelle und Bestellliste in Teams"],
+   ["c4","Die Produktivität in der Küche gewährleisten und optimieren","Schritt 1: Durchsatz in der grossen Pause"],
+   ["c5","Verluste und Verschwendung von Lebensmitteln, Speisen und Betriebsmitteln vermeiden","Schritt 2 und 5: Food Waste kostet direkt Ertrag"]]},
+  {b:"D · Auftreten und Kommunizieren", i:[
+   ["d1","Den eigenen Auftritt gestalten und mit Mitarbeitenden, Gästen sowie Lieferantinnen und Lieferanten kommunizieren","Schritt 4: das Verkaufsgespräch"],
+   ["d2","Kommunikationsmittel für die Informationsbeschaffung und den Informationsaustausch im Küchenbereich einsetzen sowie Methoden für Präsentationen von Speisen und Gerichten anwenden","Digitale Ebene: der Projektkanal"],
+   ["d3","Mit Gästen und innerbetrieblich in einer zweiten Landessprache oder in Englisch kommunizieren","Anschlussmöglichkeit für den Fremdsprachenunterricht"]]}]},
+
+{k:"KA", n:"Küchenangestellte/r EBA", st:"EBA · 2 Jahre", eba:1, why:"Gleiche Struktur wie Koch EFZ, aber auf zwei Jahre und mit engerem Anforderungsprofil. Für viele Jugendliche aus dem Sonderschulangebot der realistischere und anschlussfähige Weg – und mit Übertritt ins EFZ durchlässig.",
+ g:[{b:"A · Zubereiten und Präsentieren von Speisen und Gerichten", i:[
+   ["a1","Speisen den Gästebedürfnissen anpassen","Schritt 1"],
+   ["a2","Wareneinkauf unterstützen und dabei Grundsätze der gesunden Ernährung umsetzen","Schritt 2"],
+   ["a3","Gelieferte Lebensmittel auf Qualität und Menge kontrollieren und geeignet lagern","Schritt 2"],
+   ["a4","Lebensmittel, Arbeitsplatz, Werkzeuge, Utensilien und Geräte für die Speiseproduktion vorbereiten","Schritt 4"],
+   ["a5","Lebensmittel zu einfachen Gerichten zubereiten und sensorisch prüfen","Schritt 4"],
+   ["a6","Gerichte kombinieren, anrichten und präsentieren","Schritt 4"]]},
+  {b:"B · Umsetzen der Vorgaben zur Sicherheit und Nachhaltigkeit", i:[
+   ["b1","Hygiene, Lebensmittelsicherheit, Auskunftspflicht und mikrobiologische Qualitätsstandards in der Küche sicherstellen","Schritt 4"],
+   ["b2","Unfall- und Erkrankungsrisiken minimieren und im Ereignisfall Sofortmassnahmen treffen","Schritt 1 und 4"],
+   ["b3","Abfälle und Reststoffe trennen, lagern und entsorgen","Schritt 4"],
+   ["b4","Geräte, Werkzeuge, Geschirr, Räume und Einrichtungen reinigen und instand halten","Schritt 1"]]},
+  {b:"C · Umsetzen betrieblicher und wirtschaftlicher Abläufe", i:[
+   ["c1","Die Abläufe in der Küche umsetzen","Schritt 1"],
+   ["c2","Verluste und Verschwendung von Lebensmitteln, Speisen und Betriebsmitteln vermeiden","Schritt 5"]]},
+  {b:"D · Auftreten und Kommunizieren", i:[
+   ["d1","Den eigenen Auftritt gestalten und mit Mitarbeitenden kommunizieren","Schritt 4"],
+   ["d2","Kommunikationsmittel für den Informationsaustausch im Küchenbereich einsetzen","Digitale Ebene"]]}]},
+
+{k:"Rest", n:"Restaurantfachfrau EFZ / Restaurantfachmann EFZ", st:"EFZ · 3 Jahre", why:"Der Verkaufsteil des Pizzatags in Reinform: Gäste empfangen, Angebot erklären, kassieren, Rückmeldungen auswerten. Der Bildungsplan hat mit Bereich d einen eigenen betriebswirtschaftlichen Block.",
+ g:[{b:"a · Handeln als Gastgeberin oder Gastgeber", i:[
+   ["a2","Mittels der eigenen Persönlichkeit, einer angemessenen Haltung und eines sicheren Auftritts Gäste empfangen, Gästebedürfnisse ermitteln und eine angenehme Atmosphäre schaffen","Schritt 4: der Stand als Gastraum"],
+   ["a5","Direkte Gästerückmeldungen erfassen und Massnahmen umsetzen","Schritt 5: Auswertung der Woche"],
+   ["a6","Regionale Traditionen und kulturelle Gegebenheiten den Gästen kommunizieren und erklären","Schritt 4: Pizza als Kulturgeschichte"]]},
+  {b:"c · Gestalten des Speiseservice", i:[
+   ["c1","Mise en place für den Speiseservice für das Tagesgeschäft sowie für grössere Anlässe vorbereiten","Schritt 1"],
+   ["c2","Gästen das Speiseangebot erläutern sowie Speisen empfehlen und verkaufen","Schritt 4"],
+   ["c4","Im Speiseservice die Qualitätssicherung, die Arbeitssicherheit, den Gesundheits- und Umweltschutz sowie die Hygiene gemäss den rechtlichen Vorgaben sicherstellen","Schritt 4"]]},
+  {b:"d · Umsetzen der betriebswirtschaftlichen und verkaufsorientierten Prozesse", i:[
+   ["d1","Reservationssysteme sowie Informations- und Kommunikationsmittel einsetzen","Digitale Ebene: Anmeldung über Teams"],
+   ["d2","Bestell- und Kassensysteme anwenden sowie Gästerechnungen erstellen und das Inkasso durchführen","Schritt 5: Kasse führen"],
+   ["d3","Die technische Infrastruktur nutzen","Digitale Ebene"],
+   ["d4","Gästerückmeldungen und -bewertungen auswerten und interpretieren","Schritt 5"],
+   ["d6","Den Gästen die Preisgestaltung für Speisen und Getränke erklären und begründen","Schritt 3: den eigenen Preis verteidigen können"]]},
+  {b:"e · Sicherstellen der logistischen Prozesse und der Werterhaltung", i:[
+   ["e1","Waren von der Bestandeskontrolle bis zur Warenausgabe bewirtschaften","Schritt 2"],
+   ["e4","Speisereste vermeiden sowie Waren, Abfälle und Reststoffe entsorgen","Schritt 4"],
+   ["e5","Massnahmen zur Werterhaltung sowie zum sparsamen Einsatz von Energie und Material einleiten und durchführen","Schritt 5"]]}]},
+
+{k:"DH", n:"Detailhandelsfachfrau / Detailhandelsfachmann EFZ", st:"EFZ · 3 Jahre", why:"Reform Verkauf 2022+. Der Bildungsplan ist um Kundenbeziehung und Warenbewirtschaftung herum gebaut – beides betreibt die Klasse am Pizzatag im Kleinen. Ab dem dritten Lehrjahr wird zwischen Einkaufserlebnissen und Online-Shop gewählt.",
+ g:[{b:"Handlungskompetenzbereiche", i:[
+   ["a","Gestalten von Kundenbeziehungen – erster Kundenkontakt, Bedürfnisse analysieren und Lösungen präsentieren, Verkaufsgespräche abschliessen, Anfragen auf verschiedenen Kanälen bearbeiten","Schritt 4 und 5: Verkauf und Zahlung"],
+   ["b","Bewirtschaften und Präsentieren von Produkten und Dienstleistungen – Warenbewirtschaftungsprozess, kundenorientierte Präsentation, betriebsrelevante Kennzahlen und Daten bearbeiten","Schritt 2, 3 und 5"],
+   ["c","Einbringen und Weiterentwickeln von Produkt- und Dienstleistungskenntnissen – sich über Produkte der eigenen Branche informieren, aktuelle Entwicklungen erkennen","Schritt 2: Produktkenntnis der Zutaten"],
+   ["d","Interagieren im Betrieb und in der Branche – Informationsfluss auf allen Kanälen sicherstellen, Zusammenarbeit gestalten, Arbeiten organisieren und koordinieren","Schritt 1 und digitale Ebene"],
+   ["e","Gestalten von Einkaufserlebnissen (Wahlbereich ab 3. Lehrjahr)","Schritt 4: Standgestaltung und Werbung"],
+   ["f","Betreuen von Online-Shops (Wahlbereich ab 3. Lehrjahr)","Digitale Ebene: Bestellung und Anmeldung online"]]}]},
+
+{k:"DHA", n:"Detailhandelsassistentin / Detailhandelsassistent EBA", st:"EBA · 2 Jahre", eba:1, why:"Dieselben vier Handlungskompetenzbereiche wie beim EFZ, ohne die Wahlbereiche und auf zwei Jahre angelegt. Häufiger Anschluss nach dem Sonderschulangebot, mit Übertrittsmöglichkeit ins EFZ.",
+ g:[{b:"Handlungskompetenzbereiche", i:[
+   ["a","Gestalten von Kundenbeziehungen","Schritt 4"],
+   ["b","Bewirtschaften und Präsentieren von Produkten und Dienstleistungen","Schritt 2 und 4"],
+   ["c","Einbringen und Weiterentwickeln von Produkt- und Dienstleistungskenntnissen","Schritt 2"],
+   ["d","Interagieren im Betrieb und in der Branche","Schritt 1"]]}]},
+
+{k:"BKC", n:"Bäckerin-Konditorin-Confiseurin EFZ / Bäcker-Konditor-Confiseur EFZ", st:"EFZ · 3 Jahre", why:"Teig ist das Kerngeschäft dieses Berufs. Der Bildungsplan (Fassung 2018) ist in Kompetenzbereiche mit Richtzielen gegliedert statt in a1/a2-Handlungskompetenzen; die Nummern unten sind diese Richtziele.",
+ g:[{b:"Kompetenzbereiche und Richtziele", i:[
+   ["1.1.1","Rohstoffe und Halbfabrikate","Schritt 2: Mehl, Hefe, Käse – Eigenschaften und Einkauf"],
+   ["1.1.2","Techniken, Geräte, Maschinen, Anlagen","Schritt 4: Ofen, Kneter, Arbeitsplatz"],
+   ["1.1.3","Naturlehre","Schritt 4: warum der Teig aufgeht"],
+   ["1.1.5","Ernährung","Schritt 4: Nährwert und Deklaration"],
+   ["1.1.6","Persönliche Arbeitsprozesse","Schritt 1: eigener Arbeitsablauf"],
+   ["1.2.2","Gestalten und Kreieren von Produkten","Schritt 4: Belagvarianten entwickeln"],
+   ["1.3.1","Berufliches Rechnen und Tools","Schritt 3: Rezeptumrechnung und Kalkulation"],
+   ["1.3.2","Waren- und Lagerbewirtschaftung, Produktepräsentation","Schritt 2 und 4"],
+   ["1.4.2","Persönliche, betriebliche und Verarbeitungshygiene","Schritt 4"],
+   ["1.4.3","Hygienekonzept","Schritt 1: das Konzept schriftlich"],
+   ["1.4.4","Arbeitssicherheit und Gesundheitsschutz","Schritt 1 und 4"]]}]},
+
+{k:"KV", n:"Kauffrau EFZ / Kaufmann EFZ", st:"EFZ · 3 Jahre", why:"Reform 2023. Der kaufmännische Bildungsplan liest sich über weite Strecken wie eine Beschreibung dessen, was die Klasse rund um den Verkauf organisiert – besonders die Bereiche c (Arbeitsprozesse) und e (digitale Arbeitswelt).",
+ g:[{b:"a · Handeln in agilen Arbeits- und Organisationsformen", i:[
+   ["a3","kaufmännische Aufträge entgegennehmen und bearbeiten","Schritt 1: Bestellungen und Anmeldungen"],
+   ["a4","als selbstverantwortliche Person in der Gesellschaft handeln","Überfachlich: Verbindlichkeit im Team"]]},
+  {b:"b · Interagieren in einem vernetzten Arbeitsumfeld", i:[
+   ["b1","in unterschiedlichen Teams zur Bearbeitung kaufmännischer Aufträge zusammenarbeiten und kommunizieren","Digitale Ebene und Schritt 1"],
+   ["b3","in wirtschaftlichen Fachdiskussionen mitdiskutieren","Schritt 3: Preisdiskussion in der Klasse"],
+   ["b4","kaufmännische Projektmanagementaufgaben ausführen und Teilprojekte bearbeiten","Schritt 1: der Pizzatag als Projekt"]]},
+  {b:"c · Koordinieren von unternehmerischen Arbeitsprozessen", i:[
+   ["c1","Aufgaben und Ressourcen im kaufmännischen Arbeitsbereich planen, koordinieren und optimieren","Schritt 1"],
+   ["c3","betriebliche Prozesse dokumentieren, koordinieren und umsetzen","Digitale Ebene: Ablage und Protokoll"],
+   ["c4","Marketing- und Kommunikationsaktivitäten umsetzen","Schritt 4: Werbung"],
+   ["c5","finanzielle Vorgänge betreuen und kontrollieren","Schritt 5: Kasse"],
+   ["c6","Aufgaben im finanziellen Rechnungswesen bearbeiten","Schritt 5: Budget und Abrechnung"]]},
+  {b:"d · Gestalten von Kunden- oder Lieferantenbeziehungen", i:[
+   ["d1","Anliegen von Kunden oder Lieferanten entgegennehmen","Schritt 2 und 4"],
+   ["d2","Informations- und Beratungsgespräche mit Kunden oder Lieferanten führen","Schritt 4"],
+   ["d3","Verkaufs- und Verhandlungsgespräche mit Kunden oder Lieferanten führen","Schritt 2: Konditionen beim Lieferanten"]]},
+  {b:"e · Einsetzen von Technologien der digitalen Arbeitswelt", i:[
+   ["e1","Applikationen im kaufmännischen Bereich anwenden","Digitale Ebene: Tabellen, Textverarbeitung, Teams"],
+   ["e2","Informationen im wirtschaftlichen und kaufmännischen Bereich recherchieren und auswerten","Schritt 2: Preisrecherche"],
+   ["e3","markt- und betriebsbezogene Statistiken und Daten auswerten und aufbereiten","Schritt 5: Verkaufszahlen auswerten"],
+   ["e4","betriebsbezogene Inhalte multimedial aufbereiten","Schritt 4: Werbematerial"],
+   ["e5","Technologie im kaufmännischen Bereich einrichten und betreuen","Digitale Ebene: den Kanal einrichten"],
+   ["e6","grosse Datenmengen im Unternehmen auftragsbezogen auswerten","Schritt 5: nach einem Semester Verkaufsdaten"]]}]},
+
+{k:"Log", n:"Logistikerin EFZ / Logistiker EFZ", st:"EFZ · 3 Jahre", why:"Der unterschätzte Anschluss. Wer im Projekt Bestellungen, Lagerung und Bereitstellung übernimmt, arbeitet an Handlungskompetenzen, die im Bildungsplan Logistik einen eigenen Bereich füllen.",
+ g:[{b:"a · Organisieren der Aufträge", i:[
+   ["a2","Logistikaufträge planen und organisieren","Schritt 1 und 2"],
+   ["a4","Arbeitsmittel zum Logistikauftrag prüfen und bereitstellen","Schritt 1"]]},
+  {b:"b · Gestalten und Optimieren des Arbeitseinsatzes", i:[
+   ["b2","Die Qualität und Effizienz der eigenen Arbeit in der Logistik optimieren","Schritt 1"],
+   ["b4","Reststoffe und Abfälle nach Materialkreisläufen sortieren, lagern und der Entsorgung oder dem Recycling zuführen","Schritt 4"],
+   ["b5","Informationen zu den Logistikaufträgen und -prozessen dokumentieren","Digitale Ebene"]]},
+  {b:"c · Entgegennehmen und Bewirtschaften von Gütern", i:[
+   ["c1","Güter im Logistikprozess annehmen","Schritt 2: Warenannahme"],
+   ["c2","Güter abladen und kontrollieren","Schritt 2"],
+   ["c4","Güter einlagern und das Lager pflegen","Schritt 2: Kühlkette und Vorrat"],
+   ["c6","Den Güterbestand eines Lagers oder den Reservebestand erheben","Schritt 5: Inventar"],
+   ["c7","Güterbedarf festlegen und Güter bestellen oder den Bedarf melden","Schritt 2: Bestellliste"]]},
+  {b:"d · Verteilen von Gütern", i:[
+   ["d1","Güter kommissionieren und bereitstellen","Schritt 4: Bereitstellung am Stand"]]}]},
+
+{k:"LMT", n:"Lebensmitteltechnologin EFZ / Lebensmitteltechnologe EFZ", st:"EFZ · 3 Jahre", why:"Der Weg für Jugendliche, die weniger das Kochen als die Frage interessiert, wie Lebensmittel industriell entstehen, geprüft und haltbar gemacht werden. Anschluss über die Themen Produktionsweisen, Hygiene und Qualitätskontrolle.",
+ g:[{b:"Anknüpfungspunkte im Projekt", i:[
+   ["—","Rohstoffe und ihre Verarbeitung","Schritt 2: industrieller gegen handwerklicher Teig"],
+   ["—","Qualitätssicherung und Hygiene","Schritt 4"],
+   ["—","Haltbarkeit und Lagerung","Schritt 2"]]}]}
+];
+
+/* ============================ ZUSTAND ============================ */
+const state = { q:"", fach:new Set(), step:new Set(), digital:false, merkOnly:false };
+let merk = {};
+try { merk = JSON.parse(localStorage.getItem("lernlust-pizzatag-merk") || "{}") || {}; } catch(e){ merk = {}; }
+function saveMerk(){ try { localStorage.setItem("lernlust-pizzatag-merk", JSON.stringify(merk)); } catch(e){} }
+
+const SHORT = {
+  Koch:"Koch EFZ", KA:"Küchenangest. EBA", Rest:"Restaurantfach EFZ",
+  DH:"Detailhandel EFZ", DHA:"Detailhandel EBA", BKC:"Bäcker-Kond.-Conf. EFZ",
+  KV:"Kaufleute EFZ", Log:"Logistik EFZ", LMT:"Lebensmitteltechn. EFZ"
+};
+function jobLabel(tag){
+  const i = tag.indexOf(" ");
+  const key = i < 0 ? tag : tag.slice(0, i);
+  return { short: SHORT[key] || tag, code: i < 0 ? "" : tag.slice(i + 1) };
+}
+const LIGHT_TEXT = { MI:1, TTG:1 };
+
+/* ============================ RENDER ============================ */
+const el = id => document.getElementById(id);
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
+
+function buildChips(){
+  const fc = el("fachChips");
+  Object.keys(FACH).forEach(k => {
+    const n = K.filter(x => x.f === k).length;
+    if(!n) return;
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button"; b.setAttribute("aria-pressed","false");
+    b.title = FACH[k].n;
+    b.innerHTML = '<span class="swatch" style="background:var(--f-'+k+')"></span>'+k+'<span class="n">'+n+'</span>';
+    b.addEventListener("click", () => {
+      state.fach.has(k) ? state.fach.delete(k) : state.fach.add(k);
+      b.setAttribute("aria-pressed", String(state.fach.has(k)));
+      render();
+    });
+    fc.appendChild(b);
+  });
+  const sc = el("stepChips");
+  STEPS.forEach(s => {
+    const b = document.createElement("button");
+    b.className = "chip"; b.type = "button"; b.setAttribute("aria-pressed","false");
+    b.textContent = s.t.length > 24 ? s.t.slice(0,22) + "…" : s.t;
+    b.title = s.t;
+    b.addEventListener("click", () => {
+      state.step.has(s.id) ? state.step.delete(s.id) : state.step.add(s.id);
+      b.setAttribute("aria-pressed", String(state.step.has(s.id)));
+      render();
+    });
+    sc.appendChild(b);
+  });
+}
+
+function matches(k){
+  if(state.digital && !k.d) return false;
+  if(state.merkOnly && !merk[k.c + "|" + k.s[0]]) return false;
+  if(state.fach.size && !state.fach.has(k.f)) return false;
+  if(state.step.size && !k.s.some(s => state.step.has(s))) return false;
+  if(state.q){
+    const hay = (k.c + " " + k.t + " " + k.m + " " + FACH[k.f].n + " " + (k.j||[]).join(" ")).toLowerCase();
+    if(!hay.includes(state.q)) return false;
+  }
+  return true;
+}
+
+function kNode(k){
+  const id = k.c + "|" + k.s[0];
+  const d = document.createElement("article");
+  d.className = "k" + (merk[id] ? " marked" : "");
+  const jobs = (k.j || []).map(t => {
+    const l = jobLabel(t);
+    return '<span class="jobchip">' + esc(l.short) + (l.code ? ' <i>' + esc(l.code) + '</i>' : '') + '</span>';
+  }).join("");
+  const fg = LIGHT_TEXT[k.f] ? "#fff" : "#000";
+  d.innerHTML =
+    '<div class="k-code">' + esc(k.c) +
+      '<span class="k-fach" style="background:var(--f-' + k.f + ');color:' + fg + '">' + esc(k.f) + '</span>' +
+    '</div>' +
+    '<div>' +
+      '<p class="k-quote">' + esc(k.t) + '</p>' +
+      '<p class="k-map"><b>Am Pizzatag</b>' + esc(k.m) + '</p>' +
+      (jobs ? '<div class="k-jobs">' + jobs + '</div>' : '') +
+    '</div>' +
+    '<div class="k-merk"><label><input type="checkbox" id="merk-' + id.replace(/[^A-Za-z0-9]/g,"_") + '"' +
+      (merk[id] ? ' checked' : '') + '> merken</label></div>';
+  const cb = d.querySelector("input");
+  cb.addEventListener("change", () => {
+    if(cb.checked) merk[id] = true; else delete merk[id];
+    saveMerk(); render();
+  });
+  return d;
+}
+
+function render(){
+  const stream = el("stream");
+  stream.textContent = "";
+  const shown = K.filter(matches);
+  STEPS.forEach(s => {
+    const items = shown.filter(k => k.s.includes(s.id));
+    if(!items.length) return;
+    const sec = document.createElement("section");
+    sec.className = "step";
+    sec.id = "schritt-" + s.id;
+    const head = document.createElement("div");
+    head.className = "step-head";
+    head.innerHTML = '<span class="num">' + esc(s.num) + '</span><h3>' + esc(s.t) + '</h3>';
+    const note = document.createElement("p");
+    note.className = "step-note";
+    note.textContent = s.note;
+    const list = document.createElement("div");
+    list.className = "step-list";
+    items.forEach(k => list.appendChild(kNode(k)));
+    sec.appendChild(head); sec.appendChild(note); sec.appendChild(list);
+    stream.appendChild(sec);
+  });
+  el("empty").hidden = shown.length > 0;
+  const marked = Object.keys(merk).length;
+  el("count").textContent = shown.length + (shown.length === 1 ? " Kompetenz" : " Kompetenzen") +
+    " von " + K.length + (marked ? " · " + marked + " gemerkt" : "");
+}
+
+function buildStatic(){
+  const t = el("tally");
+  const fachCount = new Set(K.map(k => k.f)).size;
+  [[K.length,"Kompetenzen"],[fachCount,"Fachbereiche"],[K.filter(k=>k.d).length,"davon digital"],
+   [BERUFE.length,"Lehrberufe"],[5,"Projektschritte"]].forEach(([n,l]) => {
+    const d = document.createElement("div");
+    d.innerHTML = "<b>" + n + "</b><span>" + l + "</span>";
+    t.appendChild(d);
+  });
+
+  const g = el("ufkGrid");
+  UFK.forEach(u => {
+    const d = document.createElement("div");
+    d.innerHTML = '<h4>' + esc(u.h) + '</h4><span class="who">' + esc(u.w) + '</span><ul>' +
+      u.l.map(x => '<li>' + esc(x) + '</li>').join("") + '</ul>';
+    g.appendChild(d);
+  });
+
+  const b = el("berufe");
+  BERUFE.forEach(x => {
+    const d = document.createElement("div");
+    d.className = "beruf";
+    d.innerHTML =
+      '<div class="beruf-head"><h3>' + esc(x.n) + '</h3><span class="stufe' + (x.eba ? " eba" : "") + '">' + esc(x.st) + '</span></div>' +
+      '<p class="beruf-why">' + esc(x.why) + '</p>' +
+      x.g.map(gr => '<p class="hkb">' + esc(gr.b) + '</p>' + gr.i.map(function(row){
+        return '<div class="hk"><code>' + esc(row[0]) + '</code><p>' + esc(row[1]) +
+               '<span class="tie">&rarr; ' + esc(row[2]) + '</span></p></div>';
+      }).join("")).join("");
+    b.appendChild(d);
+  });
+}
+
+/* ============================ EVENTS ============================ */
+el("q").addEventListener("input", e => { state.q = e.target.value.trim().toLowerCase(); render(); });
+el("onlyDigital").addEventListener("change", e => { state.digital = e.target.checked; render(); });
+el("onlyMerk").addEventListener("change", e => { state.merkOnly = e.target.checked; render(); });
+el("reset").addEventListener("click", () => {
+  state.q = ""; state.fach.clear(); state.step.clear(); state.digital = false; state.merkOnly = false;
+  el("q").value = ""; el("onlyDigital").checked = false; el("onlyMerk").checked = false;
+  document.querySelectorAll(".chip").forEach(c => c.setAttribute("aria-pressed","false"));
+  render();
+});
+
+/* Mobile Navigation, identisch zu index.html */
+const navToggle = document.getElementById('navToggle');
+const navMenu = document.getElementById('navMenu');
+if (navToggle) { navToggle.addEventListener('click', () => { navMenu.classList.toggle('active'); }); }
+
+/* ============================ START ============================ */
+buildChips();
+buildStatic();
+render();
+  </script>
+</body>
+</html>
