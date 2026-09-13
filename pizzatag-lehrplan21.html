@@ -39,6 +39,68 @@
       text-transform: uppercase; letter-spacing: 0.08em;
     }
 
+    /* ── Bento Grid "Auslegeordnung" ────────────────────────── */
+    .bento {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-auto-rows: minmax(96px, auto);
+      grid-auto-flow: dense;
+      gap: var(--space-sm);
+      margin-top: var(--space-md);
+    }
+    .bento-card {
+      border: var(--border-thick);
+      box-shadow: var(--shadow-brutal);
+      background: var(--color-surface);
+      padding: 18px 20px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      gap: 10px; min-height: 0;
+      transition: var(--transition);
+    }
+    .bento-card:hover {
+      transform: translate(3px, 3px);
+      box-shadow: 3px 3px 0 var(--color-black);
+    }
+    .bento-big { grid-column: span 2; grid-row: span 2; }
+    .bento-wide { grid-column: span 2; }
+    .bento-tall { grid-row: span 2; }
+    .bento .kc {
+      font-family: var(--font-mono); font-size: 0.66rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; opacity: .75;
+    }
+    .bento .knum {
+      font-size: clamp(2.2rem, 5vw, 3.6rem); font-weight: 900; line-height: .9;
+      font-variant-numeric: tabular-nums; letter-spacing: -0.03em;
+    }
+    .bento .klabel {
+      font-size: 0.78rem; font-weight: 900; text-transform: uppercase;
+      letter-spacing: 0.08em; line-height: 1.3;
+    }
+    .bento .kfach {
+      display: flex; align-items: flex-start; justify-content: space-between; gap: 10px;
+    }
+    .bento .kfach .nm { font-weight: 900; font-size: 1.05rem; line-height: 1.15; text-transform: uppercase; }
+    .bento .kfach .cnt { font-family: var(--font-mono); font-weight: 900; font-size: 1.3rem; }
+    .bento .kfach .box { width: 100%; height: 14px; border: 2px solid var(--color-black); margin-top: 8px; }
+    .bento .kfach .box i { display: block; height: 100%; background: var(--color-black); }
+    .bento .bars { display: flex; flex-direction: column; gap: 6px; }
+    .bento .bars p { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; margin: 0; }
+    .bento-quote {
+      font-size: 1.05rem; font-weight: 700; line-height: 1.4;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .bento-quote .kc { margin-bottom: 8px; }
+    @media (max-width: 900px) {
+      .bento { grid-template-columns: repeat(2, 1fr); }
+      .bento-big { grid-column: span 2; grid-row: span 1; }
+      .bento-wide { grid-column: span 2; }
+    }
+    @media (max-width: 520px) {
+      .bento { grid-template-columns: 1fr; }
+      .bento-big, .bento-wide { grid-column: span 1; }
+      .bento-tall { grid-row: span 1; }
+    }
+
     /* ── Filterleiste ───────────────────────────────────────── */
     .filterbar {
       border: var(--border-thick);
@@ -255,7 +317,7 @@
     <div class="container">
       <h2 class="section-title">Die Auslegeordnung</h2>
       <p class="section-intro">Alle Kompetenzformulierungen sind im Wortlaut aus dem Lehrplan 21 zitiert und gegen die Fachbereichslehrpläne geprüft. Die Zeile «Am Pizzatag» ist Zuordnung, kein Lehrplantext.</p>
-      <div class="tally" id="tally"></div>
+      <div class="bento" id="bento"></div>
     </div>
   </section>
 
@@ -757,15 +819,57 @@ function render(){
 }
 
 function buildStatic(){
-  const t = el("tally");
-  const fachCount = new Set(K.map(k => k.f)).size;
-  [[K.length,"Kompetenzen"],[fachCount,"Fachbereiche"],[K.filter(k=>k.d).length,"davon digital"],
-   [BERUFE.length,"Lehrberufe"],[5,"Projektschritte"]].forEach(([n,l]) => {
-    const d = document.createElement("div");
-    d.innerHTML = "<b>" + n + "</b><span>" + l + "</span>";
-    t.appendChild(d);
+  const bentoEl = el("bento");
+
+  // Fachbereichshäufigkeiten für Balkenberechnung
+  const counts = {};
+  const total = K.length;
+  K.forEach(k => { counts[k.f] = (counts[k.f] || 0) + 1; });
+  const order = Object.keys(counts).sort((x,y) => counts[y]-counts[x]);
+  const max = Math.max(...Object.values(counts), 1);
+
+  // Kachel: Zahl (Kompetenzen gesamt — gross)
+  const totalCard = document.createElement("div");
+  totalCard.className = "bento-card bento-big";
+  totalCard.style.background = "var(--color-black)";
+  totalCard.style.color = "#fff";
+  totalCard.innerHTML =
+    '<span class="kc" style="color:var(--color-accent)">Kompetenzen · Zyklus 3</span>' +
+    '<span class="knum">' + total + '</span>' +
+    '<span class="klabel">im Wortlaut aus dem Lehrplan 21 · über ' + order.length + ' Fachbereiche</span>';
+  bentoEl.appendChild(totalCard);
+
+  // Kacheln: Fachbereiche mit Balken (Digital-Anteil als Voll/Füllung)
+  order.forEach((f, i) => {
+    const c = counts[f];
+    const dig = K.filter(k => k.f === f && k.d).length;
+    const card = document.createElement("div");
+    card.className = "bento-card" + (i === 0 ? " bento-wide" : "");
+    card.style.background = "var(--f-" + f + ")";
+    const fg = LIGHT_TEXT[f] ? "#fff" : "#000";
+    card.style.color = fg;
+    card.innerHTML =
+      '<div class="kfach">' +
+        '<span class="nm">' + esc(FACH[f].n) + '</span>' +
+        '<span class="cnt">' + c + '</span>' +
+      '</div>' +
+      '<div class="bars">' +
+        '<div class="box"><i style="width:' + Math.round(100*c/max) + '%;background:' + fg + '"></i></div>' +
+        '<p>' + dig + ' digital</p>' +
+      '</div>';
+    bentoEl.appendChild(card);
   });
 
+  // Zitat-Kachel
+  const quote = document.createElement("div");
+  quote.className = "bento-card bento-quote";
+  quote.style.background = "var(--color-bg)";
+  quote.innerHTML =
+    '<span class="kc">Überfachlich</span>' +
+    '<span>Die Schülerfirma ist eines der wenigen Gefässe, in denen die überfachlichen Kompetenzen den Kern bilden statt nebenbei zu laufen.</span>';
+  bentoEl.appendChild(quote);
+
+  /* --- Überfachliche Kompetenzen / Lehrberufe (unverändert) --- */
   const g = el("ufkGrid");
   UFK.forEach(u => {
     const d = document.createElement("div");
