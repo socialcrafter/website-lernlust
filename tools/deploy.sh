@@ -8,7 +8,7 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-ALLOWED=("apps/" "archive/" "index.html" "pizzatag-lehrplan21.html" "prompts.html" "styles.css" "script.js" "fonts/" "impressum.html" "datenschutz.html" "ARCHITEKTUR.md" "DEPLOYMENT.md" "README.md" "tools/" ".gitignore" "beta apps primarstufe/")
+ALLOWED=("apps/" "assets/" "archive/" "index.html" "pizzatag-lehrplan21.html" "prompts.html" "styles.css" "script.js" "fonts/" "impressum.html" "datenschutz.html" "ARCHITEKTUR.md" "DEPLOYMENT.md" "README.md" "tools/" ".gitignore" "beta apps primarstufe/")
 
 MSG="${1:?Bitte Commit-Message angeben: tools/deploy.sh \"Message\" [datei ...]}"
 shift || true

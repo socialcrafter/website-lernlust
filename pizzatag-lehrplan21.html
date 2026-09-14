@@ -6,6 +6,9 @@
   <meta name="description" content="Welche Kompetenzen des Lehrplans 21 eine Schülerfirma tatsächlich bearbeitet — und an welche Handlungskompetenzen der Berufslehren sie anschliessen.">
   <title>Pizzatag im Lehrplan 21 — Lernlust</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <style>
     /* ── Zusätzliche Styles nur für diese Seite ───────────────── */
 
@@ -81,8 +84,8 @@
     }
     .bento .kfach .nm { font-weight: 900; font-size: 1.05rem; line-height: 1.15; text-transform: uppercase; }
     .bento .kfach .cnt { font-family: var(--font-mono); font-weight: 900; font-size: 1.3rem; }
-    .bento .kfach .box { width: 100%; height: 14px; border: 2px solid var(--color-black); margin-top: 8px; }
-    .bento .kfach .box i { display: block; height: 100%; background: var(--color-black); }
+    .bento .bars .box { width: 100%; height: 14px; border: 2px solid var(--color-black); margin-top: 8px; }
+    .bento .bars .box i { display: block; height: 100%; background: var(--color-black); }
     .bento .bars { display: flex; flex-direction: column; gap: 6px; }
     .bento .bars p { font-size: 0.7rem; font-weight: 900; text-transform: uppercase; letter-spacing: .06em; margin: 0; }
     .bento-quote {
@@ -115,13 +118,7 @@
       font-size: 0.72rem; font-weight: 900; text-transform: uppercase;
       letter-spacing: 0.1em; width: 100%; margin: 0;
     }
-    .lp-search {
-      flex: 1; min-width: 220px;
-      border: var(--border-medium); background: var(--color-bg); color: var(--color-text);
-      padding: 11px 14px; font-family: var(--font-sans); font-size: 1rem; font-weight: 600;
-      border-radius: 0;
-    }
-    .lp-search:focus-visible { outline: 4px solid var(--color-tertiary); outline-offset: 2px; }
+    /* .lp-search ist im Videooptik-Block weiter unten definiert */
 
     .chip {
       font-family: var(--font-mono); font-size: 0.8rem; font-weight: 700;
@@ -175,11 +172,6 @@
     .k:first-child { border-top: 0; }
     .k.marked { background: #fffbe6; box-shadow: inset 8px 0 0 var(--color-primary); }
     .k-code { font-family: var(--font-mono); font-weight: 700; font-size: 0.9rem; word-break: break-all; }
-    .k-fach {
-      display: inline-block; margin-top: 7px; padding: 2px 7px;
-      border: 2px solid var(--color-black); font-size: 0.65rem; font-weight: 900;
-      letter-spacing: 0.06em; text-transform: uppercase;
-    }
     .k-quote { font-size: 1rem; font-weight: 600; line-height: 1.5; margin: 0; }
     .k-quote::before { content: "«"; } .k-quote::after { content: "»"; }
     .k-map {
@@ -203,7 +195,6 @@
     @media (max-width: 700px) {
       .k { grid-template-columns: 1fr; }
       .k-code { margin-bottom: 10px; }
-      .k-fach { margin-top: 0; margin-left: 10px; }
       .k-merk { grid-column: 1; }
     }
     .lp-empty { border: var(--border-thick); padding: 30px; font-weight: 700; text-align: center; }
@@ -262,6 +253,325 @@
       text-decoration: none; color: var(--color-text);
     }
     .jump a:hover { background: var(--color-primary); color: var(--color-black); box-shadow: 3px 3px 0 var(--color-black); }
+
+    /* ════════════════════════════════════════════════════════════════
+       VIDEOOPTIK — diese Seite folgt dem Design des Erklärvideos.
+       Alle Werte stammen aus dem Video-Projekt. Nur hier überschrieben,
+       styles.css und die anderen Seiten bleiben unangetastet.
+       ════════════════════════════════════════════════════════════════ */
+    :root {
+      --paper:#f4f1e9; --ink:#0b0b0b; --muted:#7a756c; --line:#dcd7cb;
+      --lime:#c6ff3d; --magenta:#ff4fd8; --cyan:#3ad6ff; --violet:#9b7bff; --mark:#d53f28;
+      --display:"Unbounded","Space Grotesk",sans-serif;
+      --grotesk:"Space Grotesk","Inter",sans-serif;
+      --mono:"JetBrains Mono",ui-monospace,monospace;
+
+      /* geteilte Tokens flach stellen: Konturen dünn, keine harten Schatten */
+      --color-bg:#fffdf7;
+      --color-surface:var(--paper);
+      --color-black:var(--ink);
+      --color-text:var(--ink);
+      --color-primary:var(--ink);
+      --color-secondary:var(--magenta);
+      --color-tertiary:var(--cyan);
+      --color-accent:var(--violet);
+      --border-thick:1px solid var(--line);
+      --border-medium:1px solid var(--line);
+      --border-thin:1px solid var(--line);
+      --shadow-brutal:none;
+      --shadow-medium:none;
+      --shadow-small:none;
+      --font-sans:var(--grotesk);
+      --font-mono:var(--mono);
+
+      /* Fachbereichsfarben auf die Palette des Videos umgestellt */
+      --f-WAH:#ff4fd8; --f-MI:#9b7bff; --f-MA:#3ad6ff; --f-BO:#c6ff3d;
+      --f-D:#ff8a3d;   --f-BG:#c77dff; --f-NT:#3ad6ff; --f-TTG:#c6ff3d;
+      --f-RZG:#9b7bff; --f-ERG:#ff8a3d;
+    }
+
+    body { background: var(--color-bg); color: var(--ink); font-family: var(--grotesk); }
+
+    /* Kopfzeile */
+    .site-header, header.site-header { background: var(--color-bg); border-bottom: 1px solid var(--line); }
+
+    /* ── Hero ─────────────────────────────────────────────────── */
+    .hero { background: var(--color-bg); border-bottom: 1px solid var(--line); min-height: 0; }
+    .hero .container { padding: 76px 24px 64px; gap: 56px; }
+    .hero-title {
+      font-family: var(--display); font-weight: 600; text-transform: none;
+      font-size: clamp(26px, 2.9vw, 42px); line-height: 1.22; letter-spacing: -0.015em;
+    }
+    .highlight {
+      background: var(--lime); color: var(--ink); transform: none;
+      border-radius: 14px; padding: 2px 16px 7px; display: inline-block;
+    }
+    .hero-subtitle {
+      font-weight: 400; font-size: 1.08rem; line-height: 1.62; color: #2a2a28; max-width: 44em;
+    }
+
+    /* Buttons als Pills */
+    .btn {
+      font-family: var(--grotesk); font-weight: 600; text-transform: none;
+      font-size: 0.98rem; padding: 12px 24px; border-radius: 999px;
+      box-shadow: none; border: 1.5px solid var(--ink);
+    }
+    .btn:hover { transform: none; box-shadow: none; opacity: 0.86; }
+    .btn-primary { background: var(--ink); color: #fff; }
+    .btn-secondary { background: transparent; color: var(--ink); }
+    .btn-outline { background: transparent; color: var(--ink); }
+
+    /* schwebende Karten → flache Neon-Chips */
+    .floating-card {
+      border: 1px solid var(--line); box-shadow: none; border-radius: 14px; padding: 14px 18px;
+    }
+    .floating-card:hover { transform: none; box-shadow: none; }
+    .card-text {
+      font-family: var(--mono); font-size: 0.8rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.1em;
+    }
+    .card-1 { background: var(--cyan); }
+    .card-2 { background: var(--magenta); }
+    .card-3 { background: var(--lime); }
+
+    /* ── Abschnitte ───────────────────────────────────────────── */
+    section { padding: 64px 0; border-bottom: 1px solid var(--line); }
+    .lp-section { padding: 64px 0; }
+    .lp-section + .lp-section { border-top: none; }
+    .section-title {
+      font-family: var(--display); font-weight: 600;
+      font-size: clamp(22px, 2.2vw, 32px); letter-spacing: -0.02em; line-height: 1.2;
+    }
+    .section-intro, .section-subtitle { font-weight: 400; line-height: 1.6; color: #2a2a28; }
+
+    /* ── Video ────────────────────────────────────────────────── */
+    .video-block { display: grid; grid-template-columns: 1fr; gap: 18px; margin-top: 8px; }
+    .video-frame {
+      border: 1px solid var(--line); border-radius: 20px; overflow: hidden;
+      background: var(--ink); line-height: 0;
+    }
+    .video-frame video { display: block; width: 100%; height: auto; }
+    .video-meta { display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; }
+    .video-meta span {
+      font-family: var(--mono); font-size: 0.76rem; color: var(--muted);
+      letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    /* ── Kennzahlen ───────────────────────────────────────────── */
+    .tally { border: 1px solid var(--line); box-shadow: none; border-radius: 16px; overflow: hidden; }
+    .tally div { border-right: 1px solid var(--line); }
+    .tally b { font-family: var(--display); font-weight: 600; font-size: 2.1rem; }
+    .tally span { font-family: var(--mono); font-weight: 700; font-size: 0.68rem; color: var(--muted); }
+
+    /* ── Bento ────────────────────────────────────────────────── */
+    .bento-card { border: 1px solid var(--line); box-shadow: none; border-radius: 16px; }
+    .bento-card:hover { transform: none; box-shadow: none; }
+
+    /* Auslegeordnung in der Sprache des Videos:
+       Papierkacheln statt Vollfarbflaechen, Mono-Index, farbiger Pillenbalken */
+    .bento { gap: 14px; grid-auto-rows: minmax(104px, auto); }
+    .bento-card { background: var(--paper); }
+    .bento .kc {
+      font-family: var(--mono); font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase; opacity: 1; color: var(--muted);
+    }
+    .bento .knum {
+      font-family: var(--display); font-weight: 600; line-height: 0.95;
+      font-size: clamp(2.4rem, 5vw, 3.8rem); letter-spacing: -0.03em;
+    }
+    .bento .klabel {
+      font-family: var(--grotesk); font-weight: 500; font-size: 0.86rem;
+      text-transform: none; letter-spacing: 0; line-height: 1.35;
+    }
+    .bento .kfach { align-items: baseline; gap: 12px; }
+    .bento .kfach .idx { font-family: var(--mono); font-size: 0.78rem; color: var(--muted); }
+    .bento .kfach .nm {
+      flex: 1; font-family: var(--grotesk); font-weight: 600;
+      font-size: 1.02rem; line-height: 1.2; text-transform: none;
+    }
+    .bento .kfach .cnt {
+      font-family: var(--display); font-weight: 600;
+      font-size: 1.45rem; font-variant-numeric: tabular-nums;
+    }
+    .bento .bars .box {
+      width: 100%; height: 22px; border: 0 none; margin-top: 10px;
+      background: var(--color-bg); border-radius: 999px; padding: 4px; overflow: hidden;
+    }
+    .bento .bars .box i { display: block; height: 100%; border-radius: 999px; }
+    .bento .bars p {
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 400;
+      text-transform: none; letter-spacing: 0.06em; color: var(--muted); margin-top: 8px;
+    }
+    .bento-quote {
+      font-family: var(--grotesk); font-size: 1.06rem; font-weight: 500; line-height: 1.5;
+    }
+    /* Anker-Kachel wie das Summen-Abzeichen im Video: Tinte, Lime-Zahl */
+    .bento .bento-total { background: var(--ink); color: var(--bg); }
+    .bento .bento-total .kc { color: var(--lime); }
+    .bento .bento-total .knum { color: var(--lime); }
+    .bento .bento-total .klabel { color: #cfc9bd; }
+
+    /* ── Schritte, Chips und Kompetenzkarten in der Video-Sprache ── */
+    .step-head {
+      background: var(--paper); color: var(--ink);
+      border: 1px solid var(--line); border-radius: 14px; padding: 16px 20px;
+    }
+    .step-head .num {
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 700;
+      letter-spacing: 0.14em; color: var(--ink); background: var(--lime);
+      border-radius: 999px; padding: 5px 12px;
+    }
+    .step-head h3 {
+      font-family: var(--display); font-weight: 600; color: var(--ink);
+      text-transform: none; letter-spacing: -0.02em;
+    }
+    .step-note {
+      border: 0 none; background: transparent; padding: 13px 4px 2px;
+      font-weight: 400; font-size: 0.94rem; color: var(--muted);
+    }
+    .step-list { border: 0 none; background: transparent; }
+
+    /* Kompetenzkarte: Papier, duenne Linie, Mono-Code mit Farbpunkt */
+    .k {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: 14px; margin-top: 10px; padding: 16px 18px;
+    }
+    .k:first-child { border-top: 1px solid var(--line); }
+    .k.marked { background: #fbfff0; box-shadow: inset 6px 0 0 var(--lime); }
+    .k-code {
+      display: flex; align-items: center; gap: 9px;
+      font-family: var(--mono); font-size: 0.8rem; font-weight: 700;
+      letter-spacing: 0.03em; word-break: break-all;
+    }
+    .k-dot { display: inline-block; flex: none; width: 11px; height: 11px; border-radius: 50%; }
+    .k-abbr { font-family: var(--mono); font-size: 0.68rem; font-weight: 400;
+      color: var(--muted); letter-spacing: 0.12em; }
+    .k-quote { font-family: var(--grotesk); font-size: 1.05rem; font-weight: 500; line-height: 1.42; }
+    .k-map {
+      margin: 12px 0 0; padding: 10px 14px; background: var(--color-bg);
+      border-left: 4px solid var(--ink); border-radius: 0 10px 10px 0;
+      font-family: var(--grotesk); font-size: 0.94rem; font-weight: 400;
+    }
+    .k-map b {
+      display: block; font-family: var(--mono); font-size: 0.64rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.12em; color: var(--muted); margin-bottom: 4px;
+    }
+    .k-jobs { gap: 8px; margin-top: 12px; }
+    .jobchip {
+      font-family: var(--mono); font-size: 0.7rem; font-weight: 400;
+      padding: 5px 11px; border: 1px solid var(--line); border-radius: 999px;
+      background: var(--color-bg);
+    }
+    .jobchip i { color: var(--muted); }
+    .k-merk { margin-top: 12px; }
+    .k-merk label {
+      font-family: var(--mono); font-size: 0.7rem; font-weight: 400;
+      text-transform: none; letter-spacing: 0.06em; color: var(--muted);
+    }
+    .k-merk input { width: 16px; height: 16px; accent-color: var(--ink); }
+
+    .chip {
+      border: 1px solid var(--line); border-radius: 999px;
+      background: var(--color-bg); font-family: var(--mono); font-weight: 400;
+    }
+    .chip:hover { box-shadow: none; transform: none; background: var(--paper); }
+    .chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+    .chip .swatch { border: 0 none; border-radius: 50%; }
+    .btn-reset {
+      font-family: var(--grotesk); font-weight: 600; text-transform: none;
+      letter-spacing: 0; border: 1.5px solid var(--ink); border-radius: 999px;
+      background: transparent; padding: 8px 18px;
+    }
+    .btn-reset:hover { background: var(--ink); color: var(--bg); }
+    .lp-count { font-family: var(--mono); font-weight: 400; color: var(--muted); }
+    .toggle { font-family: var(--grotesk); font-weight: 500; }
+    .toggle input { accent-color: var(--ink); }
+
+    /* ── Filter und Suche ─────────────────────────────────────── */
+    .lp-search {
+      flex: 1; min-width: 220px;
+      border: 1.5px solid var(--line); border-radius: 999px; background: var(--paper);
+      color: var(--color-text); font-family: var(--grotesk); font-size: 1rem;
+      font-weight: 500; padding: 12px 18px;
+    }
+    .lp-search:focus-visible { outline: 3px solid var(--violet); outline-offset: 2px; }
+    .filter-label { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em; color: var(--muted); }
+
+    /* Sprungnavigation als Pills */
+    .jump a {
+      border: 1px solid var(--line); background: transparent; border-radius: 999px;
+      font-family: var(--mono); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em;
+    }
+    .jump a:hover { background: var(--lime); color: var(--ink); box-shadow: none; }
+
+    .quellen li { border-bottom: 1px solid var(--line); font-weight: 400; }
+
+    /* ── Überfachliche Kompetenzen in der Video-Sprache ──────── */
+    .ufk { gap: 12px; }
+    .ufk > div {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: 14px; box-shadow: none; padding: 20px;
+    }
+    .ufk h4 {
+      font-family: var(--display); font-weight: 600; font-size: 1.02rem;
+      text-transform: none; letter-spacing: -0.02em; margin: 0 0 10px;
+    }
+    .ufk .who {
+      display: inline-block; margin-bottom: 14px; padding: 5px 12px;
+      border: 0 none; border-radius: 999px; background: var(--lime); color: var(--ink);
+      font-family: var(--mono); font-size: 0.66rem; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+    }
+    .ufk ul { margin: 0; padding-left: 18px; }
+    .ufk li { font-family: var(--grotesk); font-size: 0.94rem; font-weight: 400;
+      line-height: 1.5; margin-bottom: 8px; }
+
+    /* ── Lehrberufe in der Video-Sprache ─────────────────────── */
+    .beruf {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: 16px; box-shadow: none; padding: 24px;
+    }
+    .beruf-head h3 {
+      font-family: var(--display); font-weight: 600;
+      text-transform: none; letter-spacing: -0.02em;
+    }
+    .stufe {
+      border: 0 none; border-radius: 999px; background: var(--ink); color: var(--bg);
+      font-family: var(--mono); font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase; padding: 6px 14px;
+    }
+    .stufe.eba { background: var(--violet); color: var(--ink); }
+    .beruf-why {
+      font-family: var(--grotesk); font-size: 0.98rem; font-weight: 400;
+      line-height: 1.55; color: #2a2a28; margin-bottom: 20px;
+    }
+    .hkb {
+      margin: 22px 0 0; padding: 0; background: transparent; color: var(--muted);
+      font-family: var(--mono); font-size: 0.68rem; font-weight: 700;
+      letter-spacing: 0.14em; text-transform: uppercase;
+    }
+    .hk { border-bottom: 1px solid var(--line); padding: 12px 4px; }
+    .hk code {
+      font-family: var(--mono); font-size: 0.8rem; font-weight: 700;
+      color: var(--ink); letter-spacing: 0.03em;
+    }
+    .hk p { font-family: var(--grotesk); font-size: 0.94rem; font-weight: 400; line-height: 1.5; }
+    .hk .tie {
+      font-family: var(--mono); font-size: 0.76rem; font-weight: 400;
+      opacity: 1; color: var(--muted); margin-top: 6px;
+    }
+
+    /* ── Hinweise, Quellen, leere Liste ──────────────────────── */
+    .hinweis {
+      background: var(--paper); border: 1px solid var(--line);
+      border-radius: 14px; box-shadow: none; padding: 22px 24px;
+    }
+    .hinweis h4 { font-family: var(--display); font-weight: 600; text-transform: none; }
+    .hinweis p { font-family: var(--grotesk); font-size: 0.96rem; font-weight: 400; line-height: 1.55; }
+    .lp-empty {
+      border: 1px solid var(--line); border-radius: 14px; background: var(--paper);
+      font-family: var(--grotesk); font-weight: 400; color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -298,7 +608,7 @@
           <span class="title-line">Eine Klasse verkauft Pizza.</span>
           <span class="title-line highlight">Was lernt sie dabei?</span>
         </h1>
-        <p class="hero-subtitle">Eine Schülerfirma am Sonderschulangebot Basel: einmal pro Woche frische Pizza. Planen, einkaufen, kalkulieren, verkaufen, abrechnen — und alles davon digital vorbereiten, absprechen und dokumentieren. Diese Seite zeigt, welche Kompetenzen des Lehrplans 21 dabei wirklich bearbeitet werden und an welche Handlungskompetenzen der Berufslehren sie anschliessen.</p>
+        <p class="hero-subtitle">Eine Schülerfirma an einer Sekundarschule: einmal pro Woche frische Pizza. Planen, einkaufen, kalkulieren, verkaufen, abrechnen — und alles davon digital vorbereiten, absprechen und dokumentieren. Diese Seite zeigt, welche Kompetenzen des Lehrplans 21 dabei wirklich bearbeitet werden und an welche Handlungskompetenzen der Berufslehren sie anschliessen.</p>
         <div class="hero-cta">
           <a href="#kompetenzen" class="btn btn-primary">Zu den Kompetenzen</a>
           <a href="#lehrstellen" class="btn btn-secondary">Anschluss Lehrstellen</a>
@@ -308,6 +618,28 @@
         <div class="floating-card card-1"><span class="card-text">Planen</span></div>
         <div class="floating-card card-2"><span class="card-text">Verkaufen</span></div>
         <div class="floating-card card-3"><span class="card-text">Kasse ✓</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Video ──────────────────────────────────────────────── -->
+  <section id="video" class="lp-section">
+    <div class="container">
+      <h2 class="section-title">Die Auslegeordnung als Video</h2>
+      <p class="section-intro">82 Kompetenzen über zehn Fachbereiche, davon 31 mit digitalem Anteil. Am Schluss des Videos stehen 24 Beispiele im Wortlaut. Die vollständige Liste folgt weiter unten auf dieser Seite.</p>
+      <div class="video-block">
+        <div class="video-frame">
+          <video controls muted loop playsinline preload="metadata" poster="assets/pizzatag-kompetenzen-poster.jpg">
+            <source src="assets/pizzatag-kompetenzen.mp4" type="video/mp4">
+            Dein Browser kann das Video nicht abspielen. <a href="assets/pizzatag-kompetenzen.mp4">Video herunterladen</a>
+          </video>
+        </div>
+        <div class="video-meta">
+          <span>34,5 Sekunden</span>
+          <span>1920 × 1080</span>
+          <span>24 Beispiele im Wortlaut</span>
+          <span>Alle 82 Kompetenzen unten auf dieser Seite</span>
+        </div>
       </div>
     </div>
   </section>
@@ -384,7 +716,7 @@
         <h4>Was hier Lehrplan ist und was nicht</h4>
         <p>In Anführungszeichen steht der Originalwortlaut aus dem Lehrplan 21, D-EDK, bereinigte Fassung vom 29.02.2016. Die Rechte daran liegen bei der D-EDK. Der massgebliche Text steht auf <a href="https://www.lehrplan.ch">lehrplan.ch</a>.</p>
         <p>Die Zeile «Am Pizzatag» ist meine Zuordnung und kein Lehrplantext. Sie ist als Vorschlag gedacht und gehört im Team überprüft.</p>
-        <p>Zyklusangaben beziehen sich auf Zyklus 3. Verbindlich ist immer die kantonale Fassung, für Basel-Stadt der Lehrplan 21 in der Ausgestaltung des Kantons, nicht die D-EDK-Vorlage.</p>
+        <p>Zyklusangaben beziehen sich auf Zyklus 3. Verbindlich ist immer die kantonale Fassung, für Basel-Landschaft der Lehrplan 21 in der Ausgestaltung des Kantons, nicht die D-EDK-Vorlage.</p>
       </div>
 
       <ul class="quellen">
@@ -577,7 +909,7 @@ const BERUFE = [
    ["d2","Kommunikationsmittel für die Informationsbeschaffung und den Informationsaustausch im Küchenbereich einsetzen sowie Methoden für Präsentationen von Speisen und Gerichten anwenden","Digitale Ebene: der Projektkanal"],
    ["d3","Mit Gästen und innerbetrieblich in einer zweiten Landessprache oder in Englisch kommunizieren","Anschlussmöglichkeit für den Fremdsprachenunterricht"]]}]},
 
-{k:"KA", n:"Küchenangestellte/r EBA", st:"EBA · 2 Jahre", eba:1, why:"Gleiche Struktur wie Koch EFZ, aber auf zwei Jahre und mit engerem Anforderungsprofil. Für viele Jugendliche aus dem Sonderschulangebot der realistischere und anschlussfähige Weg – und mit Übertritt ins EFZ durchlässig.",
+{k:"KA", n:"Küchenangestellte/r EBA", st:"EBA · 2 Jahre", eba:1, why:"Gleiche Struktur wie Koch EFZ, aber auf zwei Jahre und mit engerem Anforderungsprofil. Für viele Jugendliche der realistischere und anschlussfähige Weg – und mit Übertritt ins EFZ durchlässig.",
  g:[{b:"A · Zubereiten und Präsentieren von Speisen und Gerichten", i:[
    ["a1","Speisen den Gästebedürfnissen anpassen","Schritt 1"],
    ["a2","Wareneinkauf unterstützen und dabei Grundsätze der gesunden Ernährung umsetzen","Schritt 2"],
@@ -626,7 +958,7 @@ const BERUFE = [
    ["e","Gestalten von Einkaufserlebnissen (Wahlbereich ab 3. Lehrjahr)","Schritt 4: Standgestaltung und Werbung"],
    ["f","Betreuen von Online-Shops (Wahlbereich ab 3. Lehrjahr)","Digitale Ebene: Bestellung und Anmeldung online"]]}]},
 
-{k:"DHA", n:"Detailhandelsassistentin / Detailhandelsassistent EBA", st:"EBA · 2 Jahre", eba:1, why:"Dieselben vier Handlungskompetenzbereiche wie beim EFZ, ohne die Wahlbereiche und auf zwei Jahre angelegt. Häufiger Anschluss nach dem Sonderschulangebot, mit Übertrittsmöglichkeit ins EFZ.",
+{k:"DHA", n:"Detailhandelsassistentin / Detailhandelsassistent EBA", st:"EBA · 2 Jahre", eba:1, why:"Dieselben vier Handlungskompetenzbereiche wie beim EFZ, ohne die Wahlbereiche und auf zwei Jahre angelegt. Häufiger Anschluss nach der Sekundarschule, mit Übertrittsmöglichkeit ins EFZ.",
  g:[{b:"Handlungskompetenzbereiche", i:[
    ["a","Gestalten von Kundenbeziehungen","Schritt 4"],
    ["b","Bewirtschaften und Präsentieren von Produkten und Dienstleistungen","Schritt 2 und 4"],
@@ -713,8 +1045,6 @@ function jobLabel(tag){
   const key = i < 0 ? tag : tag.slice(0, i);
   return { short: SHORT[key] || tag, code: i < 0 ? "" : tag.slice(i + 1) };
 }
-const LIGHT_TEXT = { MI:1, TTG:1 };
-
 /* ============================ RENDER ============================ */
 const el = id => document.getElementById(id);
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;"); }
@@ -770,10 +1100,11 @@ function kNode(k){
     const l = jobLabel(t);
     return '<span class="jobchip">' + esc(l.short) + (l.code ? ' <i>' + esc(l.code) + '</i>' : '') + '</span>';
   }).join("");
-  const fg = LIGHT_TEXT[k.f] ? "#fff" : "#000";
   d.innerHTML =
-    '<div class="k-code">' + esc(k.c) +
-      '<span class="k-fach" style="background:var(--f-' + k.f + ');color:' + fg + '">' + esc(k.f) + '</span>' +
+    '<div class="k-code">' +
+      '<i class="k-dot" style="background:var(--f-' + k.f + ')"></i>' +
+      esc(k.c) +
+      '<span class="k-abbr">' + esc(k.f) + '</span>' +
     '</div>' +
     '<div>' +
       '<p class="k-quote">' + esc(k.t) + '</p>' +
@@ -830,11 +1161,9 @@ function buildStatic(){
 
   // Kachel: Zahl (Kompetenzen gesamt — gross)
   const totalCard = document.createElement("div");
-  totalCard.className = "bento-card bento-big";
-  totalCard.style.background = "var(--color-black)";
-  totalCard.style.color = "#fff";
+  totalCard.className = "bento-card bento-big bento-total";
   totalCard.innerHTML =
-    '<span class="kc" style="color:var(--color-accent)">Kompetenzen · Zyklus 3</span>' +
+    '<span class="kc">Kompetenzen · Zyklus 3</span>' +
     '<span class="knum">' + total + '</span>' +
     '<span class="klabel">im Wortlaut aus dem Lehrplan 21 · über ' + order.length + ' Fachbereiche</span>';
   bentoEl.appendChild(totalCard);
@@ -845,16 +1174,14 @@ function buildStatic(){
     const dig = K.filter(k => k.f === f && k.d).length;
     const card = document.createElement("div");
     card.className = "bento-card" + (i === 0 ? " bento-wide" : "");
-    card.style.background = "var(--f-" + f + ")";
-    const fg = LIGHT_TEXT[f] ? "#fff" : "#000";
-    card.style.color = fg;
     card.innerHTML =
       '<div class="kfach">' +
+        '<span class="idx">' + String(i + 1).padStart(2, "0") + '</span>' +
         '<span class="nm">' + esc(FACH[f].n) + '</span>' +
         '<span class="cnt">' + c + '</span>' +
       '</div>' +
       '<div class="bars">' +
-        '<div class="box"><i style="width:' + Math.round(100*c/max) + '%;background:' + fg + '"></i></div>' +
+        '<div class="box"><i style="width:' + Math.round(100*c/max) + '%;background:var(--f-' + f + ')"></i></div>' +
         '<p>' + dig + ' digital</p>' +
       '</div>';
     bentoEl.appendChild(card);
